@@ -118,6 +118,7 @@ void MotorInit(){
 
 
 void MotorHandler(){
+  uint16_t j_;
   /*    if (saveGainsFlag == true && (millis() - romWriteDelayTimer) > 2000){
    j_ = 81;
    for(uint16_t i = KP_PITCH_RATE_; i <= MAG_DEC_; i++){

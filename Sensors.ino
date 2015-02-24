@@ -527,7 +527,7 @@ void BaroInit(void){
   pressureInitial = baroSum / 10;   
 
 
-  initialTemp.val = temperature;
+
 
   //use the line below for altitdue above sea level
   //pressureInitial = 101325;

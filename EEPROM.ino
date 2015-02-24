@@ -1,7 +1,7 @@
 #include "AUXMATH.h"
 
 void AssignPointerArray(){
- floatPointerArray[GYRO_X_DEG] = &degreeGyroX;
+  floatPointerArray[GYRO_X_DEG] = &degreeGyroX;
   floatPointerArray[GYRO_Y_DEG] = &degreeGyroY;
   floatPointerArray[GYRO_Z_DEG] = &degreeGyroZ;
   floatPointerArray[ACC_X_FILT] = &filtAccX;
@@ -119,7 +119,7 @@ void AssignPointerArray(){
   floatPointerArray[THRO_ADJ] = &throttleAdjustment;
   floatPointerArray[PITCH_SP_TX] = &pitchSetPointTX;
   floatPointerArray[ROLL_SP_TX] = &rollSetPointTX;
-  floatPointerArray[DIST_TO_WP] = &tempOutput;
+  floatPointerArray[DIST_TO_WP] = &rollSetPointTX;
 
   floatPointerArray[TARGET_VEL_WP] = &velZMeas;
   floatPointerArray[POS_ERR] = &imu.lagEstForDebugPos;
@@ -127,7 +127,7 @@ void AssignPointerArray(){
   floatPointerArray[DR_VEL_X] = &velN;
   floatPointerArray[DR_VEL_Y] = &velE;
   floatPointerArray[DR_POS_X] = &baroVel;
-  floatPointerArray[DR_POS_Y] = &drPosY;
+  floatPointerArray[DR_POS_Y] = &baroVel;
   floatPointerArray[MOTOR_CMD_1] = &motorCommand1;
   floatPointerArray[MOTOR_CMD_2] = &motorCommand2;
   floatPointerArray[MOTOR_CMD_3] = &motorCommand3;
@@ -165,7 +165,7 @@ void AssignPointerArray(){
   bytePointerArray[Z_LOIT] = &ZLoiterState;
   bytePointerArray[XY_LOIT] = &XYLoiterState;
   bytePointerArray[GPS_FS] = &gpsFailSafe;
-  bytePointerArray[DR_FLAG] = &drFlag;
+  bytePointerArray[DR_FLAG] = &gpsFailSafe;
   bytePointerArray[MOTOR_STATE] = &motorState;
 
 
@@ -289,77 +289,7 @@ void ROMFlagsCheck(){
       EEPROM.write(i,imu.rollOffset.buffer[j++]);
     }
   }
-  if (EEPROM.read(389) == 0xAA){
-    //----
-    j = 0;
-    for(uint16_t i = 390; i < 394; i++){
-      xSlopeAcc.buffer[j++] = EEPROM.read(i);
-    }
-    j = 0;
-    for(uint16_t i = 394; i < 398; i++){
-      ySlopeAcc.buffer[j++] = EEPROM.read(i);
-    }
-    j = 0;
-    for(uint16_t i = 398; i < 402; i++){
-      zSlopeAcc.buffer[j++] = EEPROM.read(i);
-    }
-    //----
-    //----
-    j = 0;
-    for(uint16_t i = 402; i < 406; i++){
-      xSlopeMag.buffer[j++] = EEPROM.read(i);
-    }
-    j = 0;
-    for(uint16_t i = 406; i < 410; i++){
-      ySlopeMag.buffer[j++] = EEPROM.read(i);
-    }
-    j = 0;
-    for(uint16_t i = 410; i < 414; i++){
-      zSlopeMag.buffer[j++] = EEPROM.read(i);
-    }
-    //----
-    //----
-    j = 0;
-    for(uint16_t i = 414; i < 418; i++){
-      xSlopeGyro.buffer[j++] = EEPROM.read(i);
-    }
-    j = 0;
-    for(uint16_t i = 418; i < 422; i++){
-      ySlopeGyro.buffer[j++] = EEPROM.read(i);
-    }
-    j = 0;
-    for(uint16_t i = 422; i < 426; i++){
-      zSlopeGyro.buffer[j++] = EEPROM.read(i);
-    }
 
-    j = 0;
-    for(uint16_t i = 383; i < 385; i++){
-      calibTempAcc.buffer[j++] = EEPROM.read(i);
-    }
-
-    j = 0;
-    for(uint16_t i = 426; i < 428; i++){
-      calibTempMag.buffer[j++] = EEPROM.read(i);
-    }
-
-  }
-  else{
-    xSlopeAcc.val = 0;
-    ySlopeAcc.val = 0;
-    zSlopeAcc.val = 0;
-
-    xSlopeMag.val = 0;
-    ySlopeMag.val = 0;
-    zSlopeMag.val = 0;
-
-    xSlopeGyro.val = 0;
-    ySlopeGyro.val = 0;
-    zSlopeGyro.val = 0;
-
-    calibTempAcc.val = 0;
-    calibTempMag.val = 0;
-
-  }
   calibrationFlags = EEPROM.read(0);
   if ( ((calibrationFlags & (1<<RC_FLAG)) >> RC_FLAG) == 0x01 || ((calibrationFlags & (1<<ACC_FLAG)) >> ACC_FLAG) == 0x01 || ((calibrationFlags & (1<<MAG_FLAG)) >> MAG_FLAG) == 0x01 ){
     Port2.begin(115200);
@@ -692,16 +622,6 @@ void LoadROM(){
   (*floatPointerArray[MAG_DEC_]).buffer[2] = EEPROM.read(j++); 
   (*floatPointerArray[MAG_DEC_]).buffer[3] = EEPROM.read(j++); 
 
-
-  //----
-  j = 0;
-  for(uint16_t i = 385; i < 387; i++){
-    xAccOffset.buffer[j++] = EEPROM.read(i);
-  }
-  j = 0;
-  for(uint16_t i = 387; i < 389; i++){
-    yAccOffset.buffer[j++] = EEPROM.read(i);
-  }
 
 
 }

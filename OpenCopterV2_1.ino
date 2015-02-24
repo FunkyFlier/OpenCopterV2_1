@@ -660,18 +660,7 @@ volatile boolean gpsUpdate = false;
 uint32_t gpsFixAge;
 
 
-float startingX,startingY,jumpDistX,jumpDistY,homeBaseXOffset=0,homeBaseYOffset=0;
-#define POSITION_ERROR_LIMIT 2.5f
-#define ACC_RATE 1.098f
-#define DR_PERIOD 1.0 * 1000000 
-#define DR_FS_PERIOD 5 * 1000000 
-float drTimer;
-float_u positionError,accCircle;
-boolean drFlag = false;
-float_u drVelX,drVelY,drPosX,drPosY;
-float halfDTSq;
-boolean GPSDenial = false;
-uint32_t gpsUpdateTimer;
+float homeBaseXOffset=0,homeBaseYOffset=0;
 int16_u numSats;
 int32_u hDop;
 
@@ -701,38 +690,16 @@ Print* radioPrint;
 Stream* radioStream;
 
 boolean USBFlag = false,saveGainsFlag = false;
-uint16_t j_;
-
-float_u xSlopeAcc,ySlopeAcc,zSlopeAcc;
-float_u xSlopeMag,ySlopeMag,zSlopeMag;
-float_u xSlopeGyro,ySlopeGyro,zSlopeGyro;
-
-int16_u xAccOffset,yAccOffset;
-int16_u calibTempAcc,calibTempMag,initialTemp,deltaTemp;
 
 uint32_t ledTimer;
 
-volatile uint32_t start,width;
-float pingDistCentimeters,pingDistMeters;
-volatile boolean newPing = false;
-float_u baroZ,ultraSonicRange;
-
-float_u pingDistOutput,widthOutput;
-
-//boolean pingFlag;
-uint8_t pingFlag;
+float_u baroZ;
 
 int16_u throOutput;
-
 float_u gpsAlt;
 
-byte GPSFlag;
-byte baroFlag;
-byte magFlag;
-
-uint32_t loopCount;
 float_u floatLat, floatLon;
-float_u outAccX,outAccY,outAccZ,GPSCourse,GPSVel,velN,velE,velD;
+float_u velN,velE,velD;
 
 uint32_t romWriteDelayTimer;
 uint32_t _400Time;
@@ -743,15 +710,12 @@ float_u zMeas;
 volatile boolean baroCorrect;
 
 
-float_u altX,altY,altZ;
-float_u tempOutput;
-uint32_t pingTimer,baroTimer;
-float baroDT,prevBaro,pingRate,pingDT,prevPing;
+float_u altZ;
+uint32_t baroTimer;
+float baroDT,prevBaro;
 float_u baroRate;
-float_u baroVel,baroAlt,velZMeas,pingVel;
-int16_t lagAmount,tempX,tempY;
-
-uint8_t loopCount_;
+float_u baroVel,baroAlt,velZMeas;
+int16_t tempX,tempY;
 
 float rotGyroX,rotGyroY,rotAccX,rotAccY;
 
@@ -932,7 +896,7 @@ void loop(){
     //imu.COS_DEC = cos(imu.DECLINATION);
     //imu.SIN_DEC = sin(imu.DECLINATION);
     //imu.lagAmount = (uint8_t)fc_cross_track.val;
-    loopCount_ = 0;
+
     GetGyro();
     _400HzTask();
     GetMag();
@@ -961,7 +925,6 @@ void loop(){
     if (gps.newData == true){
 
       gps.newData = false;
-      GPSFlag = true;
 
       floatLat.val = (gps.data.vars.lat) * 0.0000001;
       floatLon.val = (gps.data.vars.lon) * 0.0000001;
