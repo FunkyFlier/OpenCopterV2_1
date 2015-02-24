@@ -159,7 +159,7 @@ void MotorHandler(){
       _400HzTimer = imuTimer;
     }
     //pressureInitial = pressure;
-    initialYaw = imu.yaw.val;
+    initialYaw.val = imu.yaw.val;
     integrate = false;
     HHState = 0;
     throttleAdjustment.val = 0;
@@ -229,7 +229,7 @@ void MotorHandler(){
     prevBaro = 0;
     baroZ.val = 0;
     //baroTimer = millis();
-    initialYaw = imu.yaw.val;
+    initialYaw.val = imu.yaw.val;
 
     if (RCValue[RUDD] > 1700){
       motorState = HOLD;

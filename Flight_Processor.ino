@@ -133,7 +133,7 @@ void LoiterSM(){
       }
       break;
     case RCINPUT:
-      RotatePitchRoll(&imu.yaw.val,&controlBearing,&pitchSetPointTX.val,&rollSetPointTX.val,&pitchSetPoint.val,&rollSetPoint.val);
+      RotatePitchRoll(&imu.yaw.val,&controlBearing.val,&pitchSetPointTX.val,&rollSetPointTX.val,&pitchSetPoint.val,&rollSetPoint.val);
       if (fabs(rollSetPointTX.val) < 0.5 && fabs(pitchSetPointTX.val) < 0.5){
         XYLoiterState = WAIT;
         waitTimer = millis();
@@ -154,10 +154,10 @@ void LoiterSM(){
     }  
   }
   else{
-    if (flightMode = L2){//check
-      controlBearing = initialYaw;
+    if (flightMode == L2){//check
+      controlBearing.val = initialYaw.val;
     }
-    RotatePitchRoll(&imu.yaw.val,&controlBearing,&pitchSetPointTX.val,&rollSetPointTX.val,&pitchSetPoint.val,&rollSetPoint.val);
+    RotatePitchRoll(&imu.yaw.val,&controlBearing.val,&pitchSetPointTX.val,&rollSetPointTX.val,&pitchSetPoint.val,&rollSetPoint.val);
   }
 }
 

@@ -145,7 +145,7 @@ void ProcessChannels(){
 
   previousFlightMode = flightMode;
 
-
+/*
   RCValue[THRO] = (rawRCVal[THRO] - minRCVal[THRO]) * RCScale[THRO] + 1000;
   RCValue[GEAR] = (rawRCVal[GEAR] - minRCVal[GEAR]) * RCScale[GEAR] + 1000;
   RCValue[AUX1] = (rawRCVal[AUX1] - minRCVal[AUX1]) * RCScale[AUX1] + 1000;
@@ -154,7 +154,7 @@ void ProcessChannels(){
 
   RCValue[AILE] = (rawRCVal[AILE] - centerRCVal[AILE]) * RCScale[AILE] + 1500;
   RCValue[ELEV] = (rawRCVal[ELEV] - centerRCVal[ELEV]) * RCScale[ELEV] + 1500 ;
-  RCValue[RUDD] = (rawRCVal[RUDD] - centerRCVal[RUDD]) * RCScale[RUDD] + 1500 ;
+  RCValue[RUDD] = (rawRCVal[RUDD] - centerRCVal[RUDD]) * RCScale[RUDD] + 1500 ;*/
 
 
   if (txFailSafe == true){
@@ -510,14 +510,14 @@ void SBusParser(){
         readState = 0;
         if (sBusData[0]==0x0f && sBusData[24] == 0x00){
           newRC = true;
-          rawRCVal[THRO] = (sBusData[1]|sBusData[2]<< 8) & 0x07FF ;
+          /*rawRCVal[THRO] = (sBusData[1]|sBusData[2]<< 8) & 0x07FF ;
           rawRCVal[AILE] = (sBusData[2]>>3|sBusData[3]<<5) & 0x07FF;
           rawRCVal[ELEV] = (sBusData[3]>>6|sBusData[4]<<2|sBusData[5]<<10) & 0x07FF;
           rawRCVal[RUDD] = (sBusData[5]>>1|sBusData[6]<<7) & 0x07FF;
           rawRCVal[GEAR] = (sBusData[6]>>4|sBusData[7]<<4) & 0x07FF;
           rawRCVal[AUX1] = (sBusData[7]>>7|sBusData[8]<<1|sBusData[9]<<9) & 0x07FF;
           rawRCVal[AUX2] = (sBusData[9]>>2|sBusData[10]<<6) & 0x07FF;
-          rawRCVal[AUX3] = (sBusData[10]>>5|sBusData[11]<<3) & 0x07FF;
+          rawRCVal[AUX3] = (sBusData[10]>>5|sBusData[11]<<3) & 0x07FF;*/
           if (sBusData[23] & (1<<3)) {
             failSafe = true;
           }
@@ -553,7 +553,7 @@ void DSMXParser(){
       for (int i = 0; i < 14; i=i+2){
         channelNumber = (spekBuffer[i] >> 3) & 0x0F;
         if (channelNumber < 8 && channelNumber >= 0){
-          rawRCVal[channelNumber] = ((spekBuffer[i] << 8) | (spekBuffer[i+1])) & 0x07FF;
+          //rawRCVal[channelNumber] = ((spekBuffer[i] << 8) | (spekBuffer[i+1])) & 0x07FF;
         }
 
       }
@@ -605,7 +605,7 @@ ISR(PCINT2_vect){
       if(!(currentPinState & 1<<i)){//is the pin in question logic low?
         timeDifference = currentTime - changeTime[i];//if so then calculate the pulse width
         if (900 < timeDifference && timeDifference < 2200){//check to see if it is a valid length
-          rawRCVal[i] = timeDifference;
+          //rawRCVal[i] = timeDifference;
           if (i == THRO && ((timeDifference ) < 1000)){
             failSafe = true;
           }

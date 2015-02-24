@@ -228,8 +228,8 @@ void openIMU::Predict(void){
   ZVelHist[currentEstIndex_z] = velZ.val;
 
 
-  lagEstForDebugVel.val = -1.0 * ZVelHist[lagIndex_z];
-  lagEstForDebugPos.val = -1.0 * ZEstHist[lagIndex_z];
+  //lagEstForDebugVel.val = -1.0 * ZVelHist[lagIndex_z];
+  //lagEstForDebugPos.val = -1.0 * ZEstHist[lagIndex_z];
 
 
   ZEstUp.val = -1.0 * ZEst.val;

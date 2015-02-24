@@ -1,7 +1,7 @@
 #include "AUXMATH.h"
 
 void AssignPointerArray(){
-  floatPointerArray[GYRO_X_DEG] = &degreeGyroX;
+/*  floatPointerArray[GYRO_X_DEG] = &degreeGyroX;
   floatPointerArray[GYRO_Y_DEG] = &degreeGyroY;
   floatPointerArray[GYRO_Z_DEG] = &degreeGyroZ;
   floatPointerArray[ACC_X_FILT] = &filtAccX;
@@ -152,13 +152,13 @@ void AssignPointerArray(){
   int16PointerArray[NUM_SATS] = &numSats;
 
 
-  int32PointerArray[PRESSURE_] = &lattitude;
+  int32PointerArray[PRESSURE_] = &hDop;
   int32PointerArray[HB_LAT] = &homeBase.lat;
   int32PointerArray[HB_LON] = &homeBase.lon;
-  int32PointerArray[HB_ALT] = &homeBase.alt;
+  int32PointerArray[HB_ALT] = &homeBase.lat;
   int32PointerArray[H_DOP] = &hDop;
-  int32PointerArray[LAT_] = &lattitude;
-  int32PointerArray[LON_] = &longitude;
+  int32PointerArray[LAT_] = &hDop;
+  int32PointerArray[LON_] = &hDop;
 
   bytePointerArray[FLIGHT_MODE] = &flightMode;
   bytePointerArray[RTB_STATE] = &RTBState;
@@ -166,8 +166,7 @@ void AssignPointerArray(){
   bytePointerArray[XY_LOIT] = &XYLoiterState;
   bytePointerArray[GPS_FS] = &gpsFailSafe;
   bytePointerArray[DR_FLAG] = &gpsFailSafe;
-  bytePointerArray[MOTOR_STATE] = &motorState;
-
+  bytePointerArray[MOTOR_STATE] = &motorState;*/
 
 
 }
@@ -376,7 +375,7 @@ void SetDefaultGains(){
   ki_altitude_velocity.val = 30;
   kd_altitude_velocity.val = 0;
   fc_altitude_velocity.val = 50;
-  mul_altitude_velocity.val = 1.0;
+  //mul_altitude_velocity.val = 1.0;
 
   kp_loiter_pos_x.val = 0.1;
   ki_loiter_pos_x.val = 0;
@@ -434,7 +433,7 @@ void LoadROM(){
   int16_u outShort;
   j = 0;
   for(uint16_t i = 329; i <= 344; i++){
-    outShort.buffer[j] = EEPROM.read(i);
+    /*outShort.buffer[j] = EEPROM.read(i);
     j++;
     switch(i){
     case 330:
@@ -469,14 +468,14 @@ void LoadROM(){
       centerRCVal[RUDD] = outShort.val;
       j = 0;
       break;
-    }
+    }*/
   }
 
   outFloatIndex = 0;
   for(uint16_t i = 345; i <= 376; i++){
     outFloat.buffer[outFloatIndex] = EEPROM.read(i);
     outFloatIndex++;
-    switch (i){
+   /* switch (i){
     case 348:
       RCScale[THRO] = outFloat.val;
       outFloatIndex = 0;
@@ -509,7 +508,7 @@ void LoadROM(){
       RCScale[AUX3] = outFloat.val;
       outFloatIndex = 0;
       break;
-    }
+    }*/
   }
 
    outFloatIndex = 0;
