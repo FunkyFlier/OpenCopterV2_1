@@ -11,6 +11,67 @@
 
 #define ROT_45
 
+#define CAL_FLAGS 0
+#define HS_FLAG 1
+
+#define PKT_LOCAL_ORD_L 2
+#define PKT_LOCAL_ORD_M 3
+
+#define PKT_LOCAL_UN_L 4
+#define PKT_LOCAL_UN_M 5
+
+#define PR_FLAG 6
+
+#define ESC_CAL_FLAG 7
+
+#define ACC_CALIB_START 8
+#define ACC_CALIB_END 31
+
+#define MAG_CALIB_START 32
+#define MAG_CALIB_END 79
+
+#define PR_OFFSET_START 80
+#define PR_OFFSET_END 87
+
+#define GAINS_START 88
+#define GAINS_END 327
+
+#define DEC_START 328
+#define DEC_END 331
+
+#define RC_DATA_START 332
+#define RC_DATA_END 427
+
+#define MAX_INDEX 333
+#define MIN_INDEX 335
+#define MID_INDEX 337
+#define CHAN_INDEX 338
+#define SCALE_INDEX 342
+#define REV_INDEX 343
+
+#define ACC_S_X_INDEX 11
+#define ACC_S_Y_INDEX 15
+#define ACC_S_Z_INDEX 19
+#define ACC_O_X_INDEX 23
+#define ACC_O_Y_INDEX 27
+#define ACC_O_Z_INDEX 31
+
+
+#define MAG_OFF_X_INDEX 35
+#define MAG_OFF_Y_INDEX 39
+#define MAG_OFF_Z_INDEX 43
+#define W_00_INDEX 47
+#define W_01_INDEX 51
+#define W_02_INDEX 55
+#define W_10_INDEX 59
+#define W_11_INDEX 63
+#define W_12_INDEX 67
+#define W_20_INDEX 71
+#define W_21_INDEX 75
+#define W_22_INDEX 79
+
+
+
 
 #define FC 5
 #define RC_CONST 1/(2.0 * 3.14 * FC)
@@ -196,7 +257,7 @@ enum RC_Types {
 
 enum ISR_States {
   STAND,PPM};
-  
+
 enum motorControlStates{
   HOLD,
   TO,
@@ -211,7 +272,8 @@ enum loiterStates{
   LOITERING,
   RCINPUT,
   LAND,
-  WAIT};
+  WAIT
+};
 
 enum FlightStates {
   RATE,
@@ -234,31 +296,20 @@ enum Int16s {
   MAG_X,
   MAG_Y,
   MAG_Z,
-  NUM_SATS
+  THRO_CMD
+
 };
 
 enum BYTES {
-  FLIGHT_MODE,
+  F_MODE_,
+  GPS_FIX,
+  XY_LOIT_STATE,
+  Z_LOIT_STATE,
   RTB_STATE,
-  Z_LOIT,
-  XY_LOIT,
-  GPS_FS,
-  DR_FLAG,
   MOTOR_STATE
 
-
 };
 
-enum Int32s {
-  PRESSURE_,
-  HB_LAT,
-  HB_LON,
-  HB_ALT,
-  H_DOP,
-  LAT_,
-  LON_
-
-};
 
 enum Floats {
   GYRO_X_DEG,
@@ -267,12 +318,21 @@ enum Floats {
   ACC_X_FILT,
   ACC_Y_FILT,
   ACC_Z_FILT,
+  ACC_X_SC,
+  ACC_Y_SC,
+  ACC_Z_SC,
   MAG_X_CALIB,
   MAG_Y_CALIB,
   MAG_Z_CALIB,
+  DIST_TO_CRAFT,
+  HEAD_TO_CRAFT,
   RAW_X,
   RAW_Y,
   RAW_Z,
+  VEL_N,
+  VEL_E,
+  VEL_D,
+  VEL_BARO,
   PITCH_,
   ROLL_,
   YAW_,
@@ -286,6 +346,19 @@ enum Floats {
   VEL_X,
   VEL_Y,
   VEL_Z,
+  ACC_BIAS_X,
+  ACC_BIAS_Y,
+  ACC_BIAS_Z,
+  INERTIAL_X,
+  INERTIAL_Y,
+  INERTIAL_Z,
+  INERTIAL_X_BIASED,
+  INERTIAL_Y_BIASED,
+  INERTIAL_Z_BIASED,
+  RAW_PITCH,
+  RAW_ROLL,
+  PITCH_OFF,
+  ROLL_OFF,
   KP_PITCH_RATE_,
   KI_PITCH_RATE_,
   KD_PITCH_RATE_,
@@ -318,7 +391,6 @@ enum Floats {
   KI_ALT_VEL_,
   KD_ALT_VEL_,
   FC_ALT_VEL_,
-  MUL_ALT_VEL_,
   KP_LOIT_X_POS_,
   KI_LOIT_X_POS_,
   KD_LOIT_X_POS_,
@@ -370,21 +442,18 @@ enum Floats {
   ROLL_SP_TX,
   DIST_TO_WP,
   TARGET_VEL_WP,
-  POS_ERR,
-  ACC_CIR,
-  DR_VEL_X,
-  DR_VEL_Y,
-  DR_POS_X,
-  DR_POS_Y,
   MOTOR_CMD_1,
   MOTOR_CMD_2,
   MOTOR_CMD_3,
   MOTOR_CMD_4,
-  PITCH_OFF,
-  ROLL_OFF,
-  INERTIAL_X,
-  INERTIAL_Y,
-  INERTIAL_Z
+  PRESSURE_,
+  CTRL_BEARING,
+  YAW_INITIAL,
+  GPS_ALT,
+  LAT_,
+  LON_,
+  HB_LAT,
+  HB_LON
 
 };
 
@@ -398,13 +467,11 @@ enum Floats {
 #define Port2 Serial2
 #define gpsPort Serial3
 
-float_u *floatPointerArray[125];
+float_u *floatPointerArray[143];
 
 int16_u *int16PointerArray[10];
 
-int32_u *int32PointerArray[7];
-
-uint8_t *bytePointerArray[7];
+uint8_t *bytePointerArray[6];
 
 int16_u gyroX,gyroY,gyroZ,accX,accY,accZ,magX,magY,magZ;
 
@@ -494,7 +561,7 @@ RC_t;
 
 RC_t rcData[8];
 int16_t RCValue[8];
-int16_t throttleCommand;
+int16_u throttleCommand;
 
 //timers and DTs
 uint32_t imuTimer,GPSTimer;
@@ -627,7 +694,7 @@ volatile uint32_t watchDogFailSafeCounter,RCFailSafeCounter;
 float_u xTarget,yTarget;
 uint8_t calibrationFlags;
 
-uint8_t outFloatIndex;
+//uint8_t outFloatIndex;
 
 boolean allCalibrated = false;
 boolean calibrationMode = false;
@@ -858,7 +925,7 @@ void setup(){
   imu.SIN_DEC = sin(imu.DECLINATION);
 
   gpsFailSafe = false;
-  
+
   imuTimer = micros();
   _400HzTimer = micros();
   generalPurposeTimer = millis();
@@ -912,7 +979,7 @@ void loop(){
     _400HzTask();  
     FlightSM();
     _400HzTask();
-    
+
     if (GPSDetected == true){
       gps.Monitor();
     }
@@ -934,7 +1001,7 @@ void loop(){
       imu.CorrectGPS();
 
     }
-    
+
     PollPressure();
     _400HzTask();
     if (newBaro == true){
@@ -1176,14 +1243,13 @@ void TrimCheck(){
       imu.pitchOffset.val = imu.rawPitch.val;
       imu.rollOffset.val = imu.rawRoll.val;
       j = 0;
-      for(uint8_t i = 73; i <=76; i++){
-        EEPROM.write(i,imu.pitchOffset.buffer[j++]);
+      for(uint8_t i = PR_OFFSET_START; i <=PR_OFFSET_END; i++){
+        EEPROM.write(i,imu.rawPitch.buffer[j++]);
+        if (i == (PR_OFFSET_START + 4) ){
+          j = 0;
+        }
       }
-      j = 0;
-      for(uint8_t i = 77; i <=80; i++){
-        EEPROM.write(i,imu.rollOffset.buffer[j++]);
-      }
-      EEPROM.write(382,0xAA);
+      EEPROM.write(PR_FLAG,0xAA);
     }
   }
 }
@@ -1311,6 +1377,9 @@ void LoiterCalculations(){
   tiltAngleX.val *= -1.0;
   LoiterYVelocity.calculate();
 }
+
+
+
 
 
 

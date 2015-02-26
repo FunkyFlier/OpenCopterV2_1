@@ -129,29 +129,6 @@ void Radio(){
           localPacketNumberUn++;
         }
       }
-      /*else{
-       if (remotePacketNumberUn > localPacketNumberUn){
-       if ( (remotePacketNumberUn - localPacketNumberUn) > 1000){
-       radioState = 8;
-       break;
-       }
-       SendUnMis();
-       radioState = 0;
-       break;
-       }
-       if (remotePacketNumberUn == localPacketNumberUn){
-       radioState = 8;
-       break;
-       }
-       if (remotePacketNumberUn < localPacketNumberUn){
-       if ((localPacketNumberUn - remotePacketNumberUn) > 1000){
-       SendUnMis();
-       radioState = 0;
-       }
-       radioState = 8;
-       }
-       }*/
-
       radioState = 0;
 
       break;
@@ -244,14 +221,13 @@ void Radio(){
             imu.pitchOffset.val = imu.rawPitch.val;
             imu.rollOffset.val = imu.rawRoll.val;
             j = 0;
-            for(uint8_t i = 73; i <=76; i++){
+            for(uint8_t i = PR_OFFSET_START; i <=PR_OFFSET_END; i++){
               EEPROM.write(i,imu.rawPitch.buffer[j++]);
+              if (i == PR_OFFSET_START + 4){
+                j = 0;
+              }
             }
-            j = 0;
-            for(uint8_t i = 77; i <=80; i++){
-              EEPROM.write(i,imu.rawRoll.buffer[j++]);
-            }
-            EEPROM.write(382,0xAA);
+            EEPROM.write(PR_FLAG,0xAA);
           }
         }
         SendOrdAck();
@@ -275,7 +251,7 @@ void TuningTransmitter(){//
 
 
   if (hsTX == true){//---
-    
+
     if (now.val - hsTXTimer >= hsMillis){//+++
       hsTXTimer = now.val;
       txSum = 0;
@@ -330,13 +306,13 @@ void TuningTransmitter(){//
           hsListIndex++;
           break;
         case 2://int32
-          for(uint8_t j = 0; j < 4; j++){
-            liveDataBuffer[tuningItemIndex++] = (*int32PointerArray[hsList[hsListIndex]]).buffer[j];
-            txSum += (*int32PointerArray[hsList[hsListIndex]]).buffer[j];
-            txDoubleSum += txSum;
-            packetLength++;
-          }
-          hsListIndex++;
+          /*for(uint8_t j = 0; j < 4; j++){
+           liveDataBuffer[tuningItemIndex++] = (*int32PointerArray[hsList[hsListIndex]]).buffer[j];
+           txSum += (*int32PointerArray[hsList[hsListIndex]]).buffer[j];
+           txDoubleSum += txSum;
+           packetLength++;
+           }
+           hsListIndex++;*/
           break;
         case 3:
           liveDataBuffer[tuningItemIndex++] = *bytePointerArray[hsList[hsListIndex]];
@@ -417,13 +393,13 @@ void TuningTransmitter(){//
           lsListIndex++;
           break;
         case 2://int32
-          for(uint8_t j = 0; j < 4; j++){
-            liveDataBuffer[tuningItemIndex++] = (*int32PointerArray[lsList[lsListIndex]]).buffer[j];
-            txSum += (*int32PointerArray[lsList[lsListIndex]]).buffer[j];
-            txDoubleSum += txSum;
-            packetLength++;
-          }
-          lsListIndex++;
+          /*for(uint8_t j = 0; j < 4; j++){
+           liveDataBuffer[tuningItemIndex++] = (*int32PointerArray[lsList[lsListIndex]]).buffer[j];
+           txSum += (*int32PointerArray[lsList[lsListIndex]]).buffer[j];
+           txDoubleSum += txSum;
+           packetLength++;
+           }
+           lsListIndex++;*/
           break;
         case 3:
           liveDataBuffer[tuningItemIndex++] = *bytePointerArray[lsList[lsListIndex]];
@@ -498,71 +474,58 @@ void SetTransmissionRate(){
 
 void WriteCalibrationDataToRom(){
   uint8_t temp;
-  int16_u temp16;
+  //int16_u temp16;
   itemIndex = 0;
   switch(cmdNum){
   case 0://mag calibration data
-    for(uint16_t i = 25; i <= 72; i++){
+    for(uint16_t i = MAG_CALIB_START; i <= MAG_CALIB_END; i++){
       EEPROM.write(i,itemBuffer[itemIndex++]);
     }
 
-    temp16.val = temperature;
-    for (uint16_t i = 0; i < 2; i++){
-      EEPROM.write(i + 426,temp16.buffer[i]);
-    }
-
-    calibrationFlags = EEPROM.read(0x00);
+    calibrationFlags = EEPROM.read(CAL_FLAGS);
     calibrationFlags &= ~(1<<MAG_FLAG);
-    EEPROM.write(0x00,calibrationFlags);
+    EEPROM.write(CAL_FLAGS,calibrationFlags);
     break;//--------------------------------------------
   case 1://acc calibration data
-    for(uint16_t i = 1; i <= 24; i++){
+    for(uint16_t i = ACC_CALIB_START; i <= ACC_CALIB_END; i++){
       EEPROM.write(i,itemBuffer[itemIndex++]);
     }
 
-    for(uint16_t i = 385; i <= 388; i++){
-      EEPROM.write(i,itemBuffer[itemIndex++]);
-    }
-    //set the calib temp
-    temp16.val = temperature;
-    for (uint16_t i = 0; i < 2; i++){
-      EEPROM.write(i + 383,temp16.buffer[i]);
-    }
-    calibrationFlags = EEPROM.read(0x00);
+    calibrationFlags = EEPROM.read(CAL_FLAGS);
     calibrationFlags &= ~(1<<ACC_FLAG);
-    EEPROM.write(0x00,calibrationFlags);
+    EEPROM.write(CAL_FLAGS,calibrationFlags);
 
 
     break;//--------------------------------------------
 
 
   case 2://RC calibration data
-    for(uint16_t i = 329; i <= 376; i++){
+    for(uint16_t i = RC_DATA_START; i <= RC_DATA_END; i++){
       EEPROM.write(i,itemBuffer[itemIndex++]);
     }
-    calibrationFlags = EEPROM.read(0x00);
+    calibrationFlags = EEPROM.read(CAL_FLAGS);
     calibrationFlags &= ~(1<<RC_FLAG);
-    EEPROM.write(0x00,calibrationFlags);
+    EEPROM.write(CAL_FLAGS,calibrationFlags);
     break;//--------------------------------------------
   case 3://command to end calibration and reset controller
     //save the packet numbers
     if (USBFlag == true){
-      EEPROM.write(377,0xBB);//set handshake compelte flag in EEPROM
+      EEPROM.write(HS_FLAG,0xBB);//set handshake compelte flag in EEPROM
     }
     else{
-      EEPROM.write(377,0xAA);//set handshake compelte flag in EEPROM
+      EEPROM.write(HS_FLAG,0xAA);//set handshake compelte flag in EEPROM
     }
     SendOrdAck();
     //save the packet numbers
     temp = localPacketNumberOrdered & 0x00FF;
-    EEPROM.write(378,temp);
+    EEPROM.write(PKT_LOCAL_ORD_L,temp);
     temp = localPacketNumberOrdered >> 8;
-    EEPROM.write(379,temp);
+    EEPROM.write(PKT_LOCAL_ORD_M,temp);
 
     temp = localPacketNumberUn & 0x00FF;
-    EEPROM.write(380,temp);
+    EEPROM.write(PKT_LOCAL_UN_L,temp);
     temp = localPacketNumberUn >> 8;
-    EEPROM.write(381,temp);
+    EEPROM.write(PKT_LOCAL_UN_M,temp);
 
     delay(500);
     asm volatile ("  jmp 0"); 
@@ -578,7 +541,7 @@ void WriteCalibrationDataToRom(){
 void OrderedSet(){
   switch(typeNum){
   case 0:
-    if (cmdNum >= 25 && cmdNum <= 86){
+    if (cmdNum >= KP_PITCH_RATE_ && cmdNum <= MAG_DEC_){
       for (uint8_t i = 0; i < 4; i++){
         (*floatPointerArray[cmdNum]).buffer[i] =  itemBuffer[i];
       }
@@ -660,9 +623,9 @@ void OrderedQuery(){
     }
     break;
   case 2:
-    for (uint8_t i = 0; i < 4; i++){
-      itemBuffer[i] = (*int32PointerArray[cmdNum]).buffer[i];
-    }
+    /*for (uint8_t i = 0; i < 4; i++){
+     itemBuffer[i] = (*int32PointerArray[cmdNum]).buffer[i];
+     }*/
     break;
   case 3:
 
@@ -742,38 +705,38 @@ void SendUnAck(){
 
     break;
   case 2:
-    radioPrint->write(9);
-    radioPrint->write(0xF9);
-    txSum = 0xF9;
-    txDoubleSum += txSum;
-    temp = remotePacketNumberUn & 0x00FF;
-    radioPrint->write(temp);
-    txSum += temp;
-    txDoubleSum += txSum;
-    temp = (remotePacketNumberUn >> 8) & 0x00FF;
-    radioPrint->write(temp);
-    txSum += temp;
-    txDoubleSum += txSum;
-    radioPrint->write(typeNum);
-    txSum += typeNum;
-    txDoubleSum += txSum;
-    radioPrint->write(cmdNum);
-    txSum += cmdNum;
-    txDoubleSum += txSum;
-    radioPrint->write((*int32PointerArray[cmdNum]).buffer[0]);
-    txSum += (*int32PointerArray[cmdNum]).buffer[0];
-    txDoubleSum += txSum;
-    radioPrint->write((*int32PointerArray[cmdNum]).buffer[1]);
-    txSum += (*int32PointerArray[cmdNum]).buffer[1];
-    txDoubleSum += txSum;
-    radioPrint->write((*int32PointerArray[cmdNum]).buffer[2]);
-    txSum += (*int32PointerArray[cmdNum]).buffer[2];
-    txDoubleSum += txSum;
-    radioPrint->write((*int32PointerArray[cmdNum]).buffer[3]);
-    txSum += (*int32PointerArray[cmdNum]).buffer[3];
-    txDoubleSum += txSum;
-    radioPrint->write(txSum);
-    radioPrint->write(txDoubleSum);
+    /*radioPrint->write(9);
+     radioPrint->write(0xF9);
+     txSum = 0xF9;
+     txDoubleSum += txSum;
+     temp = remotePacketNumberUn & 0x00FF;
+     radioPrint->write(temp);
+     txSum += temp;
+     txDoubleSum += txSum;
+     temp = (remotePacketNumberUn >> 8) & 0x00FF;
+     radioPrint->write(temp);
+     txSum += temp;
+     txDoubleSum += txSum;
+     radioPrint->write(typeNum);
+     txSum += typeNum;
+     txDoubleSum += txSum;
+     radioPrint->write(cmdNum);
+     txSum += cmdNum;
+     txDoubleSum += txSum;
+     radioPrint->write((*int32PointerArray[cmdNum]).buffer[0]);
+     txSum += (*int32PointerArray[cmdNum]).buffer[0];
+     txDoubleSum += txSum;
+     radioPrint->write((*int32PointerArray[cmdNum]).buffer[1]);
+     txSum += (*int32PointerArray[cmdNum]).buffer[1];
+     txDoubleSum += txSum;
+     radioPrint->write((*int32PointerArray[cmdNum]).buffer[2]);
+     txSum += (*int32PointerArray[cmdNum]).buffer[2];
+     txDoubleSum += txSum;
+     radioPrint->write((*int32PointerArray[cmdNum]).buffer[3]);
+     txSum += (*int32PointerArray[cmdNum]).buffer[3];
+     txDoubleSum += txSum;
+     radioPrint->write(txSum);
+     radioPrint->write(txDoubleSum);*/
 
     break;
   case 3:
@@ -927,18 +890,18 @@ void UnReliableTransmit(){
     }
     break;
   case 2://int32
-    radioPrint->write(4);
-    radioPrint->write(typeNum);
-    txSum += typeNum;
-    txDoubleSum += txSum;
-    radioPrint->write(cmdNum);
-    txSum += typeNum;
-    txDoubleSum += txSum;
-    for(uint8_t i = 0; i < 4; i++){
-      radioPrint->write((*int32PointerArray[cmdNum]).buffer[i]);
-      txSum += (*int32PointerArray[cmdNum]).buffer[i];
-      txDoubleSum += txSum;
-    }
+    /*radioPrint->write(4);
+     radioPrint->write(typeNum);
+     txSum += typeNum;
+     txDoubleSum += txSum;
+     radioPrint->write(cmdNum);
+     txSum += typeNum;
+     txDoubleSum += txSum;
+     for(uint8_t i = 0; i < 4; i++){
+     radioPrint->write((*int32PointerArray[cmdNum]).buffer[i]);
+     txSum += (*int32PointerArray[cmdNum]).buffer[i];
+     txDoubleSum += txSum;
+     }*/
     break;
   }
   radioPrint->write(txSum);
@@ -953,17 +916,17 @@ void HandShake(){
 
   radioTimer = millis();
 
-  if (EEPROM.read(377) == 0xAA || EEPROM.read(377) == 0xBB){//Check for handshake from calibration
-    if (EEPROM.read(377) == 0xBB){
+  if (EEPROM.read(HS_FLAG) == 0xAA || EEPROM.read(HS_FLAG) == 0xBB){//Check for handshake from calibration
+    if (EEPROM.read(HS_FLAG) == 0xBB){
       radioStream = &Port0;
       radioPrint = &Port0;
     }
-    EEPROM.write(377,0xFF);
-    packetTemp[0] = EEPROM.read(378);//lsb for packetNumberLocalOrdered
-    packetTemp[1] = EEPROM.read(379);//msb for packetNumberLocalOrdered
+    EEPROM.write(HS_FLAG,0xFF);
+    packetTemp[0] = EEPROM.read(PKT_LOCAL_ORD_L);//lsb for packetNumberLocalOrdered
+    packetTemp[1] = EEPROM.read(PKT_LOCAL_ORD_M);//msb for packetNumberLocalOrdered
     localPacketNumberOrdered = (packetTemp[1] << 8) | packetTemp[0];
     packetTemp[0] = EEPROM.read(380);//lsb for packetNumberLocalUnOrdered
-    packetTemp[1] = EEPROM.read(381);//msb for packetNumberLocalUnOrdered
+    packetTemp[1] = EEPROM.read(PKT_LOCAL_UN_M);//msb for packetNumberLocalUnOrdered
     localPacketNumberUn = (packetTemp[1] << 8) | packetTemp[0];
     handShake = true;
     return;
@@ -1132,6 +1095,7 @@ void SendHandShakeResponse(){
 
   }
 }
+
 
 
 

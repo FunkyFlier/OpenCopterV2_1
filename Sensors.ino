@@ -158,13 +158,13 @@ void SendCalData(){
     radioPrint->write(txDoubleSum);
     break;
   case 2:
-/*    radioPrint->write(17);
+    radioPrint->write(17);
 
     radioPrint->write(2);
     txSum += 2;
     txDoubleSum += txSum;
 
-    temp.val = rawRCVal[THRO];
+    temp.val = rcData[0].rcvd;
     radioPrint->write(temp.buffer[0]);
     txSum += temp.buffer[0];
     txDoubleSum += txSum;
@@ -172,7 +172,7 @@ void SendCalData(){
     txSum += temp.buffer[1];
     txDoubleSum += txSum;
 
-    temp.val = rawRCVal[AILE];
+    temp.val = rcData[1].rcvd;
     radioPrint->write(temp.buffer[0]);
     txSum += temp.buffer[0];
     txDoubleSum += txSum;
@@ -180,7 +180,7 @@ void SendCalData(){
     txSum += temp.buffer[1];
     txDoubleSum += txSum;
 
-    temp.val = rawRCVal[ELEV];
+    temp.val = rcData[2].rcvd;
     radioPrint->write(temp.buffer[0]);
     txSum += temp.buffer[0];
     txDoubleSum += txSum;
@@ -188,7 +188,7 @@ void SendCalData(){
     txSum += temp.buffer[1];
     txDoubleSum += txSum;
 
-    temp.val = rawRCVal[RUDD];
+    temp.val = rcData[3].rcvd;
     radioPrint->write(temp.buffer[0]);
     txSum += temp.buffer[0];
     txDoubleSum += txSum;
@@ -196,7 +196,7 @@ void SendCalData(){
     txSum += temp.buffer[1];
     txDoubleSum += txSum;
 
-    temp.val = rawRCVal[GEAR];
+    temp.val = rcData[4].rcvd;
     radioPrint->write(temp.buffer[0]);
     txSum += temp.buffer[0];
     txDoubleSum += txSum;
@@ -204,7 +204,7 @@ void SendCalData(){
     txSum += temp.buffer[1];
     txDoubleSum += txSum;
 
-    temp.val = rawRCVal[AUX1];
+    temp.val = rcData[5].rcvd;
     radioPrint->write(temp.buffer[0]);
     txSum += temp.buffer[0];
     txDoubleSum += txSum;
@@ -212,7 +212,7 @@ void SendCalData(){
     txSum += temp.buffer[1];
     txDoubleSum += txSum;
 
-    temp.val = rawRCVal[AUX2];
+    temp.val = rcData[6].rcvd;
     radioPrint->write(temp.buffer[0]);
     txSum += temp.buffer[0];
     txDoubleSum += txSum;
@@ -220,7 +220,7 @@ void SendCalData(){
     txSum += temp.buffer[1];
     txDoubleSum += txSum;
 
-    temp.val = rawRCVal[AUX3];
+    temp.val = rcData[7].rcvd;
     radioPrint->write(temp.buffer[0]);
     txSum += temp.buffer[0];
     txDoubleSum += txSum;
@@ -229,26 +229,10 @@ void SendCalData(){
     txDoubleSum += txSum;
 
     radioPrint->write(txSum);
-    radioPrint->write(txDoubleSum);*/
+    radioPrint->write(txDoubleSum);
     break;
   }
 }
-/*
-void StartUpAHRSRun(){
- if ( micros() - imuTimer >= 13333){  
- imuDT = (micros() - imuTimer) * 0.000001;
- imuTimer = micros();
- GetAcc();
- GetMag();
- GetGyro();
- PollPressure();
- if (newBaro == true){
- newBaro = false;
- } 
- imu.AHRSupdate();
- } 
- }*/
-
 
 
 void GPSStart(){
@@ -778,9 +762,7 @@ void GetAcc(){
 
 
 
-  /*filtAccX.val = filtAccX.val * 0.9 + scaledAccX.val * 0.1;
-   filtAccY.val = filtAccY.val * 0.9 + scaledAccY.val * 0.1;
-   filtAccZ.val = filtAccZ.val * 0.9 + scaledAccZ.val * 0.1;*/
+
   if (lpfDT > 0.005 || lpfDT <= 0){
     lpfDT = 0.005;
   }
