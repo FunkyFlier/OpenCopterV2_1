@@ -213,123 +213,166 @@ void AssignPointerArray(){
 
 
 }
-/*
+
 void DEBUG_DUMP(){
- Port0<< _FLOAT(accXScalePos,7) <<"\r\n";
- Port0<< _FLOAT(accYScalePos,7) <<"\r\n";
- Port0<< _FLOAT(accZScalePos,7) <<"\r\n";
- Port0<< _FLOAT(accXScaleNeg,7) <<"\r\n";
- Port0<< _FLOAT(accYScaleNeg,7) <<"\r\n";
- Port0<< _FLOAT(accZScaleNeg,7) <<"\r\n";
- Port0<< _FLOAT(magOffSetX,7) <<"\r\n";
- Port0<< _FLOAT(magOffSetY,7) <<"\r\n";
- Port0<< _FLOAT(magOffSetZ,7) <<"\r\n";
- Port0<< _FLOAT(magWInv00,7) <<"\r\n";
- Port0<< _FLOAT(magWInv01,7) <<"\r\n";
- Port0<< _FLOAT(magWInv02,7) <<"\r\n";
- Port0<< _FLOAT(magWInv10,7) <<"\r\n";
- Port0<< _FLOAT(magWInv11,7) <<"\r\n";
- Port0<< _FLOAT(magWInv12,7) <<"\r\n";
- Port0<< _FLOAT(magWInv20,7) <<"\r\n";
- Port0<< _FLOAT(magWInv21,7) <<"\r\n";
- Port0<< _FLOAT(magWInv22,7) <<"\r\n";
- Port0<< _FLOAT(imu.pitchOffset.val,7) <<"\r\n";
- Port0<< _FLOAT(imu.rollOffset.val,7) <<"\r\n";
- Port0<< _FLOAT(kp_pitch_rate.val,7) <<"\r\n";
- Port0<< _FLOAT(ki_pitch_rate.val,7) <<"\r\n";
- Port0<< _FLOAT(kd_pitch_rate.val,7) <<"\r\n";
- Port0<< _FLOAT(fc_pitch_rate.val,7) <<"\r\n";
- Port0<< _FLOAT(kp_roll_rate.val,7) <<"\r\n";
- Port0<< _FLOAT(ki_roll_rate.val,7) <<"\r\n";
- Port0<< _FLOAT(kd_roll_rate.val,7) <<"\r\n";
- Port0<< _FLOAT(fc_roll_rate.val,7) <<"\r\n";
- Port0<< _FLOAT(kp_yaw_rate.val,7) <<"\r\n";
- Port0<< _FLOAT(ki_yaw_rate.val,7) <<"\r\n";
- Port0<< _FLOAT(kd_yaw_rate.val,7) <<"\r\n";
- Port0<< _FLOAT(fc_yaw_rate.val,7) <<"\r\n";
- Port0<< _FLOAT(kp_pitch_attitude.val,7) <<"\r\n";
- Port0<< _FLOAT(ki_pitch_attitude.val,7) <<"\r\n";
- Port0<< _FLOAT(kd_pitch_attitude.val,7) <<"\r\n";
- Port0<< _FLOAT(fc_pitch_attitude.val,7) <<"\r\n";
- Port0<< _FLOAT(kp_roll_attitude.val,7) <<"\r\n";
- Port0<< _FLOAT(ki_roll_attitude.val,7) <<"\r\n";
- Port0<< _FLOAT(kd_roll_attitude.val,7) <<"\r\n";
- Port0<< _FLOAT(fc_roll_attitude.val,7) <<"\r\n";
- Port0<< _FLOAT(kp_yaw_attitude.val,7) <<"\r\n";
- Port0<< _FLOAT(ki_yaw_attitude.val,7) <<"\r\n";
- Port0<< _FLOAT(kd_yaw_attitude.val,7) <<"\r\n";
- Port0<< _FLOAT(fc_yaw_attitude.val,7) <<"\r\n";
- Port0<< _FLOAT(kp_altitude_position.val,7) <<"\r\n";
- Port0<< _FLOAT(ki_altitude_position.val,7) <<"\r\n";
- Port0<< _FLOAT(kd_altitude_position.val,7) <<"\r\n";
- Port0<< _FLOAT(fc_altitude_position.val,7) <<"\r\n";
- Port0<< _FLOAT(kp_altitude_velocity.val,7) <<"\r\n";
- Port0<< _FLOAT(ki_altitude_velocity.val,7) <<"\r\n";
- Port0<< _FLOAT(kd_altitude_velocity.val,7) <<"\r\n";
- Port0<< _FLOAT(fc_altitude_velocity.val,7) <<"\r\n";
- Port0<< _FLOAT(mul_altitude_velocity.val,7) <<"\r\n";
- Port0<< _FLOAT(kp_loiter_pos_x.val,7) <<"\r\n";
- Port0<< _FLOAT(ki_loiter_pos_x.val,7) <<"\r\n";
- Port0<< _FLOAT(kd_loiter_pos_x.val,7) <<"\r\n";
- Port0<< _FLOAT(fc_loiter_pos_x.val,7) <<"\r\n";
- Port0<< _FLOAT(kp_loiter_velocity_x.val,7) <<"\r\n";
- Port0<< _FLOAT(ki_loiter_velocity_x.val,7) <<"\r\n";
- Port0<< _FLOAT(kd_loiter_velocity_x.val,7) <<"\r\n";
- Port0<< _FLOAT(fc_loiter_velocity_x.val,7) <<"\r\n";
- Port0<< _FLOAT(kp_loiter_pos_y.val,7) <<"\r\n";
- Port0<< _FLOAT(ki_loiter_pos_y.val,7) <<"\r\n";
- Port0<< _FLOAT(kd_loiter_pos_y.val,7) <<"\r\n";
- Port0<< _FLOAT(fc_loiter_pos_y.val,7) <<"\r\n";
- Port0<< _FLOAT(kp_loiter_velocity_y.val,7) <<"\r\n";
- Port0<< _FLOAT(ki_loiter_velocity_y.val,7) <<"\r\n";
- Port0<< _FLOAT(kd_loiter_velocity_y.val,7) <<"\r\n";
- Port0<< _FLOAT(fc_loiter_velocity_y.val,7) <<"\r\n";
- Port0<< _FLOAT(kp_waypoint_position.val,7) <<"\r\n";
- Port0<< _FLOAT(ki_waypoint_position.val,7) <<"\r\n";
- Port0<< _FLOAT(kd_waypoint_position.val,7) <<"\r\n";
- Port0<< _FLOAT(fc_waypoint_position.val,7) <<"\r\n";
- Port0<< _FLOAT(kp_waypoint_velocity.val,7) <<"\r\n";
- Port0<< _FLOAT(ki_waypoint_velocity.val,7) <<"\r\n";
- Port0<< _FLOAT(kd_waypoint_velocity.val,7) <<"\r\n";
- Port0<< _FLOAT(fc_waypoint_velocity.val,7) <<"\r\n";
- Port0<< _FLOAT(kp_cross_track.val,7) <<"\r\n";
- Port0<< _FLOAT(ki_cross_track.val,7) <<"\r\n";
- Port0<< _FLOAT(kd_cross_track.val,7) <<"\r\n";
- Port0<< _FLOAT(fc_cross_track.val,7) <<"\r\n";
- Port0<< _FLOAT(imu.declination.val,7) <<"\r\n";
- Port0<< minRCVal[THRO] <<"\r\n";
- Port0<< minRCVal[GEAR] <<"\r\n";
- Port0<< minRCVal[AUX1] <<"\r\n";
- Port0<< minRCVal[AUX2] <<"\r\n";
- Port0<< minRCVal[AUX3] <<"\r\n";
- Port0<< centerRCVal[AILE] <<"\r\n";
- Port0<< centerRCVal[ELEV] <<"\r\n";
- Port0<< centerRCVal[RUDD] <<"\r\n";
- Port0<< _FLOAT(RCScale[THRO],7) <<"\r\n";
- Port0<< _FLOAT(RCScale[AILE],7) <<"\r\n";
- Port0<< _FLOAT(RCScale[ELEV],7) <<"\r\n";
- Port0<< _FLOAT(RCScale[RUDD],7) <<"\r\n";
- Port0<< _FLOAT(RCScale[GEAR],7) <<"\r\n";
- Port0<< _FLOAT(RCScale[AUX1],7) <<"\r\n";
- Port0<< _FLOAT(RCScale[AUX2],7) <<"\r\n";
- Port0<< _FLOAT(RCScale[AUX3],7) <<"\r\n";
- 
- 
- }
- */
+  Port0<< _FLOAT(accXScale,7) <<"\r\n";
+  Port0<< _FLOAT(accYScale,7) <<"\r\n";
+  Port0<< _FLOAT(accZScale,7) <<"\r\n";
+  Port0<< _FLOAT(accXOffset,7) <<"\r\n";
+  Port0<< _FLOAT(accYOffset,7) <<"\r\n";
+  Port0<< _FLOAT(accZOffset,7) <<"\r\n";
+  Port0<< _FLOAT(magOffSetX,7) <<"\r\n";
+  Port0<< _FLOAT(magOffSetY,7) <<"\r\n";
+  Port0<< _FLOAT(magOffSetZ,7) <<"\r\n";
+  Port0<< _FLOAT(magWInv00,7) <<"\r\n";
+  Port0<< _FLOAT(magWInv01,7) <<"\r\n";
+  Port0<< _FLOAT(magWInv02,7) <<"\r\n";
+  Port0<< _FLOAT(magWInv10,7) <<"\r\n";
+  Port0<< _FLOAT(magWInv11,7) <<"\r\n";
+  Port0<< _FLOAT(magWInv12,7) <<"\r\n";
+  Port0<< _FLOAT(magWInv20,7) <<"\r\n";
+  Port0<< _FLOAT(magWInv21,7) <<"\r\n";
+  Port0<< _FLOAT(magWInv22,7) <<"--\r\n";
+  Port0<< _FLOAT(imu.pitchOffset.val,7) <<"\r\n";
+  Port0<< _FLOAT(imu.rollOffset.val,7) <<"\r\n";
+  Port0<< _FLOAT(kp_pitch_rate.val,7) <<"\r\n";
+  Port0<< _FLOAT(ki_pitch_rate.val,7) <<"\r\n";
+  Port0<< _FLOAT(kd_pitch_rate.val,7) <<"\r\n";
+  Port0<< _FLOAT(fc_pitch_rate.val,7) <<"\r\n";
+  Port0<< _FLOAT(kp_roll_rate.val,7) <<"\r\n";
+  Port0<< _FLOAT(ki_roll_rate.val,7) <<"\r\n";
+  Port0<< _FLOAT(kd_roll_rate.val,7) <<"\r\n";
+  Port0<< _FLOAT(fc_roll_rate.val,7) <<"\r\n";
+  Port0<< _FLOAT(kp_yaw_rate.val,7) <<"\r\n";
+  Port0<< _FLOAT(ki_yaw_rate.val,7) <<"\r\n";
+  Port0<< _FLOAT(kd_yaw_rate.val,7) <<"\r\n";
+  Port0<< _FLOAT(fc_yaw_rate.val,7) <<"\r\n";
+  Port0<< _FLOAT(kp_pitch_attitude.val,7) <<"\r\n";
+  Port0<< _FLOAT(ki_pitch_attitude.val,7) <<"\r\n";
+  Port0<< _FLOAT(kd_pitch_attitude.val,7) <<"\r\n";
+  Port0<< _FLOAT(fc_pitch_attitude.val,7) <<"\r\n";
+  Port0<< _FLOAT(kp_roll_attitude.val,7) <<"\r\n";
+  Port0<< _FLOAT(ki_roll_attitude.val,7) <<"\r\n";
+  Port0<< _FLOAT(kd_roll_attitude.val,7) <<"\r\n";
+  Port0<< _FLOAT(fc_roll_attitude.val,7) <<"\r\n";
+  Port0<< _FLOAT(kp_yaw_attitude.val,7) <<"\r\n";
+  Port0<< _FLOAT(ki_yaw_attitude.val,7) <<"\r\n";
+  Port0<< _FLOAT(kd_yaw_attitude.val,7) <<"\r\n";
+  Port0<< _FLOAT(fc_yaw_attitude.val,7) <<"\r\n";
+  Port0<< _FLOAT(kp_altitude_position.val,7) <<"\r\n";
+  Port0<< _FLOAT(ki_altitude_position.val,7) <<"\r\n";
+  Port0<< _FLOAT(kd_altitude_position.val,7) <<"\r\n";
+  Port0<< _FLOAT(fc_altitude_position.val,7) <<"\r\n";
+  Port0<< _FLOAT(kp_altitude_velocity.val,7) <<"\r\n";
+  Port0<< _FLOAT(ki_altitude_velocity.val,7) <<"\r\n";
+  Port0<< _FLOAT(kd_altitude_velocity.val,7) <<"\r\n";
+  Port0<< _FLOAT(fc_altitude_velocity.val,7) <<"\r\n";
+  Port0<< _FLOAT(kp_loiter_pos_x.val,7) <<"\r\n";
+  Port0<< _FLOAT(ki_loiter_pos_x.val,7) <<"\r\n";
+  Port0<< _FLOAT(kd_loiter_pos_x.val,7) <<"\r\n";
+  Port0<< _FLOAT(fc_loiter_pos_x.val,7) <<"\r\n";
+  Port0<< _FLOAT(kp_loiter_velocity_x.val,7) <<"\r\n";
+  Port0<< _FLOAT(ki_loiter_velocity_x.val,7) <<"\r\n";
+  Port0<< _FLOAT(kd_loiter_velocity_x.val,7) <<"\r\n";
+  Port0<< _FLOAT(fc_loiter_velocity_x.val,7) <<"\r\n";
+  Port0<< _FLOAT(kp_loiter_pos_y.val,7) <<"\r\n";
+  Port0<< _FLOAT(ki_loiter_pos_y.val,7) <<"\r\n";
+  Port0<< _FLOAT(kd_loiter_pos_y.val,7) <<"\r\n";
+  Port0<< _FLOAT(fc_loiter_pos_y.val,7) <<"\r\n";
+  Port0<< _FLOAT(kp_loiter_velocity_y.val,7) <<"\r\n";
+  Port0<< _FLOAT(ki_loiter_velocity_y.val,7) <<"\r\n";
+  Port0<< _FLOAT(kd_loiter_velocity_y.val,7) <<"\r\n";
+  Port0<< _FLOAT(fc_loiter_velocity_y.val,7) <<"\r\n";
+  Port0<< _FLOAT(kp_waypoint_position.val,7) <<"\r\n";
+  Port0<< _FLOAT(ki_waypoint_position.val,7) <<"\r\n";
+  Port0<< _FLOAT(kd_waypoint_position.val,7) <<"\r\n";
+  Port0<< _FLOAT(fc_waypoint_position.val,7) <<"\r\n";
+  Port0<< _FLOAT(kp_waypoint_velocity.val,7) <<"\r\n";
+  Port0<< _FLOAT(ki_waypoint_velocity.val,7) <<"\r\n";
+  Port0<< _FLOAT(kd_waypoint_velocity.val,7) <<"\r\n";
+  Port0<< _FLOAT(fc_waypoint_velocity.val,7) <<"\r\n";
+  Port0<< _FLOAT(kp_cross_track.val,7) <<"\r\n";
+  Port0<< _FLOAT(ki_cross_track.val,7) <<"\r\n";
+  Port0<< _FLOAT(kd_cross_track.val,7) <<"\r\n";
+  Port0<< _FLOAT(fc_cross_track.val,7) <<"\r\n";
+  Port0<< _FLOAT(imu.declination.val,7) <<"\r\n";
+  Port0<< rcData[0].min <<"\r\n";
+  Port0<< rcData[0].max <<"\r\n";
+  Port0<< rcData[0].mid <<"\r\n";
+  Port0<< rcData[0].chan <<"\r\n";
+  Port0<< _FLOAT(rcData[0].scale,7) <<"\r\n";
+  Port0<< rcData[0].reverse <<"\r\n";
+
+  Port0<< rcData[1].min <<"\r\n";
+  Port0<< rcData[1].max <<"\r\n";
+  Port0<< rcData[1].mid <<"\r\n";
+  Port0<< rcData[1].chan <<"\r\n";
+  Port0<< _FLOAT(rcData[1].scale,7) <<"\r\n";
+  Port0<< rcData[1].reverse <<"\r\n";
+
+  Port0<< rcData[2].min <<"\r\n";
+  Port0<< rcData[2].max <<"\r\n";
+  Port0<< rcData[2].mid <<"\r\n";
+  Port0<< rcData[2].chan <<"\r\n";
+  Port0<< _FLOAT(rcData[2].scale,7) <<"\r\n";
+  Port0<< rcData[2].reverse <<"\r\n";
+
+  Port0<< rcData[3].min <<"\r\n";
+  Port0<< rcData[3].max <<"\r\n";
+  Port0<< rcData[3].mid <<"\r\n";
+  Port0<< rcData[3].chan <<"\r\n";
+  Port0<< _FLOAT(rcData[3].scale,7) <<"\r\n";
+  Port0<< rcData[3].reverse <<"\r\n";
+
+  Port0<< rcData[4].min <<"\r\n";
+  Port0<< rcData[4].max <<"\r\n";
+  Port0<< rcData[4].mid <<"\r\n";
+  Port0<< rcData[4].chan <<"\r\n";
+  Port0<< _FLOAT(rcData[4].scale,7) <<"\r\n";
+  Port0<< rcData[4].reverse <<"\r\n";
+
+  Port0<< rcData[5].min <<"\r\n";
+  Port0<< rcData[5].max <<"\r\n";
+  Port0<< rcData[5].mid <<"\r\n";
+  Port0<< rcData[5].chan <<"\r\n";
+  Port0<< _FLOAT(rcData[5].scale,7) <<"\r\n";
+  Port0<< rcData[5].reverse <<"\r\n";
+
+  Port0<< rcData[6].min <<"\r\n";
+  Port0<< rcData[6].max <<"\r\n";
+  Port0<< rcData[6].mid <<"\r\n";
+  Port0<< rcData[6].chan <<"\r\n";
+  Port0<< _FLOAT(rcData[6].scale,7) <<"\r\n";
+  Port0<< rcData[6].reverse <<"\r\n";
+
+
+
+  Port0<< rcData[7].min <<"\r\n";
+  Port0<< rcData[7].max <<"\r\n";
+  Port0<< rcData[7].mid <<"\r\n";
+  Port0<< rcData[7].chan <<"\r\n";
+  Port0<< _FLOAT(rcData[7].scale,7) <<"\r\n";
+  Port0<< rcData[7].reverse <<"\r\n";
+
+
+
+}
+
 void ROMFlagsCheck(){
+
   uint16_t j;
   if (EEPROM.read(PR_FLAG) != 0xAA){
-    imu.pitchOffset.val = 0;
-    imu.rollOffset.val = 0;
+    imu.pitchOffset.val = -1.23;
+    imu.rollOffset.val = 3.45;
     j = 0;
-    for(uint16_t i = 73; i <=76; i++){
+    for(uint16_t i = PITCH_OFFSET_START; i <=PITCH_OFFSET_END; i++){
       EEPROM.write(i,imu.pitchOffset.buffer[j++]);
     }
     j = 0;
-    for(uint16_t i = 77; i <=80; i++){
+    for(uint16_t i = ROLL_OFFSET_START; i <=ROLL_OFFSET_END; i++){
       EEPROM.write(i,imu.rollOffset.buffer[j++]);
     }
+    EEPROM.write(PR_FLAG,0xAA);
   }
 
   calibrationFlags = EEPROM.read(CAL_FLAGS);
@@ -552,10 +595,11 @@ void LoadACC(){
 }
 
 void LoadMAG(){
-  
 
-  uint16_t outFloatIndex = 0;
+
+  uint8_t outFloatIndex = 0;
   for (uint16_t i = MAG_CALIB_START; i <= MAG_CALIB_END; i++){//load the compass values
+    
     outFloat.buffer[outFloatIndex] = EEPROM.read(i);
     outFloatIndex++;
     switch (i){
@@ -624,7 +668,7 @@ void LoadGains(){
 }
 
 void LoadPROff(){
-   uint16_t j = PR_OFFSET_START;
+  uint16_t j = PITCH_OFFSET_START;
   for (uint16_t i = PITCH_OFF; i <= ROLL_OFF; i++){//pitch and roll offsets
     (*floatPointerArray[i]).buffer[0] = EEPROM.read(j++); 
     (*floatPointerArray[i]).buffer[1] = EEPROM.read(j++); 
@@ -645,15 +689,19 @@ void LoadROM(){
   LoadRC();
 
   LoadACC();
+  
+  LoadMAG();
 
   LoadGains();
-  
+
   LoadPROff();
- 
+
 
 
 
 }
+
+
 
 
 

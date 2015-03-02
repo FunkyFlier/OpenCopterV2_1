@@ -221,11 +221,12 @@ void Radio(){
             imu.pitchOffset.val = imu.rawPitch.val;
             imu.rollOffset.val = imu.rawRoll.val;
             j = 0;
-            for(uint8_t i = PR_OFFSET_START; i <=PR_OFFSET_END; i++){
-              EEPROM.write(i,imu.rawPitch.buffer[j++]);
-              if (i == PR_OFFSET_START + 4){
-                j = 0;
-              }
+            for(uint16_t i = PITCH_OFFSET_START; i <=PITCH_OFFSET_END; i++){
+              EEPROM.write(i,imu.pitchOffset.buffer[j++]);
+            }
+            j = 0;
+            for(uint16_t i = ROLL_OFFSET_START; i <=ROLL_OFFSET_END; i++){
+              EEPROM.write(i,imu.rollOffset.buffer[j++]);
             }
             EEPROM.write(PR_FLAG,0xAA);
           }
@@ -925,7 +926,7 @@ void HandShake(){
     packetTemp[0] = EEPROM.read(PKT_LOCAL_ORD_L);//lsb for packetNumberLocalOrdered
     packetTemp[1] = EEPROM.read(PKT_LOCAL_ORD_M);//msb for packetNumberLocalOrdered
     localPacketNumberOrdered = (packetTemp[1] << 8) | packetTemp[0];
-    packetTemp[0] = EEPROM.read(380);//lsb for packetNumberLocalUnOrdered
+    packetTemp[0] = EEPROM.read(PKT_LOCAL_UN_L);//lsb for packetNumberLocalUnOrdered
     packetTemp[1] = EEPROM.read(PKT_LOCAL_UN_M);//msb for packetNumberLocalUnOrdered
     localPacketNumberUn = (packetTemp[1] << 8) | packetTemp[0];
     handShake = true;
@@ -1095,6 +1096,7 @@ void SendHandShakeResponse(){
 
   }
 }
+
 
 
 

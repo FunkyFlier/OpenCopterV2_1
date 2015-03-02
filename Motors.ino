@@ -59,7 +59,7 @@ void CalibrateESC(){
   }
   ProcessChannels();
   if (RCValue[THRO] > 1900){
-    EEPROM.write(0x3E8,0xFF);//clear the handshake flag
+    EEPROM.write(HS_FLAG,0xFF);//clear the handshake flag
     EEPROM.write(ESC_CAL_FLAG,0xAA);
     while(1){
       digitalWrite(13,HIGH);
@@ -119,7 +119,7 @@ void MotorInit(){
 
 
 void SaveGains(){
-  uint8_t j_ = GAINS_START;
+  uint16_t j_ = GAINS_START;
   for(uint16_t i = KP_PITCH_RATE_; i <= MAG_DEC_; i++){
     EEPROM.write(j_++,(*floatPointerArray[i]).buffer[0]); 
     EEPROM.write(j_++,(*floatPointerArray[i]).buffer[1]); 

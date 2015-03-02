@@ -30,8 +30,11 @@
 #define MAG_CALIB_START 32
 #define MAG_CALIB_END 79
 
-#define PR_OFFSET_START 80
-#define PR_OFFSET_END 87
+#define PITCH_OFFSET_START 80
+#define PITCH_OFFSET_END 83
+
+#define ROLL_OFFSET_START 84
+#define ROLL_OFFSET_END 87
 
 #define GAINS_START 88
 #define GAINS_END 327
@@ -69,7 +72,8 @@
 #define W_20_INDEX 71
 #define W_21_INDEX 75
 #define W_22_INDEX 79
-
+#define VER_FLAG_INDEX 428
+#define VER_FLAG 1
 
 
 
@@ -840,6 +844,7 @@ void setup(){
 
 
   //----------------------------
+  //Port0<<"1\r\n";
   //ROMFlagsCheck();
   //DEBUG_DUMP();
   //while(1){}
@@ -901,14 +906,20 @@ void setup(){
   SPI.setBitOrder(MSBFIRST);
   SPI.setClockDivider(SPI_CLOCK_DIV2);   
 
-
+  Port0.begin(115200);
   if (calibrationMode == true){
+    Port0<<"cal mode\r\n";
     BaroInit();
     AccInit();
     MagInit();
     CalibrateSensors();  
     ROMFlagsCheck();
   }
+
+Port0<<"1\r\n";
+  ROMFlagsCheck();
+  DEBUG_DUMP();
+  while(1){}
 
   ModeSelect();
   Arm();//move the rudder to the right to begin calibration
@@ -1243,11 +1254,12 @@ void TrimCheck(){
       imu.pitchOffset.val = imu.rawPitch.val;
       imu.rollOffset.val = imu.rawRoll.val;
       j = 0;
-      for(uint8_t i = PR_OFFSET_START; i <=PR_OFFSET_END; i++){
-        EEPROM.write(i,imu.rawPitch.buffer[j++]);
-        if (i == (PR_OFFSET_START + 4) ){
-          j = 0;
-        }
+      for(uint16_t i = PITCH_OFFSET_START; i <=PITCH_OFFSET_END; i++){
+        EEPROM.write(i,imu.pitchOffset.buffer[j++]);
+      }
+      j = 0;
+      for(uint16_t i = ROLL_OFFSET_START; i <=ROLL_OFFSET_END; i++){
+        EEPROM.write(i,imu.rollOffset.buffer[j++]);
       }
       EEPROM.write(PR_FLAG,0xAA);
     }
