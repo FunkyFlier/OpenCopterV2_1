@@ -2,9 +2,11 @@ void Radio(){
   uint8_t j;
   while(radioStream->available() > 0){//---
     radioByte = radioStream->read();
+    //Port0<<"* "<<_HEX(radioByte)<<"\r\n";
     switch (radioState){//+++
 
     case 0://check for start byte
+      //Port0<<"0\r\n";
       rxSum = 0;
       rxDoubleSum = 0;
       if (radioByte == 0xAA){
@@ -13,12 +15,15 @@ void Radio(){
       break;
 
     case 1:
+      //Port0<<"1\r\n";
       packetLength = radioByte;
+      //Port0<<"1 "<<packetLength<<"\r\n";
       numRXbytes = 0;
       radioState = 2;
       break;
 
     case 2:
+      //Port0<<"2\r\n";
       rxSum += radioByte;
       rxDoubleSum += rxSum;
       numRXbytes++;
@@ -31,6 +36,11 @@ void Radio(){
         break;
       }
       typeNum = radioByte;
+      //Port0<<"2 "<<typeNum<<"\r\n";
+      if (typeNum == 11 && packetLength == 18){
+        radioState = 19;
+        break;
+      }
       if (packetLength == 2){//length for unrelaible will always be 2
         radioState = 3;//unrelaible data
       }
@@ -242,10 +252,105 @@ void Radio(){
        }*/
       radioState = 0;
       break;
+    case 19:
+      //Port0<<"19\r\n";
+      cmdNum = radioByte;
+      //Port0<<"19 "<<cmdNum<<"\r\n";
+      rxSum += radioByte;
+      rxDoubleSum += rxSum;
+      itemIndex = 0;
+      if (cmdNum == 8){
+        radioState = 20;
+      }
+      else{
+        radioState = 0;
+      }
+      break;
+    case 20:
+      //Port0<<"20\r\n";
+      itemBuffer[itemIndex++] = radioByte;
+      //Port0<<"20 "<<_HEX(radioByte)<<"\r\n";
+      rxSum += radioByte;
+      rxDoubleSum += rxSum;
+      if (itemIndex == (cmdNum * 2)){
+        radioState = 21;
+      }
+      break;
+    case 21:
+      //Port0<<"21\r\n";
+      //Port0<<"21 "<<rxSum<<","<<radioByte<<"\r\n";
+      if (rxSum == radioByte){
+        radioState = 22;
+      }
+      else{
+        radioState = 0;
+      }
+      break;
+    case 22:
+      //Port0<<"22\r\n";
+      //Port0<<"22 "<<rxDoubleSum<<","<<radioByte<<"\r\n";
+      if (rxDoubleSum == radioByte){
+        //Port0<"a\r\n";
+        HandleGSRCData();
+
+      }
+      radioState = 0;
+      break;
 
     }//+++
   }//---
 }
+
+void HandleGSRCData(){
+  int16_u inShort;
+  itemIndex = 0;
+  for(uint8_t i = 0; i < cmdNum; i++){
+    switch(i){
+    case THRO:
+      inShort.buffer[0] = itemBuffer[itemIndex++];
+      inShort.buffer[1] = itemBuffer[itemIndex++];
+      GSRCValue[THRO] = inShort.val;
+      break;
+    case AILE:
+      inShort.buffer[0] = itemBuffer[itemIndex++];
+      inShort.buffer[1] = itemBuffer[itemIndex++];
+      GSRCValue[AILE] = inShort.val;
+      break;
+    case ELEV:
+      inShort.buffer[0] = itemBuffer[itemIndex++];
+      inShort.buffer[1] = itemBuffer[itemIndex++];
+      GSRCValue[ELEV] = inShort.val;
+      break;
+    case RUDD:
+      inShort.buffer[0] = itemBuffer[itemIndex++];
+      inShort.buffer[1] = itemBuffer[itemIndex++];
+      GSRCValue[RUDD] = inShort.val;
+      break;
+    case GEAR:
+      inShort.buffer[0] = itemBuffer[itemIndex++];
+      inShort.buffer[1] = itemBuffer[itemIndex++];
+      GSRCValue[GEAR] = inShort.val;
+      break;
+    case AUX1:
+      inShort.buffer[0] = itemBuffer[itemIndex++];
+      inShort.buffer[1] = itemBuffer[itemIndex++];
+      GSRCValue[AUX1] = inShort.val;
+      break;
+    case AUX2:
+      inShort.buffer[0] = itemBuffer[itemIndex++];
+      inShort.buffer[1] = itemBuffer[itemIndex++];
+      GSRCValue[AUX2] = inShort.val;
+      break;
+    case AUX3:
+      inShort.buffer[0] = itemBuffer[itemIndex++];
+      inShort.buffer[1] = itemBuffer[itemIndex++];
+      GSRCValue[AUX3] = inShort.val;
+      break;
+    }
+  }
+  newGSRC = true;
+}
+
 void TuningTransmitter(){//
   uint32_u now;
   now.val = millis();
@@ -1096,6 +1201,11 @@ void SendHandShakeResponse(){
 
   }
 }
+
+
+
+
+
 
 
 

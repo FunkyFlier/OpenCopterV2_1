@@ -213,7 +213,7 @@ void AssignPointerArray(){
 
 
 }
-
+/*
 void DEBUG_DUMP(){
   Port0<< _FLOAT(accXScale,7) <<"\r\n";
   Port0<< _FLOAT(accYScale,7) <<"\r\n";
@@ -357,7 +357,7 @@ void DEBUG_DUMP(){
 
 
 }
-
+*/
 void ROMFlagsCheck(){
 
   uint16_t j;

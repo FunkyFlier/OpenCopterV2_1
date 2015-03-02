@@ -534,7 +534,7 @@ boolean frameValid = false;
 uint8_t spekBuffer[14];
 
 uint16_t bufferIndex=0;
-
+boolean newGSRC = false;
 
 
 
@@ -565,6 +565,8 @@ RC_t;
 
 RC_t rcData[8];
 int16_t RCValue[8];
+int16_t GSRCValue[8];
+
 int16_u throttleCommand;
 
 //timers and DTs
@@ -953,6 +955,7 @@ void loop(){
   _400HzTask();
   loopTime = micros();
   if (loopTime - imuTimer >= 10000){
+    imuDT = (loopTime - imuTimer) * 0.000001;
     imuTimer = loopTime;
     imu.kpAcc = kp_waypoint_position.val;
     imu.kiAcc = ki_waypoint_position.val;
@@ -1041,6 +1044,10 @@ void loop(){
       GetSwitchPositions();
       RCFailSafeCounter = 0;
     }  
+    if (newGSRC == true){
+      newGSRC = false;
+      //Port0<<millis()<<","<<GSRCValue[THRO]<<"\r\n";//<<","<<GSRCValue[AILE]<<","<<GSRCValue[ELEV]<<","<<GSRCValue[RUDD]<<","<<GSRCValue[GEAR]<<","<<GSRCValue[AUX1]<<","<<GSRCValue[AUX2]<<","<<GSRCValue[AUX3]<<"\r\n";
+    }
     _400HzTask();
     if (RCFailSafeCounter >= 200 || failSafe == true){
       txFailSafe = true;
@@ -1072,6 +1079,7 @@ void loop(){
         }
         delay(500);
       }
+      
     }
 
 
@@ -1091,7 +1099,6 @@ void loop(){
     MotorHandler();
     tuningTrasnmitOK = true;
     _400HzTask();
-
   }
 
 
