@@ -908,7 +908,7 @@ void setup(){
 
   Port0.begin(115200);
   if (calibrationMode == true){
-    Port0<<"cal mode\r\n";
+    //Port0<<"cal mode\r\n";
     BaroInit();
     AccInit();
     MagInit();
@@ -916,10 +916,10 @@ void setup(){
     ROMFlagsCheck();
   }
 
-Port0<<"1\r\n";
-  ROMFlagsCheck();
-  DEBUG_DUMP();
-  while(1){}
+//Port0<<"1\r\n";
+  //ROMFlagsCheck();
+  //DEBUG_DUMP();
+  //while(1){}
 
   ModeSelect();
   Arm();//move the rudder to the right to begin calibration
