@@ -258,14 +258,11 @@ enum CalibrationFlags {
 #define PERIOD ((F_CPU/PRESCALE/FREQ) - 1)
 
 
-#define Motor1WriteMicros(x) OCR3A = x * 2//motor 1 is attached to pin2
-#define Motor2WriteMicros(x) OCR3B = x * 2//motor 2 is attached to pin3
-#define Motor3WriteMicros(x) OCR3C = x * 2//motor 3 is attached to pin5
-#define Motor4WriteMicros(x) OCR4A = x * 2//motor 4 is attached to pin6
-#define Motor5WriteMicros(x) OCR4B = x * 2//motor 1 is attached to pin7
-#define Motor6WriteMicros(x) OCR4C = x * 2//motor 2 is attached to pin8
-//#define Motor7WriteMicros(x) OCR1A = x * 2//motor 3 is attached to pin11
-//#define Motor8WriteMicros(x) OCR1B = x * 2//motor 4 is attached to pin12
+#define Motor1RPMWriteMicros(x) OCR3A = x * 2//motor 1 is attached to pin2
+#define Motor2RPMWriteMicros(x) OCR3B = x * 2//motor 2 is attached to pin3
+#define Motor1TILTWriteMicros(x) OCR3C = x * 2//motor 3 is attached to pin5
+#define Motor2TILTWriteMicros(x) OCR4A = x * 2//motor 4 is attached to pin6
+#define TailWriteMicros(x) OCR4B = x * 2//motor 1 is attached to pin7
 
 //radio control defines
 //RC defines
@@ -697,8 +694,16 @@ float_u distToWayPoint,targetVelWayPoint;
 float speed2D_MPS;
 float_u tiltAngleX,tiltAngleY;
 uint8_t HHState = 1;
-float_u motorCommand1,motorCommand2,motorCommand3,motorCommand4;
-float motorPWM1,motorPWM2,motorPWM3,motorPWM4;
+
+float_u motorCommand1RPM,motorCommand2RPM,motorCommand1Tilt,motorCommand2Tilt,tailCommand;
+float motorPWM1,motorPWM2,tailPitch;
+
+int16_u pwmHigh,pwmLow;
+uint8_t propIdlePercent,hoverPercent;
+uint16_t propIdleCommand,hoverCommand;
+
+float_u tiltOffset;
+
 boolean integrate = false;
 boolean enterState = true;
 
@@ -801,10 +806,6 @@ int16_t tempX,tempY;
 float rotGyroX,rotGyroY,rotAccX,rotAccY;
 
 uint32_t loopTime;
-int16_u pwmHigh,pwmLow;
-uint8_t propIdlePercent,hoverPercent;
-uint16_t propIdleCommand,hoverCommand;
-
 
 //constructors //fix the dts
 openIMU imu(&radianGyroX,&radianGyroY,&radianGyroZ,&accToFilterX,&accToFilterY,&accToFilterZ,&filtAccX.val,&filtAccY.val,&filtAccZ.val,
@@ -815,7 +816,7 @@ PID PitchRate(&rateSetPointY.val,&degreeGyroY.val,&adjustmentY.val,&integrate,&k
 PID RollRate(&rateSetPointX.val,&degreeGyroX.val,&adjustmentX.val,&integrate,&kp_roll_rate.val,&ki_roll_rate.val,&kd_roll_rate.val,&fc_roll_rate.val,&imuDT,400,400);
 PID YawRate(&rateSetPointZ.val,&degreeGyroZ.val,&adjustmentZ.val,&integrate,&kp_yaw_rate.val,&ki_yaw_rate.val,&kd_yaw_rate.val,&fc_yaw_rate.val,&imuDT,400,400);
 
-PID PitchAngle(&zero,&imu.pitch.val,&rateSetPointY.val,&integrate,&kp_pitch_attitude.val,&ki_pitch_attitude.val,&kd_pitch_attitude.val,&fc_pitch_attitude.val,&imuDT,800,800);
+PID PitchAngle(&pitchSetPoint.val,&imu.pitch.val,&rateSetPointY.val,&integrate,&kp_pitch_attitude.val,&ki_pitch_attitude.val,&kd_pitch_attitude.val,&fc_pitch_attitude.val,&imuDT,800,800);
 PID RollAngle(&rollSetPoint.val,&imu.roll.val,&rateSetPointX.val,&integrate,&kp_roll_attitude.val,&ki_roll_attitude.val,&kd_roll_attitude.val,&fc_roll_attitude.val,&imuDT,800,800);
 YAW YawAngle(&yawSetPoint.val,&imu.yaw.val,&rateSetPointZ.val,&integrate,&kp_yaw_attitude.val,&ki_yaw_attitude.val,&kd_yaw_attitude.val,&fc_yaw_attitude.val,&imuDT,800,800);
 
@@ -1051,12 +1052,12 @@ void loop(){
       digitalWrite(RED,LOW);
       digitalWrite(YELLOW,LOW);
       digitalWrite(GREEN,LOW);
-      Motor1WriteMicros(1000);//set the output compare value
-      Motor2WriteMicros(1000);
-      Motor3WriteMicros(1000);
-      Motor4WriteMicros(1000);
-      Motor5WriteMicros(1000);
-      Motor6WriteMicros(1000);
+      Motor1RPMWriteMicros(1000);//set the output compare value
+      Motor2RPMWriteMicros(1000);
+      Motor1TILTWriteMicros(1500);
+      Motor2TILTWriteMicros(1500);
+      TailWriteMicros(1500);
+      //Motor6WriteMicros(1000);
       //Motor7WriteMicros(1000);
       //Motor8WriteMicros(1000);
       if (failSafe == true){

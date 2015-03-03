@@ -238,9 +238,10 @@ void ProcessChannels(){
     flightMode = ATT;
     setTrim = true;
     trimComplete = true;
-    MapVar(&RCValue[ELEV],&pitchSetPoint.val,1000,2000,-60,60);
+    MapVar(&RCValue[ELEV],&pitchSetPoint.val,1000,2000,-35,35);
     MapVar(&RCValue[AILE],&rollSetPoint.val,1000,2000,-60,60);
     MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
+    //tailCommand.val = RCValue[AUX3];
     if (rollSetPoint.val < 1 && rollSetPoint.val > -1){
       rollSetPoint.val = 0;
     }
@@ -269,9 +270,11 @@ void ProcessChannels(){
     flightMode = ATT;
     setTrim = false;
     trimComplete = false;
-    MapVar(&RCValue[ELEV],&pitchSetPoint.val,1000,2000,-60,60);
+    MapVar(&RCValue[ELEV],&pitchSetPoint.val,1000,2000,-35,35);
     MapVar(&RCValue[AILE],&rollSetPoint.val,1000,2000,-60,60);
     MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
+    //tailCommand.val = RCValue[AUX3];
+
     if (rollSetPoint.val < 1 && rollSetPoint.val > -1){
       rollSetPoint.val = 0;
     }
@@ -285,9 +288,10 @@ void ProcessChannels(){
   case 6:
     flightMode = ATT;
     setTrim = true;
-    MapVar(&RCValue[ELEV],&pitchSetPoint.val,1000,2000,-60,60);
+    MapVar(&RCValue[ELEV],&pitchSetPoint.val,1000,2000,-35,35);
     MapVar(&RCValue[AILE],&rollSetPoint.val,1000,2000,-60,60);
     MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
+    //tailCommand.val = RCValue[AUX3];
     if (rollSetPoint.val < 1 && rollSetPoint.val > -1){
       rollSetPoint.val = 0;
     }
@@ -307,6 +311,7 @@ void ProcessChannels(){
     MapVar(&RCValue[ELEV],&rateSetPointY.val,1000,2000,-400,400);
     MapVar(&RCValue[AILE],&rateSetPointX.val,1000,2000,-400,400);
     MapVar(&RCValue[RUDD],&rateSetPointZ.val,1000,2000,-400,400);
+    //tailCommand.val = RCValue[AUX3];
     if (rateSetPointY.val < 5 && rateSetPointY.val > -5){
       rateSetPointY.val = 0;
     }
@@ -323,6 +328,7 @@ void ProcessChannels(){
     MapVar(&RCValue[ELEV],&rateSetPointY.val,1000,2000,-400,400);
     MapVar(&RCValue[AILE],&rateSetPointX.val,1000,2000,-400,400);
     MapVar(&RCValue[RUDD],&rateSetPointZ.val,1000,2000,-400,400);
+    tailCommand.val = RCValue[AUX3];
     if (rateSetPointY.val < 5 && rateSetPointY.val > -5){
       rateSetPointY.val = 0;
     }

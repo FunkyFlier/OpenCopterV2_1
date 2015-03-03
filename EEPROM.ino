@@ -175,10 +175,10 @@ void AssignPointerArray(){
   floatPointerArray[TARGET_VEL_WP] = &targetVelWayPoint;
 
 
-  floatPointerArray[MOTOR_CMD_1] = &motorCommand1;
-  floatPointerArray[MOTOR_CMD_2] = &motorCommand2;
-  floatPointerArray[MOTOR_CMD_3] = &motorCommand3;
-  floatPointerArray[MOTOR_CMD_4] = &motorCommand4;
+  floatPointerArray[MOTOR_CMD_1] = &motorCommand1RPM;
+  floatPointerArray[MOTOR_CMD_2] = &motorCommand2RPM;
+  floatPointerArray[MOTOR_CMD_3] = &motorCommand1Tilt;
+  floatPointerArray[MOTOR_CMD_4] = &motorCommand2Tilt;
 
   floatPointerArray[PRESSURE_] = &pressure;
   floatPointerArray[CTRL_BEARING] = &controlBearing;
@@ -379,8 +379,8 @@ void ROMFlagsCheck(){
     EEPROM.write(PR_FLAG,0xAA);
   }
   if (EEPROM.read(PWM_FLAG) != 0xAA){
-    pwmHigh.val = 2000;
-    pwmLow.val = 1000;
+    pwmHigh.val = 1920;
+    pwmLow.val = 1120;
     EEPROM.write(PWM_LIM_HIGH_START,pwmHigh.buffer[0]);
     EEPROM.write(PWM_LIM_HIGH_END,pwmHigh.buffer[1]);
     EEPROM.write(PWM_LIM_LOW_START,pwmLow.buffer[0]);

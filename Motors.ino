@@ -12,19 +12,13 @@ void CheckESCFlag(){
     TCCR4A = (1<<WGM41)|(1<<COM4A1)|(1<<COM4B1)|(1<<COM4C1);
     TCCR4B = (1<<WGM43)|(1<<WGM42)|(1<<CS41);
     ICR4 = PERIOD;  
-    Motor1WriteMicros(pwmHigh.val);//set the output compare value
-    Motor2WriteMicros(pwmHigh.val);
-    Motor3WriteMicros(pwmHigh.val);
-    Motor4WriteMicros(pwmHigh.val);
-    Motor5WriteMicros(pwmHigh.val);
-    Motor6WriteMicros(pwmHigh.val);
+
+    Motor1RPMWriteMicros(pwmHigh.val);//set the output compare value
+    Motor2RPMWriteMicros(pwmHigh.val);
+
     delay(4000);
-    Motor1WriteMicros(pwmLow.val);//set the output compare value
-    Motor2WriteMicros(pwmLow.val);
-    Motor3WriteMicros(pwmLow.val);
-    Motor4WriteMicros(pwmLow.val);
-    Motor5WriteMicros(pwmLow.val);
-    Motor6WriteMicros(pwmLow.val);
+    Motor1RPMWriteMicros(pwmLow.val);//set the output compare value
+    Motor2RPMWriteMicros(pwmLow.val);
     EEPROM.write(ESC_CAL_FLAG,0xFF);
     while(1){
       digitalWrite(13,LOW);
@@ -107,12 +101,11 @@ void MotorInit(){
   //TCCR1B = (1<<WGM13)|(1<<WGM12)|(1<<CS11);
   //ICR1 = PERIOD;
 
-  Motor1WriteMicros(pwmLow.val);//set the output compare value
-  Motor2WriteMicros(pwmLow.val);
-  Motor3WriteMicros(pwmLow.val);
-  Motor4WriteMicros(pwmLow.val);
-  Motor5WriteMicros(pwmLow.val);
-  Motor6WriteMicros(pwmLow.val);
+  Motor1RPMWriteMicros(1000);//set the output compare value
+  Motor2RPMWriteMicros(1000);
+  Motor1TILTWriteMicros(1500);
+  Motor2TILTWriteMicros(1500);
+  TailWriteMicros(1500);
 
 }
 
@@ -152,18 +145,18 @@ void MotorHandler(){
     ZLoiterState = LOITERING;
     XYLoiterState = LOITERING;
     if (RCValue[THRO] > 1100){
-      motorCommand1.val = pwmLow.val;
-      motorCommand2.val = pwmLow.val;
-      motorCommand3.val = pwmLow.val;
-      motorCommand4.val = pwmLow.val;
+      motorCommand1RPM.val = pwmLow.val;
+      motorCommand2RPM.val = pwmLow.val;
+      motorCommand1Tilt.val = constrain(1500  + adjustmentZ.val + adjustmentY.val,1000,2000);
+      motorCommand2Tilt.val = constrain(1500  - adjustmentZ.val - adjustmentY.val,1000,2000);
       break;
     }
     if (flightMode == RTB){
       motorState = HOLD;
-      motorCommand1.val = pwmLow.val;
-      motorCommand2.val = pwmLow.val;
-      motorCommand3.val = pwmLow.val;
-      motorCommand4.val = pwmLow.val;
+      motorCommand1RPM.val = pwmLow.val;
+      motorCommand2RPM.val = pwmLow.val;
+      motorCommand1Tilt.val = constrain(1500  + adjustmentZ.val + adjustmentY.val,1000,2000);
+      motorCommand2Tilt.val = constrain(1500  - adjustmentZ.val - adjustmentY.val,1000,2000);
       break;
     }
 
@@ -195,17 +188,17 @@ void MotorHandler(){
       UpdateOffset();
     }
     throttleAdjustment.val = 0;
-    motorCommand1.val = pwmLow.val;
-    motorCommand2.val = pwmLow.val;
-    motorCommand3.val = pwmLow.val;
-    motorCommand4.val = pwmLow.val;
+    motorCommand1RPM.val = pwmLow.val;
+    motorCommand2RPM.val = pwmLow.val;
+    motorCommand1Tilt.val = constrain(1500  + adjustmentZ.val + adjustmentY.val,1000,2000);
+    motorCommand2Tilt.val = constrain(1500  - adjustmentZ.val - adjustmentY.val,1000,2000);
     throttleCheckFlag = false;
     break;
   case TO:
-    motorCommand1.val = hoverCommand;
-    motorCommand2.val = hoverCommand;
-    motorCommand3.val = hoverCommand;
-    motorCommand4.val = hoverCommand;
+    motorCommand1RPM.val = pwmLow.val;
+    motorCommand2RPM.val = pwmLow.val;
+    motorCommand1Tilt.val = constrain(1500  + adjustmentZ.val + adjustmentY.val,1000,2000);
+    motorCommand2Tilt.val = constrain(1500  - adjustmentZ.val - adjustmentY.val,1000,2000);
     throttleCheckFlag = false;
     pressureInitial = pressure.val;
     imu.ZEst.val = 0;
@@ -265,6 +258,7 @@ void MotorHandler(){
         motorState = HOLD;
       }
     }
+
     if (flightMode >= L0){
       throttleCommand.val = hoverCommand;
     }
@@ -275,14 +269,16 @@ void MotorHandler(){
       }
     }
 
-    motorCommand1.val = constrain((throttleCommand.val + throttleAdjustment.val + adjustmentX.val + adjustmentY.val - adjustmentZ.val),1000,2000);
-    motorCommand2.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val + adjustmentY.val + adjustmentZ.val),1000,2000);
-    motorCommand3.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val - adjustmentY.val - adjustmentZ.val),1000,2000);
-    motorCommand4.val = constrain((throttleCommand.val + throttleAdjustment.val + adjustmentX.val - adjustmentY.val + adjustmentZ.val),1000,2000);
-    /*motorCommand1.val = constrain((throttleCommand + throttleAdjustment.val + adjustmentY.val - adjustmentZ.val),1000,2000);
-     motorCommand2.val = constrain((throttleCommand + throttleAdjustment.val - adjustmentX.val + adjustmentZ.val),1000,2000);
-     motorCommand3.val = constrain((throttleCommand + throttleAdjustment.val - adjustmentY.val - adjustmentZ.val),1000,2000);
-     motorCommand4.val = constrain((throttleCommand + throttleAdjustment.val + adjustmentX.val + adjustmentZ.val),1000,2000);*/
+    motorCommand1RPM.val = constrain((throttleCommand.val + throttleAdjustment.val + adjustmentX.val),1000,2000);
+    motorCommand2RPM.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val),1000,2000);
+    motorCommand1Tilt.val = constrain(1500  + adjustmentZ.val + adjustmentY.val,1000,2000);
+    motorCommand2Tilt.val = constrain(1500  - adjustmentZ.val - adjustmentY.val,1000,2000);
+
+    /*motorCommand1.val = constrain((throttleCommand.val + throttleAdjustment.val + adjustmentX.val + adjustmentY.val - adjustmentZ.val),1000,2000);
+     motorCommand2.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val + adjustmentY.val + adjustmentZ.val),1000,2000);
+     motorCommand3.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val - adjustmentY.val - adjustmentZ.val),1000,2000);
+     motorCommand4.val = constrain((throttleCommand.val + throttleAdjustment.val + adjustmentX.val - adjustmentY.val + adjustmentZ.val),1000,2000);*/
+
 
     break;
   case LANDING:
@@ -296,50 +292,69 @@ void MotorHandler(){
     }
     throttleCommand.val = hoverCommand;
     if ( (hoverCommand + throttleAdjustment.val) < 1200){
-      motorCommand1.val = pwmLow.val;
-      motorCommand2.val = pwmLow.val;
-      motorCommand3.val = pwmLow.val;
-      motorCommand4.val = pwmLow.val;
+      motorCommand1RPM.val = pwmLow.val;
+      motorCommand2RPM.val = pwmLow.val;
+      motorCommand1Tilt.val = constrain(1500  + adjustmentZ.val + adjustmentY.val,1000,2000);
+      motorCommand2Tilt.val = constrain(1500  - adjustmentZ.val - adjustmentY.val,1000,2000);
       motorState = HOLD;
       break;
     }
     if (RCValue[RUDD] > 1950){
-      motorCommand1.val = pwmLow.val;
-      motorCommand2.val = pwmLow.val;
-      motorCommand3.val = pwmLow.val;
-      motorCommand4.val = pwmLow.val;
+      motorCommand1RPM.val = pwmLow.val;
+      motorCommand2RPM.val = pwmLow.val;
+      motorCommand1Tilt.val = constrain(1500  + adjustmentZ.val + adjustmentY.val,1000,2000);
+      motorCommand2Tilt.val = constrain(1500  - adjustmentZ.val - adjustmentY.val,1000,2000);
       motorState = HOLD;
       break;
     }
     if (fabs(imu.inertialZ.val) > 5.0){
-      motorCommand1.val = pwmLow.val;
-      motorCommand2.val = pwmLow.val;
-      motorCommand3.val = pwmLow.val;
-      motorCommand4.val = pwmLow.val;
+      motorCommand1RPM.val = pwmLow.val;
+      motorCommand2RPM.val = pwmLow.val;
+      motorCommand1Tilt.val = constrain(1500  + adjustmentZ.val + adjustmentY.val,1000,2000);
+      motorCommand2Tilt.val = constrain(1500  - adjustmentZ.val - adjustmentY.val,1000,2000);
       motorState = HOLD;
       break;
     }
+    motorCommand1RPM.val = constrain((throttleCommand.val + throttleAdjustment.val + adjustmentX.val),1000,2000);
+    motorCommand2RPM.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val),1000,2000);
+    motorCommand1Tilt.val = constrain(1500 + adjustmentZ.val + adjustmentY.val,1000,2000);
+    motorCommand2Tilt.val = constrain(1500 - adjustmentZ.val - adjustmentY.val,1000,2000);
+    /*motorCommand1.val = constrain((throttleCommand.val + throttleAdjustment.val + adjustmentX.val + adjustmentY.val - adjustmentZ.val),1000,2000);
+     motorCommand2.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val + adjustmentY.val + adjustmentZ.val),1000,2000);
+     motorCommand3.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val - adjustmentY.val - adjustmentZ.val),1000,2000);
+     motorCommand4.val = constrain((throttleCommand.val + throttleAdjustment.val + adjustmentX.val - adjustmentY.val + adjustmentZ.val),1000,2000);*/
 
-    motorCommand1.val = constrain((throttleCommand.val + throttleAdjustment.val + adjustmentX.val + adjustmentY.val - adjustmentZ.val),1000,2000);
-    motorCommand2.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val + adjustmentY.val + adjustmentZ.val),1000,2000);
-    motorCommand3.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val - adjustmentY.val - adjustmentZ.val),1000,2000);
-    motorCommand4.val = constrain((throttleCommand.val + throttleAdjustment.val + adjustmentX.val - adjustmentY.val + adjustmentZ.val),1000,2000);
-    /*    motorCommand1.val = constrain((throttleCommand + throttleAdjustment.val + adjustmentY.val - adjustmentZ.val),1000,2000);
-     motorCommand2.val = constrain((throttleCommand + throttleAdjustment.val - adjustmentX.val + adjustmentZ.val),1000,2000);
-     motorCommand3.val = constrain((throttleCommand + throttleAdjustment.val - adjustmentY.val - adjustmentZ.val),1000,2000);
-     motorCommand4.val = constrain((throttleCommand + throttleAdjustment.val + adjustmentX.val + adjustmentZ.val),1000,2000);*/
     break;
   }
-  MapVar(&motorCommand1.val,&motorPWM1,1000,2000,pwmLow.val,pwmHigh.val);
-  MapVar(&motorCommand2.val,&motorPWM2,1000,2000,pwmLow.val,pwmHigh.val);
-  MapVar(&motorCommand3.val,&motorPWM3,1000,2000,pwmLow.val,pwmHigh.val);
-  MapVar(&motorCommand4.val,&motorPWM4,1000,2000,pwmLow.val,pwmHigh.val);
-  Motor1WriteMicros(motorPWM1);
-  Motor2WriteMicros(motorPWM2);
-  Motor3WriteMicros(motorPWM3);
-  Motor4WriteMicros(motorPWM4);
+  MapVar(&motorCommand1RPM.val,&motorPWM1,1000,2000,pwmLow.val,pwmHigh.val);
+  MapVar(&motorCommand2RPM.val,&motorPWM2,1000,2000,pwmLow.val,pwmHigh.val);
 
+
+  Motor1RPMWriteMicros(motorPWM1);//set the output compare value
+  Motor2RPMWriteMicros(motorPWM1);
+  Motor1TILTWriteMicros(motorCommand1Tilt.val);
+  Motor2TILTWriteMicros(motorCommand2Tilt.val);
+  tailPitch = -1.0 * imu.pitch.val;//fix the mapping function 
+  if (tailPitch > 35.0){
+    tailPitch = 35.0;
+  }
+  if (tailPitch < -35.0){
+    tailPitch = -35.0;
+  }
+  MapVar(&tailPitch,&tailCommand.val,-35,35,1000,2000);
+  TailWriteMicros(tailCommand.val);
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
