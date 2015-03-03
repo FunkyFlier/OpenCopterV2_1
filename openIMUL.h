@@ -80,7 +80,7 @@ public:
   float FEEDBACK_LIMIT;
   //boolean skipFeedBack;
   //float FEEDBACK_LIMIT;
-  float DECLINATION,COS_DEC,SIN_DEC;
+  float COS_DEC,SIN_DEC;
   float kPosGPS,kVelGPS,kAccGPS,kPosBaro,kVelBaro,kAccBaro;
   float R11,R12,R13,R21,R22,R23,R31,R32,R33;
   float inertialSumX,inertialSumY,inertialSumZ,inertialAvgX,inertialAvgY,inertialAvgZ;

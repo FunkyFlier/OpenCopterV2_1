@@ -9,7 +9,7 @@
 #include <AUXMATH.h>
 #include "UBLOXL.h"
 
-#define ROT_45
+//#define ROT_45
 
 #define CAL_FLAGS 0
 #define HS_FLAG 1
@@ -72,9 +72,23 @@
 #define W_20_INDEX 71
 #define W_21_INDEX 75
 #define W_22_INDEX 79
-#define VER_FLAG_INDEX 428
-#define VER_FLAG 1
 
+
+#define VER_FLAG_1 428
+#define VER_FLAG_2 429
+ 
+#define VER_NUM_1 0x01
+#define VER_NUM_2 0x00
+
+#define PWM_LIM_HIGH_START 430
+#define PWM_LIM_HIGH_END 431
+#define PWM_LIM_LOW_START 432
+#define PWM_LIM_LOW_END 433
+#define PWM_FLAG 434
+#define PROP_IDLE 435
+#define PROP_IDLE_FLAG 436
+#define HOVER_THRO 437
+#define HOVER_THRO_FLAG 438
 
 
 #define FC 5
@@ -684,7 +698,7 @@ float speed2D_MPS;
 float_u tiltAngleX,tiltAngleY;
 uint8_t HHState = 1;
 float_u motorCommand1,motorCommand2,motorCommand3,motorCommand4;
-
+float motorPWM1,motorPWM2,motorPWM3,motorPWM4;
 boolean integrate = false;
 boolean enterState = true;
 
@@ -787,6 +801,9 @@ int16_t tempX,tempY;
 float rotGyroX,rotGyroY,rotAccX,rotAccY;
 
 uint32_t loopTime;
+int16_u pwmHigh,pwmLow;
+uint8_t propIdlePercent,hoverPercent;
+uint16_t propIdleCommand,hoverCommand;
 //constructors //fix the dts
 openIMU imu(&radianGyroX,&radianGyroY,&radianGyroZ,&accToFilterX,&accToFilterY,&accToFilterZ,&filtAccX.val,&filtAccY.val,&filtAccZ.val,
 &magToFiltX,&magToFiltY,&magToFiltZ,&gpsX.val,&gpsY.val,&baroZ.val,&velN.val,&velE.val,&baroVel.val,&imuDT);
@@ -796,7 +813,7 @@ PID PitchRate(&rateSetPointY.val,&degreeGyroY.val,&adjustmentY.val,&integrate,&k
 PID RollRate(&rateSetPointX.val,&degreeGyroX.val,&adjustmentX.val,&integrate,&kp_roll_rate.val,&ki_roll_rate.val,&kd_roll_rate.val,&fc_roll_rate.val,&imuDT,400,400);
 PID YawRate(&rateSetPointZ.val,&degreeGyroZ.val,&adjustmentZ.val,&integrate,&kp_yaw_rate.val,&ki_yaw_rate.val,&kd_yaw_rate.val,&fc_yaw_rate.val,&imuDT,400,400);
 
-PID PitchAngle(&pitchSetPoint.val,&imu.pitch.val,&rateSetPointY.val,&integrate,&kp_pitch_attitude.val,&ki_pitch_attitude.val,&kd_pitch_attitude.val,&fc_pitch_attitude.val,&imuDT,800,800);
+PID PitchAngle(&zero,&imu.pitch.val,&rateSetPointY.val,&integrate,&kp_pitch_attitude.val,&ki_pitch_attitude.val,&kd_pitch_attitude.val,&fc_pitch_attitude.val,&imuDT,800,800);
 PID RollAngle(&rollSetPoint.val,&imu.roll.val,&rateSetPointX.val,&integrate,&kp_roll_attitude.val,&ki_roll_attitude.val,&kd_roll_attitude.val,&fc_roll_attitude.val,&imuDT,800,800);
 YAW YawAngle(&yawSetPoint.val,&imu.yaw.val,&rateSetPointZ.val,&integrate,&kp_yaw_attitude.val,&ki_yaw_attitude.val,&kd_yaw_attitude.val,&fc_yaw_attitude.val,&imuDT,800,800);
 
@@ -918,10 +935,7 @@ void setup(){
     ROMFlagsCheck();
   }
 
-//Port0<<"1\r\n";
-  //ROMFlagsCheck();
-  //DEBUG_DUMP();
-  //while(1){}
+
 
   ModeSelect();
   Arm();//move the rudder to the right to begin calibration
@@ -932,11 +946,6 @@ void setup(){
   MagInit();
   GetInitialQuat();
   CheckTXPositions();
-  //GPSStart();
-  imu.DECLINATION = ToRad(3.3);
-  imu.COS_DEC = cos(imu.DECLINATION);
-  imu.SIN_DEC = sin(imu.DECLINATION);
-
   gpsFailSafe = false;
 
   imuTimer = micros();
@@ -957,26 +966,10 @@ void loop(){
   if (loopTime - imuTimer >= 10000){
     imuDT = (loopTime - imuTimer) * 0.000001;
     imuTimer = loopTime;
-    imu.kpAcc = kp_waypoint_position.val;
-    imu.kiAcc = ki_waypoint_position.val;
-    imu.kpMag = kd_waypoint_position.val;
-    imu.kiMag = fc_waypoint_position.val;
-    imu.FEEDBACK_LIMIT = kp_waypoint_velocity.val;
-    imu.kPosGPS = ki_waypoint_velocity.val;
-    imu.kVelGPS = kd_waypoint_velocity.val;
-    imu.kAccGPS = fc_waypoint_velocity.val;
-    imu.kPosBaro = kp_cross_track.val;
-    imu.kVelBaro = ki_cross_track.val;
-    imu.kAccBaro = kd_cross_track.val;
-    //imu.lagAmount = uint8_t(fc_cross_track.val);
-    //imu.COS_DEC = cos(imu.DECLINATION);
-    //imu.SIN_DEC = sin(imu.DECLINATION);
-    //imu.lagAmount = (uint8_t)fc_cross_track.val;
 
     GetGyro();
     _400HzTask();
     GetMag();
-    //imu.magFlag =1;
     _400HzTask();
 
     imu.AHRSupdate();

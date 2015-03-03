@@ -12,19 +12,19 @@ void CheckESCFlag(){
     TCCR4A = (1<<WGM41)|(1<<COM4A1)|(1<<COM4B1)|(1<<COM4C1);
     TCCR4B = (1<<WGM43)|(1<<WGM42)|(1<<CS41);
     ICR4 = PERIOD;  
-    Motor1WriteMicros(2000);//set the output compare value
-    Motor2WriteMicros(2000);
-    Motor3WriteMicros(2000);
-    Motor4WriteMicros(2000);
-    Motor5WriteMicros(2000);
-    Motor6WriteMicros(2000);
+    Motor1WriteMicros(pwmHigh.val);//set the output compare value
+    Motor2WriteMicros(pwmHigh.val);
+    Motor3WriteMicros(pwmHigh.val);
+    Motor4WriteMicros(pwmHigh.val);
+    Motor5WriteMicros(pwmHigh.val);
+    Motor6WriteMicros(pwmHigh.val);
     delay(4000);
-    Motor1WriteMicros(1000);//set the output compare value
-    Motor2WriteMicros(1000);
-    Motor3WriteMicros(1000);
-    Motor4WriteMicros(1000);
-    Motor5WriteMicros(1000);
-    Motor6WriteMicros(1000);
+    Motor1WriteMicros(pwmLow.val);//set the output compare value
+    Motor2WriteMicros(pwmLow.val);
+    Motor3WriteMicros(pwmLow.val);
+    Motor4WriteMicros(pwmLow.val);
+    Motor5WriteMicros(pwmLow.val);
+    Motor6WriteMicros(pwmLow.val);
     EEPROM.write(ESC_CAL_FLAG,0xFF);
     while(1){
       digitalWrite(13,LOW);
@@ -107,12 +107,12 @@ void MotorInit(){
   //TCCR1B = (1<<WGM13)|(1<<WGM12)|(1<<CS11);
   //ICR1 = PERIOD;
 
-  Motor1WriteMicros(1000);//set the output compare value
-  Motor2WriteMicros(1000);
-  Motor3WriteMicros(1000);
-  Motor4WriteMicros(1000);
-  Motor5WriteMicros(1000);
-  Motor6WriteMicros(1000);
+  Motor1WriteMicros(pwmLow.val);//set the output compare value
+  Motor2WriteMicros(pwmLow.val);
+  Motor3WriteMicros(pwmLow.val);
+  Motor4WriteMicros(pwmLow.val);
+  Motor5WriteMicros(pwmLow.val);
+  Motor6WriteMicros(pwmLow.val);
 
 }
 
@@ -152,18 +152,18 @@ void MotorHandler(){
     ZLoiterState = LOITERING;
     XYLoiterState = LOITERING;
     if (RCValue[THRO] > 1100){
-      motorCommand1.val = 1000;
-      motorCommand2.val = 1000;
-      motorCommand3.val = 1000;
-      motorCommand4.val = 1000;
+      motorCommand1.val = pwmLow.val;
+      motorCommand2.val = pwmLow.val;
+      motorCommand3.val = pwmLow.val;
+      motorCommand4.val = pwmLow.val;
       break;
     }
     if (flightMode == RTB){
       motorState = HOLD;
-      motorCommand1.val = 1000;
-      motorCommand2.val = 1000;
-      motorCommand3.val = 1000;
-      motorCommand4.val = 1000;
+      motorCommand1.val = pwmLow.val;
+      motorCommand2.val = pwmLow.val;
+      motorCommand3.val = pwmLow.val;
+      motorCommand4.val = pwmLow.val;
       break;
     }
 
@@ -195,17 +195,17 @@ void MotorHandler(){
       UpdateOffset();
     }
     throttleAdjustment.val = 0;
-    motorCommand1.val = 1000;
-    motorCommand2.val = 1000;
-    motorCommand3.val = 1000;
-    motorCommand4.val = 1000;
+    motorCommand1.val = pwmLow.val;
+    motorCommand2.val = pwmLow.val;
+    motorCommand3.val = pwmLow.val;
+    motorCommand4.val = pwmLow.val;
     throttleCheckFlag = false;
     break;
   case TO:
-    motorCommand1.val = 1125;
-    motorCommand2.val = 1125;
-    motorCommand3.val = 1125;
-    motorCommand4.val = 1125;
+    motorCommand1.val = hoverCommand;
+    motorCommand2.val = hoverCommand;
+    motorCommand3.val = hoverCommand;
+    motorCommand4.val = hoverCommand;
     throttleCheckFlag = false;
     pressureInitial = pressure.val;
     imu.ZEst.val = 0;
@@ -266,12 +266,12 @@ void MotorHandler(){
       }
     }
     if (flightMode >= L0){
-      throttleCommand.val = 1550;
+      throttleCommand.val = hoverCommand;
     }
     if (throttleCheckFlag == true){
       if (RCValue[THRO] <= 1600 && RCValue[THRO] >= 1500){
         throttleCheckFlag = false;
-        throttleCommand.val = 1550;
+        throttleCommand.val = hoverCommand;
       }
     }
 
@@ -294,28 +294,28 @@ void MotorHandler(){
         throttleCheckFlag = false;
       }
     }
-    throttleCommand.val = 1550;
-    if ( (1550 + throttleAdjustment.val) < 1200){
-      motorCommand1.val = 1000;
-      motorCommand2.val = 1000;
-      motorCommand3.val = 1000;
-      motorCommand4.val = 1000;
+    throttleCommand.val = hoverCommand;
+    if ( (hoverCommand + throttleAdjustment.val) < 1200){
+      motorCommand1.val = pwmLow.val;
+      motorCommand2.val = pwmLow.val;
+      motorCommand3.val = pwmLow.val;
+      motorCommand4.val = pwmLow.val;
       motorState = HOLD;
       break;
     }
     if (RCValue[RUDD] > 1950){
-      motorCommand1.val = 1000;
-      motorCommand2.val = 1000;
-      motorCommand3.val = 1000;
-      motorCommand4.val = 1000;
+      motorCommand1.val = pwmLow.val;
+      motorCommand2.val = pwmLow.val;
+      motorCommand3.val = pwmLow.val;
+      motorCommand4.val = pwmLow.val;
       motorState = HOLD;
       break;
     }
     if (fabs(imu.inertialZ.val) > 5.0){
-      motorCommand1.val = 1000;
-      motorCommand2.val = 1000;
-      motorCommand3.val = 1000;
-      motorCommand4.val = 1000;
+      motorCommand1.val = pwmLow.val;
+      motorCommand2.val = pwmLow.val;
+      motorCommand3.val = pwmLow.val;
+      motorCommand4.val = pwmLow.val;
       motorState = HOLD;
       break;
     }
@@ -330,11 +330,14 @@ void MotorHandler(){
      motorCommand4.val = constrain((throttleCommand + throttleAdjustment.val + adjustmentX.val + adjustmentZ.val),1000,2000);*/
     break;
   }
-
-  Motor1WriteMicros(motorCommand1.val);
-  Motor2WriteMicros(motorCommand2.val);
-  Motor3WriteMicros(motorCommand3.val);
-  Motor4WriteMicros(motorCommand4.val);
+  MapVar(&motorCommand1.val,&motorPWM1,1000,2000,pwmLow.val,pwmHigh.val);
+  MapVar(&motorCommand2.val,&motorPWM2,1000,2000,pwmLow.val,pwmHigh.val);
+  MapVar(&motorCommand3.val,&motorPWM3,1000,2000,pwmLow.val,pwmHigh.val);
+  MapVar(&motorCommand4.val,&motorPWM4,1000,2000,pwmLow.val,pwmHigh.val);
+  Motor1WriteMicros(motorPWM1);
+  Motor2WriteMicros(motorPWM2);
+  Motor3WriteMicros(motorPWM3);
+  Motor4WriteMicros(motorPWM4);
 
 }
 
