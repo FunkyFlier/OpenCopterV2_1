@@ -200,7 +200,6 @@ void ProcessChannels(){
     }
   }
 
-
   if (txFailSafe == true){
     if (motorState >= FLIGHT){
       if (flightMode != RTB){
@@ -234,12 +233,33 @@ void ProcessChannels(){
     clearTXRTB = 0;
   }
 
-  if (RCValue[AUX2] > 1750){
+
+  switch (switchPositions){
+  case 0:
+  case 1:
+    flightMode = ATT;
+    setTrim = false;
+    trimComplete = false;
+    MapVar(&RCValue[ELEV],&pitchSetPoint.val,1000,2000,-35,35);
+    MapVar(&RCValue[AILE],&rollSetPoint.val,1000,2000,-35,35);
+    MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
+    //tailCommand.val = RCValue[AUX3];
+
+    if (rollSetPoint.val < 1 && rollSetPoint.val > -1){
+      rollSetPoint.val = 0;
+    }
+    if (pitchSetPoint.val < 1 && pitchSetPoint.val > -1){
+      pitchSetPoint.val = 0;
+    }
+    if (yawInput < 5 && yawInput > -5){
+      yawInput = 0;
+    }
+    break;
+  case 2:
     flightMode = ATT;
     setTrim = true;
-    trimComplete = true;
     MapVar(&RCValue[ELEV],&pitchSetPoint.val,1000,2000,-35,35);
-    MapVar(&RCValue[AILE],&rollSetPoint.val,1000,2000,-60,60);
+    MapVar(&RCValue[AILE],&rollSetPoint.val,1000,2000,-35,35);
     MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
     //tailCommand.val = RCValue[AUX3];
     if (rollSetPoint.val < 1 && rollSetPoint.val > -1){
@@ -251,27 +271,14 @@ void ProcessChannels(){
     if (yawInput < 5 && yawInput > -5){
       yawInput = 0;
     }
-    if (flightMode != previousFlightMode){
-      enterState = true;
-    }
-
-    return;
-
-  }
-
-
-
-  switch (switchPositions){
-  case 0:
-  case 1:
-  case 2:
+    break;
   case 4:
   case 5:
     flightMode = ATT;
     setTrim = false;
     trimComplete = false;
     MapVar(&RCValue[ELEV],&pitchSetPoint.val,1000,2000,-35,35);
-    MapVar(&RCValue[AILE],&rollSetPoint.val,1000,2000,-60,60);
+    MapVar(&RCValue[AILE],&rollSetPoint.val,1000,2000,-35,35);
     MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
     //tailCommand.val = RCValue[AUX3];
 
@@ -289,7 +296,7 @@ void ProcessChannels(){
     flightMode = ATT;
     setTrim = true;
     MapVar(&RCValue[ELEV],&pitchSetPoint.val,1000,2000,-35,35);
-    MapVar(&RCValue[AILE],&rollSetPoint.val,1000,2000,-60,60);
+    MapVar(&RCValue[AILE],&rollSetPoint.val,1000,2000,-35,35);
     MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
     //tailCommand.val = RCValue[AUX3];
     if (rollSetPoint.val < 1 && rollSetPoint.val > -1){
@@ -305,38 +312,39 @@ void ProcessChannels(){
 
   case 8:
   case 9:
-    flightMode = RATE;
+    flightMode = ATT;
     setTrim = false;
     trimComplete = false;
-    MapVar(&RCValue[ELEV],&rateSetPointY.val,1000,2000,-400,400);
-    MapVar(&RCValue[AILE],&rateSetPointX.val,1000,2000,-400,400);
-    MapVar(&RCValue[RUDD],&rateSetPointZ.val,1000,2000,-400,400);
+    MapVar(&RCValue[ELEV],&pitchSetPoint.val,1000,2000,-35,35);
+    MapVar(&RCValue[AILE],&rollSetPoint.val,1000,2000,-35,35);
+    MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
     //tailCommand.val = RCValue[AUX3];
-    if (rateSetPointY.val < 5 && rateSetPointY.val > -5){
-      rateSetPointY.val = 0;
+
+    if (rollSetPoint.val < 1 && rollSetPoint.val > -1){
+      rollSetPoint.val = 0;
     }
-    if (rateSetPointX.val < 5 && rateSetPointX.val > -5){
-      rateSetPointX.val = 0;
+    if (pitchSetPoint.val < 1 && pitchSetPoint.val > -1){
+      pitchSetPoint.val = 0;
     }
-    if (rateSetPointZ.val < 5 && rateSetPointZ.val > -5){
-      rateSetPointZ.val = 0;
+    if (yawInput < 5 && yawInput > -5){
+      yawInput = 0;
     }
     break;
   case 10:
+    flightMode = ATT;
     setTrim = true;
-    flightMode = RATE;
-    MapVar(&RCValue[ELEV],&rateSetPointY.val,1000,2000,-400,400);
-    MapVar(&RCValue[AILE],&rateSetPointX.val,1000,2000,-400,400);
-    MapVar(&RCValue[RUDD],&rateSetPointZ.val,1000,2000,-400,400);
-    tailCommand.val = RCValue[AUX3];
-    if (rateSetPointY.val < 5 && rateSetPointY.val > -5){
-      rateSetPointY.val = 0;
+    MapVar(&RCValue[ELEV],&pitchSetPoint.val,1000,2000,-35,35);
+    MapVar(&RCValue[AILE],&rollSetPoint.val,1000,2000,-35,35);
+    MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
+    //tailCommand.val = RCValue[AUX3];
+    if (rollSetPoint.val < 1 && rollSetPoint.val > -1){
+      rollSetPoint.val = 0;
     }
-    if (rateSetPointX.val < 5 && rateSetPointX.val > -5){
-      rateSetPointX.val = 0;
+    if (pitchSetPoint.val < 1 && pitchSetPoint.val > -1){
+      pitchSetPoint.val = 0;
     }
-    if (rateSetPointZ.val < 5 && rateSetPointZ.val > -5){
-      rateSetPointZ.val = 0;
+    if (yawInput < 5 && yawInput > -5){
+      yawInput = 0;
     }
     break;
   }
@@ -631,6 +639,8 @@ void Spektrum(){
   rcType = DSMX;
   detected = true;
 }
+
+
 
 
 

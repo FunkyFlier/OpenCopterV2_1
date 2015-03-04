@@ -704,6 +704,8 @@ uint16_t propIdleCommand,hoverCommand;
 
 float_u tiltOffset;
 
+float ffGain,ffCommand;
+
 boolean integrate = false;
 boolean enterState = true;
 
@@ -969,7 +971,7 @@ void loop(){
   if (loopTime - imuTimer >= 10000){
     imuDT = (loopTime - imuTimer) * 0.000001;
     imuTimer = loopTime;
-
+    ffGain = fc_cross_track.val;
     GetGyro();
     _400HzTask();
     GetMag();
