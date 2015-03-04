@@ -363,6 +363,8 @@ void ROMFlagsCheck(){
     for(uint16_t i = 0; i < 600; i++){
       EEPROM.write(i,0xFF);
     }
+    EEPROM.write(VER_FLAG_1,VER_NUM_1);
+    EEPROM.write(VER_FLAG_2,VER_NUM_2);
   }
   uint16_t j;
   if (EEPROM.read(PR_FLAG) != 0xAA){
@@ -550,7 +552,7 @@ void LoadPWMLimits(){
   outInt16.buffer[1] = EEPROM.read(PWM_LIM_LOW_END);
   pwmLow.val = outInt16.val;
   if (pwmLow.val < 1000){
-    pwmLow.val = 2000;
+    pwmLow.val = 1000;
   }
   if (pwmLow.val > 1200){
     pwmLow.val = 1200;

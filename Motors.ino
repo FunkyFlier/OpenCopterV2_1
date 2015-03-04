@@ -1,5 +1,32 @@
 void CheckESCFlag(){
-
+  if (EEPROM.read(PWM_FLAG) != 0xAA){
+    pwmHigh.val = 2000;
+    pwmLow.val = 1000;
+    EEPROM.write(PWM_LIM_HIGH_START,pwmHigh.buffer[0]);
+    EEPROM.write(PWM_LIM_HIGH_END,pwmHigh.buffer[1]);
+    EEPROM.write(PWM_LIM_LOW_START,pwmLow.buffer[0]);
+    EEPROM.write(PWM_LIM_LOW_END,pwmLow.buffer[1]);
+    EEPROM.write(PWM_FLAG,0xAA);
+  }
+  int16_u outInt16;
+  outInt16.buffer[0] = EEPROM.read(PWM_LIM_HIGH_START);
+  outInt16.buffer[1] = EEPROM.read(PWM_LIM_HIGH_END);
+  pwmHigh.val = outInt16.val;
+  if (pwmHigh.val > 2000){
+    pwmHigh.val = 2000;
+  }
+  if (pwmHigh.val < 1900){
+    pwmHigh.val = 1900;
+  }
+  outInt16.buffer[0] = EEPROM.read(PWM_LIM_LOW_START);
+  outInt16.buffer[1] = EEPROM.read(PWM_LIM_LOW_END);
+  pwmLow.val = outInt16.val;
+  if (pwmLow.val < 1000){
+    pwmLow.val = 1000;
+  }
+  if (pwmLow.val > 1200){
+    pwmLow.val = 1200;
+  }
   if (EEPROM.read(ESC_CAL_FLAG) == 0xAA){
     DDRE |= B00111000;
     DDRH |= B00111000;
@@ -195,8 +222,8 @@ void MotorHandler(){
     throttleCheckFlag = false;
     break;
   case TO:
-    motorCommand1RPM.val = pwmLow.val;
-    motorCommand2RPM.val = pwmLow.val;
+    motorCommand1RPM.val = propIdleCommand;
+    motorCommand2RPM.val = propIdleCommand;
     motorCommand1Tilt.val = constrain(1500 + ffCommand + adjustmentZ.val + adjustmentY.val,1000,2000);
     motorCommand2Tilt.val = constrain(1500 - ffCommand - adjustmentZ.val - adjustmentY.val,1000,2000);
     throttleCheckFlag = false;
@@ -344,6 +371,7 @@ void MotorHandler(){
   MapVar(&tailPitch,&tailCommand.val,-35,35,1000,2000);
   TailWriteMicros(tailCommand.val);
 }
+
 
 
 
