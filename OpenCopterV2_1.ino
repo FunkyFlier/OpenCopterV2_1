@@ -586,6 +586,7 @@ int16_u throttleCommand;
 //timers and DTs
 uint32_t imuTimer,GPSTimer;
 uint32_t generalPurposeTimer;
+uint16_t groundFSCount;
 float imuDT;
 float GPSDT;
 float lpfDT,beta,alphaBaro,betaBaro;
@@ -1039,7 +1040,11 @@ void loop(){
     }  
     if (newGSRC == true){
       newGSRC = false;
+      telemFailSafe = false;
       //Port0<<millis()<<","<<GSRCValue[THRO]<<"\r\n";//<<","<<GSRCValue[AILE]<<","<<GSRCValue[ELEV]<<","<<GSRCValue[RUDD]<<","<<GSRCValue[GEAR]<<","<<GSRCValue[AUX1]<<","<<GSRCValue[AUX2]<<","<<GSRCValue[AUX3]<<"\r\n";
+    }
+    if (groundFSCount >= 200){
+      telemFailSafe = true;
     }
     _400HzTask();
     if (RCFailSafeCounter >= 200 || failSafe == true){

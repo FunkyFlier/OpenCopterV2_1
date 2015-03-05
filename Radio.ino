@@ -349,6 +349,7 @@ void HandleGSRCData(){
     }
   }
   newGSRC = true;
+  groundFSCount = 0;
 }
 
 void TuningTransmitter(){//
