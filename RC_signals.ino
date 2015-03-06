@@ -370,11 +370,9 @@ void ProcessChannels(){
       }
 
       if (telemFailSafe == true){
-        if (telemFailSafe == true){
-          MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
-          MapVar(&RCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
-          MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
-        }
+        MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
+        MapVar(&RCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
+        MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
       }
       break;
     case 6:
@@ -392,11 +390,9 @@ void ProcessChannels(){
         yawInput = 0;
       }
       if (telemFailSafe == true){
-        if (telemFailSafe == true){
-          MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
-          MapVar(&RCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
-          MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
-        }
+        MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
+        MapVar(&RCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
+        MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
       }
       break;
 
