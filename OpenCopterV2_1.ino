@@ -76,7 +76,7 @@
 
 #define VER_FLAG_1 428
 #define VER_FLAG_2 429
- 
+
 #define VER_NUM_1 0x01
 #define VER_NUM_2 0x00
 
@@ -806,7 +806,7 @@ float_u baroVel,baroAlt;
 int16_t tempX,tempY;
 
 float rotGyroX,rotGyroY,rotAccX,rotAccY;
-
+float_u tailCommandFilt;
 uint32_t loopTime;
 
 //constructors //fix the dts
@@ -950,14 +950,29 @@ void setup(){
   AccInit();
   MagInit();
   GetInitialQuat();
-  CheckTXPositions();
-  gpsFailSafe = false;
+  //CheckTXPositions();
+  /*EEPROM.write(PWM_FLAG,0xFF);
+  while(1){
+    if (newRC == true){
+      newRC = false;
+      ProcessChannels();
+      GetSwitchPositions();
+      RCFailSafeCounter = 0;
+      Serial<<RCValue[THRO]<<"\r\n";
+      Motor1RPMWriteMicros(RCValue[THRO]);//set the output compare value
+      Motor2RPMWriteMicros(RCValue[THRO]);
+      
+    }  
 
+  }*/
+  gpsFailSafe = false;
+  tailCommandFilt.val = 1500;
   imuTimer = micros();
   _400HzTimer = micros();
   generalPurposeTimer = millis();
   currentTime = micros();
   watchDogStartCount = true;
+
   digitalWrite(RED,1);
   digitalWrite(YELLOW,1);
   digitalWrite(GREEN,1);
@@ -1077,7 +1092,7 @@ void loop(){
         }
         delay(500);
       }
-      
+
     }
 
 
@@ -1394,6 +1409,7 @@ void LoiterCalculations(){
   tiltAngleX.val *= -1.0;
   LoiterYVelocity.calculate();
 }
+
 
 
 

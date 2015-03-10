@@ -182,8 +182,8 @@ void AssignPointerArray(){
 
   floatPointerArray[PRESSURE_] = &pressure;
   floatPointerArray[CTRL_BEARING] = &controlBearing;
-  floatPointerArray[YAW_INITIAL] = &initialYaw;
-  floatPointerArray[GPS_ALT] = &gpsAlt;
+  floatPointerArray[YAW_INITIAL] = &tailCommandFilt;
+  floatPointerArray[GPS_ALT] = &tailCommand;
 
 
   floatPointerArray[LAT_] = &floatLat;
@@ -381,8 +381,8 @@ void ROMFlagsCheck(){
     EEPROM.write(PR_FLAG,0xAA);
   }
   if (EEPROM.read(PWM_FLAG) != 0xAA){
-    pwmHigh.val = 1920;
-    pwmLow.val = 1120;
+    pwmHigh.val = 1880;
+    pwmLow.val = 1080;
     EEPROM.write(PWM_LIM_HIGH_START,pwmHigh.buffer[0]);
     EEPROM.write(PWM_LIM_HIGH_END,pwmHigh.buffer[1]);
     EEPROM.write(PWM_LIM_LOW_START,pwmLow.buffer[0]);
@@ -559,23 +559,24 @@ void LoadPWMLimits(){
   }
   propIdlePercent = EEPROM.read(PROP_IDLE);
   if (propIdlePercent > 20){
-    propIdleCommand = 1200;
+    propIdleCommand = pwmLow.val * (1 + ((float)20 / 100.0));
   }
   else{
-    propIdleCommand = 1000 * (1 + ((float)propIdlePercent / 100.0));
+    propIdleCommand = pwmLow.val * (1 + ((float)propIdlePercent / 100.0));
   }
   hoverPercent = EEPROM.read(HOVER_THRO);
   if (hoverPercent > 75){
-    hoverCommand = 1750;
+    hoverCommand = 1000 * (1 + (75.0 / 100.0));
   }
   else{
     if (hoverPercent < 25){
-      hoverCommand = 1250;
+      hoverCommand = 1000 * (1 + (25.0 / 100.0));
     }
     else{
       hoverCommand = 1000 * (1 + ((float)hoverPercent / 100.0));
     }
   }
+  Serial<<propIdlePercent<<","<<propIdleCommand<<","<<hoverPercent<<","<<hoverCommand<<"\r\n";
 }
 void LoadRC(){
   uint16_t j=0;//index for input buffers
