@@ -167,7 +167,7 @@ void MotorHandler(){
     //pressureInitial = pressure;
     initialYaw.val = imu.yaw.val;
     integrate = false;
-    HHState = 0;
+    //HHState = 0;
     throttleAdjustment.val = 0;
     ZLoiterState = LOITERING;
     XYLoiterState = LOITERING;
@@ -369,8 +369,9 @@ void MotorHandler(){
     tailPitch = -35.0;
   }
   MapVar(&tailPitch,&tailCommand.val,-35,35,1000,2000);
-  tailCommandFilt.val = 0.99 * tailCommandFilt.val + 0.01 * tailCommand.val;
+  //tailCommandFilt.val = 0.99 * tailCommandFilt.val + 0.01 * tailCommand.val;
   TailWriteMicros(tailCommand.val);
+  //TailWriteMicros(RCValue[AUX3]);
 }
 
 
