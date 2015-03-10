@@ -561,18 +561,18 @@ void LoadPWMLimits(){
   }
   propIdlePercent = EEPROM.read(PROP_IDLE);
   if (propIdlePercent > 20){
-    propIdleCommand = 1200;
+    propIdleCommand = pwmLow.val * (1 + (20.0 / 100.0));
   }
   else{
-    propIdleCommand = 1000 * (1 + ((float)propIdlePercent / 100.0));
+    propIdleCommand = pwmLow.val * (1 + ((float)propIdlePercent / 100.0));
   }
   hoverPercent = EEPROM.read(HOVER_THRO);
   if (hoverPercent > 75){
-    hoverCommand = 1750;
+    hoverCommand = 1000 * (1 + (75 / 100.0));
   }
   else{
     if (hoverPercent < 25){
-      hoverCommand = 1250;
+      hoverCommand = 1000 * (1 + (25 / 100.0));
     }
     else{
       hoverCommand = 1000 * (1 + ((float)hoverPercent / 100.0));
