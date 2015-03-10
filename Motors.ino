@@ -153,10 +153,14 @@ void SaveGains(){
     EEPROM.write(j_++,(*floatPointerArray[i]).buffer[2]); 
     EEPROM.write(j_++,(*floatPointerArray[i]).buffer[3]); 
     watchDogFailSafeCounter = 0;
-    calibrationFlags = EEPROM.read(CAL_FLAGS);
-    calibrationFlags &= ~(1<<GAINS_FLAG);
-    EEPROM.write(CAL_FLAGS,calibrationFlags);
+
   }
+  imu.COS_DEC = cos(imu.declination.val);
+  imu.SIN_DEC = sin(imu.declination.val);
+
+  calibrationFlags = EEPROM.read(CAL_FLAGS);
+  calibrationFlags &= ~(1<<GAINS_FLAG);
+  EEPROM.write(CAL_FLAGS,calibrationFlags);
 }
 void MotorHandler(){
 
@@ -367,6 +371,8 @@ void MotorHandler(){
   Motor4WriteMicros(motorPWM4);
 
 }
+
+
 
 
 

@@ -338,6 +338,12 @@ void ProcessChannels(){
       MapVar(&GSRCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
       MapVar(&GSRCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
       MapVar(&GSRCValue[RUDD],&yawInput,1000,2000,-300,300);
+      if (telemFailSafe == true){
+        MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
+        MapVar(&RCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
+        MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
+      }
+
       if (rollSetPointTX.val < 1 && rollSetPointTX.val > -1){
         rollSetPointTX.val = 0;
       }
@@ -348,38 +354,40 @@ void ProcessChannels(){
         yawInput = 0;
       }
 
-      if (telemFailSafe == true){
-        MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
-        MapVar(&RCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
-        MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
-      }
+
       break;
     case 5:
       flightMode = ATT;
-      MapVar(&GSRCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
-      MapVar(&GSRCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
+      MapVar(&GSRCValue[ELEV],&pitchSetPoint.val,1000,2000,-60,60);
+      MapVar(&GSRCValue[AILE],&rollSetPoint.val,1000,2000,-60,60);
       MapVar(&GSRCValue[RUDD],&yawInput,1000,2000,-300,300);
-      if (rollSetPointTX.val < 1 && rollSetPointTX.val > -1){
-        rollSetPointTX.val = 0;
+      if (telemFailSafe == true){
+        MapVar(&RCValue[AILE],&rollSetPoint.val,1000,2000,-60,60);
+        MapVar(&RCValue[ELEV],&pitchSetPoint.val,1000,2000,-60,60);
+        MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
       }
-      if (pitchSetPointTX.val < 1 && pitchSetPointTX.val > -1){
-        pitchSetPointTX.val = 0;
+      if (rollSetPoint.val < 1 && rollSetPoint.val > -1){
+        rollSetPoint.val = 0;
+      }
+      if (pitchSetPoint.val < 1 && pitchSetPoint.val > -1){
+        pitchSetPoint.val = 0;
       }
       if (yawInput < 5 && yawInput > -5){
         yawInput = 0;
       }
 
-      if (telemFailSafe == true){
-        MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
-        MapVar(&RCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
-        MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
-      }
+
       break;
     case 6:
       flightMode = RATE;
-      MapVar(&GSRCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
-      MapVar(&GSRCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
-      MapVar(&GSRCValue[RUDD],&yawInput,1000,2000,-300,300);
+      MapVar(&GSRCValue[ELEV],&rateSetPointY.val,1000,2000,-400,400);
+      MapVar(&GSRCValue[AILE],&rateSetPointX.val,1000,2000,-400,400);
+      MapVar(&GSRCValue[RUDD],&rateSetPointZ.val,1000,2000,-400,400);
+      if (telemFailSafe == true){
+        MapVar(&RCValue[ELEV],&rateSetPointY.val,1000,2000,-400,400);
+        MapVar(&RCValue[AILE],&rateSetPointX.val,1000,2000,-400,400);
+        MapVar(&RCValue[RUDD],&rateSetPointZ.val,1000,2000,-400,400);
+      }
       if (rollSetPointTX.val < 1 && rollSetPointTX.val > -1){
         rollSetPointTX.val = 0;
       }
@@ -389,30 +397,41 @@ void ProcessChannels(){
       if (yawInput < 5 && yawInput > -5){
         yawInput = 0;
       }
-      if (telemFailSafe == true){
-        MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
-        MapVar(&RCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
-        MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
-      }
+
       break;
 
     case 8:
-      //break;
     case 9:
-      //break;
+      flightMode = RATE;
+      setTrim = false;
+      trimComplete = false;
+      MapVar(&RCValue[ELEV],&rateSetPointY.val,1000,2000,-400,400);
+      MapVar(&RCValue[AILE],&rateSetPointX.val,1000,2000,-400,400);
+      MapVar(&RCValue[RUDD],&rateSetPointZ.val,1000,2000,-400,400);
+      if (rateSetPointY.val < 5 && rateSetPointY.val > -5){
+        rateSetPointY.val = 0;
+      }
+      if (rateSetPointX.val < 5 && rateSetPointX.val > -5){
+        rateSetPointX.val = 0;
+      }
+      if (rateSetPointZ.val < 5 && rateSetPointZ.val > -5){
+        rateSetPointZ.val = 0;
+      }
+      break;
     case 10:
-      flightMode = RTB;
-      MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
-      MapVar(&RCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
-      MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
-      if (rollSetPointTX.val < 1 && rollSetPointTX.val > -1){
-        rollSetPointTX.val = 0;
+      setTrim = true;
+      flightMode = RATE;
+      MapVar(&RCValue[ELEV],&rateSetPointY.val,1000,2000,-400,400);
+      MapVar(&RCValue[AILE],&rateSetPointX.val,1000,2000,-400,400);
+      MapVar(&RCValue[RUDD],&rateSetPointZ.val,1000,2000,-400,400);
+      if (rateSetPointY.val < 5 && rateSetPointY.val > -5){
+        rateSetPointY.val = 0;
       }
-      if (pitchSetPointTX.val < 1 && pitchSetPointTX.val > -1){
-        pitchSetPointTX.val = 0;
+      if (rateSetPointX.val < 5 && rateSetPointX.val > -5){
+        rateSetPointX.val = 0;
       }
-      if (yawInput < 5 && yawInput > -5){
-        yawInput = 0;
+      if (rateSetPointZ.val < 5 && rateSetPointZ.val > -5){
+        rateSetPointZ.val = 0;
       }
       break;
     }
@@ -673,7 +692,7 @@ ISR(PCINT2_vect){
           timeDifference = currentTime - changeTime[i];//if so then calculate the pulse width
           if (900 < timeDifference && timeDifference < 2200){//check to see if it is a valid length
             rcData[i].rcvd = timeDifference;
-            if (rcData[i].chan == THRO && ((timeDifference ) < (rcData[i].min - 50) )){  
+            if (rcData[i].chan == THRO && ((timeDifference ) < ((uint16_t)rcData[i].min - 50) )){  
               failSafe = true;
             }
             else{
@@ -700,7 +719,7 @@ ISR(PCINT2_vect){
       }
       else{
         rcData[channelCount].rcvd = timeDifference;
-        if (rcData[channelCount].chan == THRO && ((timeDifference ) < (rcData[channelCount].min - 50) )){  
+        if (rcData[channelCount].chan == THRO && ((timeDifference ) < ((uint16_t)rcData[channelCount].min - 50) )){  
           failSafe = true;
         }
         else{
@@ -802,6 +821,7 @@ void Spektrum(){
   rcType = DSMX;
   detected = true;
 }
+
 
 
 

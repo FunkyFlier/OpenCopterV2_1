@@ -9,7 +9,7 @@
 #include <AUXMATH.h>
 #include "UBLOXL.h"
 
-//#define ROT_45
+#define ROT_45
 
 #define CAL_FLAGS 0
 #define HS_FLAG 1
@@ -76,7 +76,7 @@
 
 #define VER_FLAG_1 428
 #define VER_FLAG_2 429
- 
+
 #define VER_NUM_1 0x01
 #define VER_NUM_2 0x00
 
@@ -324,8 +324,10 @@ enum BYTES {
   XY_LOIT_STATE,
   Z_LOIT_STATE,
   RTB_STATE,
-  MOTOR_STATE
-
+  MOTOR_STATE,
+  TELEM_FS,
+  GPS_FS,
+  SWITCH_POS
 };
 
 
@@ -489,7 +491,7 @@ float_u *floatPointerArray[143];
 
 int16_u *int16PointerArray[10];
 
-uint8_t *bytePointerArray[6];
+uint8_t *bytePointerArray[9];
 
 int16_u gyroX,gyroY,gyroZ,accX,accY,accZ,magX,magY,magZ;
 
@@ -1006,6 +1008,9 @@ void loop(){
       if (gps.data.vars.gpsFix != 3){
         gpsFailSafe = true;
       }
+      else{
+        gpsFailSafe = false;
+      }
       imu.CorrectGPS();
 
     }
@@ -1039,11 +1044,13 @@ void loop(){
       RCFailSafeCounter = 0;
     }  
     if (newGSRC == true){
+      groundFSCount = 0;
       newGSRC = false;
       telemFailSafe = false;
-      //Port0<<millis()<<","<<GSRCValue[THRO]<<"\r\n";//<<","<<GSRCValue[AILE]<<","<<GSRCValue[ELEV]<<","<<GSRCValue[RUDD]<<","<<GSRCValue[GEAR]<<","<<GSRCValue[AUX1]<<","<<GSRCValue[AUX2]<<","<<GSRCValue[AUX3]<<"\r\n";
+      //Port0<<millis()<<","<<GSRCValue[THRO]<<","<<GSRCValue[AILE]<<","<<GSRCValue[ELEV]<<","<<GSRCValue[RUDD]<<","<<flightMode<<"\r\n";//<<","<<GSRCValue[GEAR]<<","<<GSRCValue[AUX1]<<","<<GSRCValue[AUX2]<<","<<GSRCValue[AUX3]<<"\r\n";
     }
     if (groundFSCount >= 200){
+      //Port0<<"************\r\n";
       telemFailSafe = true;
     }
     _400HzTask();
@@ -1077,7 +1084,7 @@ void loop(){
         }
         delay(500);
       }
-      
+
     }
 
 
@@ -1394,6 +1401,7 @@ void LoiterCalculations(){
   tiltAngleX.val *= -1.0;
   LoiterYVelocity.calculate();
 }
+
 
 
 
