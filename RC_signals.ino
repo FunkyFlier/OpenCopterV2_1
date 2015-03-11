@@ -400,9 +400,9 @@ void SBusParser(){
           rcData[5].rcvd = (sBusData[7]>>7|sBusData[8]<<1|sBusData[9]<<9) & 0x07FF;
           rcData[6].rcvd = (sBusData[9]>>2|sBusData[10]<<6) & 0x07FF;
           rcData[7].rcvd = (sBusData[10]>>5|sBusData[11]<<3) & 0x07FF;
-          if (sBusData[23] & (1<<2)) {
+          /*if (sBusData[23] & (1<<2)) {
             failSafe = true;
-          }
+          }*/
           if (sBusData[23] & (1<<3)) {
             failSafe = true;
           }
