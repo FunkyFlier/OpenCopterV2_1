@@ -9,7 +9,7 @@
 #include <AUXMATH.h>
 #include "UBLOXL.h"
 
-#define ROT_45
+//#define ROT_45
 
 #define CAL_FLAGS 0
 #define HS_FLAG 1
@@ -1073,6 +1073,7 @@ void loop(){
         digitalWrite(RED,HIGH);
       }
       while(1){
+
         digitalWrite(YELLOW,HIGH);
         if (RCFailSafeCounter >= 200 ){
           digitalWrite(GREEN,LOW);
@@ -1401,6 +1402,8 @@ void LoiterCalculations(){
   tiltAngleX.val *= -1.0;
   LoiterYVelocity.calculate();
 }
+
+
 
 
 
