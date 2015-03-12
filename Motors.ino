@@ -174,16 +174,16 @@ void MotorHandler(){
     if (RCValue[THRO] > 1100){
       motorCommand1RPM.val = pwmLow.val;
       motorCommand2RPM.val = pwmLow.val;
-      motorCommand1Tilt.val = constrain(1500 + ffCommand + adjustmentZ.val + adjustmentY.val,1000,2000);
-      motorCommand2Tilt.val = constrain(1500 - ffCommand + adjustmentZ.val - adjustmentY.val,1000,2000);
+      motorCommand1Tilt.val = constrain(1500 + ffCommand - adjustmentZ.val + adjustmentY.val,1000,2000);
+      motorCommand2Tilt.val = constrain(1500 - ffCommand - adjustmentZ.val - adjustmentY.val,1000,2000);
       break;
     }
     if (flightMode == RTB){
       motorState = HOLD;
       motorCommand1RPM.val = pwmLow.val;
       motorCommand2RPM.val = pwmLow.val;
-      motorCommand1Tilt.val = constrain(1500 + ffCommand + adjustmentZ.val + adjustmentY.val,1000,2000);
-      motorCommand2Tilt.val = constrain(1500 - ffCommand + adjustmentZ.val - adjustmentY.val,1000,2000);
+      motorCommand1Tilt.val = constrain(1500 + ffCommand - adjustmentZ.val + adjustmentY.val,1000,2000);
+      motorCommand2Tilt.val = constrain(1500 - ffCommand - adjustmentZ.val - adjustmentY.val,1000,2000);
       break;
     }
 
@@ -217,15 +217,15 @@ void MotorHandler(){
     throttleAdjustment.val = 0;
     motorCommand1RPM.val = pwmLow.val;
     motorCommand2RPM.val = pwmLow.val;
-    motorCommand1Tilt.val = constrain(1500 + ffCommand + adjustmentZ.val + adjustmentY.val,1000,2000);
-    motorCommand2Tilt.val = constrain(1500 - ffCommand + adjustmentZ.val - adjustmentY.val,1000,2000);
+    motorCommand1Tilt.val = constrain(1500 + ffCommand - adjustmentZ.val + adjustmentY.val,1000,2000);
+    motorCommand2Tilt.val = constrain(1500 - ffCommand - adjustmentZ.val - adjustmentY.val,1000,2000);
     throttleCheckFlag = false;
     break;
   case TO:
     motorCommand1RPM.val = propIdleCommand;
     motorCommand2RPM.val = propIdleCommand;
-    motorCommand1Tilt.val = constrain(1500 + ffCommand + adjustmentZ.val + adjustmentY.val,1000,2000);
-    motorCommand2Tilt.val = constrain(1500 - ffCommand + adjustmentZ.val - adjustmentY.val,1000,2000);
+    motorCommand1Tilt.val = constrain(1500 + ffCommand - adjustmentZ.val + adjustmentY.val,1000,2000);
+    motorCommand2Tilt.val = constrain(1500 - ffCommand - adjustmentZ.val - adjustmentY.val,1000,2000);
     throttleCheckFlag = false;
     pressureInitial = pressure.val;
     imu.ZEst.val = 0;
@@ -298,8 +298,8 @@ void MotorHandler(){
 
     motorCommand1RPM.val = constrain((throttleCommand.val + throttleAdjustment.val + adjustmentX.val),pwmLow.val,2000);
     motorCommand2RPM.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val),pwmLow.val,2000);
-    motorCommand1Tilt.val = constrain(1500 + ffCommand + adjustmentZ.val + adjustmentY.val,1000,2000);
-    motorCommand2Tilt.val = constrain(1500 - ffCommand + adjustmentZ.val - adjustmentY.val,1000,2000);
+    motorCommand1Tilt.val = constrain(1500 + ffCommand - adjustmentZ.val + adjustmentY.val,1000,2000);
+    motorCommand2Tilt.val = constrain(1500 - ffCommand - adjustmentZ.val - adjustmentY.val,1000,2000);
 
     /*motorCommand1.val = constrain((throttleCommand.val + throttleAdjustment.val + adjustmentX.val + adjustmentY.val - adjustmentZ.val),1000,2000);
      motorCommand2.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val + adjustmentY.val + adjustmentZ.val),1000,2000);
@@ -321,31 +321,31 @@ void MotorHandler(){
     if ( (hoverCommand + throttleAdjustment.val) < 1200){
       motorCommand1RPM.val = pwmLow.val;
       motorCommand2RPM.val = pwmLow.val;
-      motorCommand1Tilt.val = constrain(1500 + ffCommand + adjustmentZ.val + adjustmentY.val,1000,2000);
-      motorCommand2Tilt.val = constrain(1500 - ffCommand + adjustmentZ.val - adjustmentY.val,1000,2000);
+      motorCommand1Tilt.val = constrain(1500 + ffCommand - adjustmentZ.val + adjustmentY.val,1000,2000);
+      motorCommand2Tilt.val = constrain(1500 - ffCommand - adjustmentZ.val - adjustmentY.val,1000,2000);
       motorState = HOLD;
       break;
     }
     if (RCValue[RUDD] > 1950){
       motorCommand1RPM.val = pwmLow.val;
       motorCommand2RPM.val = pwmLow.val;
-      motorCommand1Tilt.val = constrain(1500 + ffCommand + adjustmentZ.val + adjustmentY.val,1000,2000);
-      motorCommand2Tilt.val = constrain(1500 - ffCommand + adjustmentZ.val - adjustmentY.val,1000,2000);
+      motorCommand1Tilt.val = constrain(1500 + ffCommand - adjustmentZ.val + adjustmentY.val,1000,2000);
+      motorCommand2Tilt.val = constrain(1500 - ffCommand - adjustmentZ.val - adjustmentY.val,1000,2000);
       motorState = HOLD;
       break;
     }
     if (fabs(imu.inertialZ.val) > 5.0){
       motorCommand1RPM.val = pwmLow.val;
       motorCommand2RPM.val = pwmLow.val;
-      motorCommand1Tilt.val = constrain(1500 + ffCommand + adjustmentZ.val + adjustmentY.val,1000,2000);
-      motorCommand2Tilt.val = constrain(1500 - ffCommand + adjustmentZ.val - adjustmentY.val,1000,2000);
+      motorCommand1Tilt.val = constrain(1500 + ffCommand - adjustmentZ.val + adjustmentY.val,1000,2000);
+      motorCommand2Tilt.val = constrain(1500 - ffCommand - adjustmentZ.val - adjustmentY.val,1000,2000);
       motorState = HOLD;
       break;
     }
     motorCommand1RPM.val = constrain((throttleCommand.val + throttleAdjustment.val + adjustmentX.val),pwmLow.val,2000);
     motorCommand2RPM.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val),pwmLow.val,2000);
-    motorCommand1Tilt.val = constrain(1500 + ffCommand + adjustmentZ.val + adjustmentY.val,1000,2000);
-    motorCommand2Tilt.val = constrain(1500 - ffCommand + adjustmentZ.val - adjustmentY.val,1000,2000);
+    motorCommand1Tilt.val = constrain(1500 + ffCommand - adjustmentZ.val + adjustmentY.val,1000,2000);
+    motorCommand2Tilt.val = constrain(1500 - ffCommand - adjustmentZ.val - adjustmentY.val,1000,2000);
     /*motorCommand1.val = constrain((throttleCommand.val + throttleAdjustment.val + adjustmentX.val + adjustmentY.val - adjustmentZ.val),1000,2000);
      motorCommand2.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val + adjustmentY.val + adjustmentZ.val),1000,2000);
      motorCommand3.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val - adjustmentY.val - adjustmentZ.val),1000,2000);
