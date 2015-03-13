@@ -235,6 +235,7 @@ void ProcessChannels(){
   }
 
   if (RCValue[AUX2] > 1750){
+    gsCTRL = false;
     flightMode = ATT;
     setTrim = true;
     trimComplete = true;
@@ -259,6 +260,7 @@ void ProcessChannels(){
   }
 
   if (RCValue[AUX3] > 1750){
+    gsCTRL = false;
     flightMode = RTB;
     MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
     MapVar(&RCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
@@ -284,6 +286,7 @@ void ProcessChannels(){
 
     switch (switchPositions){
     case 0:
+    gsCTRL = false;
       flightMode = L0;
       MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
       MapVar(&RCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
@@ -299,6 +302,7 @@ void ProcessChannels(){
       }
       break;
     case 1:
+      gsCTRL = false;
       flightMode = L1;
       MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
       MapVar(&RCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
@@ -314,6 +318,7 @@ void ProcessChannels(){
       }
       break;
     case 2:
+      gsCTRL = false;
       flightMode = L2;
       MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
       MapVar(&RCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
@@ -335,13 +340,17 @@ void ProcessChannels(){
 
     case 4://next three modes are GS control
       flightMode = L0;
-      MapVar(&GSRCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
-      MapVar(&GSRCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
-      MapVar(&GSRCValue[RUDD],&yawInput,1000,2000,-300,300);
+      MapVar(&GSRCValue[AILE],&rollSetPointTX.val,1000,2000,-20,20);
+      MapVar(&GSRCValue[ELEV],&pitchSetPointTX.val,1000,2000,-20,20);
+      MapVar(&GSRCValue[RUDD],&yawInput,1000,2000,-100,100);
       if (telemFailSafe == true){
         MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
         MapVar(&RCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
         MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
+        gsCTRL = false;
+      }
+      else{
+        gsCTRL = true;
       }
 
       if (rollSetPointTX.val < 1 && rollSetPointTX.val > -1){
@@ -358,13 +367,17 @@ void ProcessChannels(){
       break;
     case 5:
       flightMode = ATT;
-      MapVar(&GSRCValue[ELEV],&pitchSetPoint.val,1000,2000,-60,60);
-      MapVar(&GSRCValue[AILE],&rollSetPoint.val,1000,2000,-60,60);
-      MapVar(&GSRCValue[RUDD],&yawInput,1000,2000,-300,300);
+      MapVar(&GSRCValue[ELEV],&pitchSetPoint.val,1000,2000,-20,20);
+      MapVar(&GSRCValue[AILE],&rollSetPoint.val,1000,2000,-20,20);
+      MapVar(&GSRCValue[RUDD],&yawInput,1000,2000,-100,100);
       if (telemFailSafe == true){
         MapVar(&RCValue[AILE],&rollSetPoint.val,1000,2000,-60,60);
         MapVar(&RCValue[ELEV],&pitchSetPoint.val,1000,2000,-60,60);
         MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
+        gsCTRL = false;
+      }
+      else{
+        gsCTRL = true;
       }
       if (rollSetPoint.val < 1 && rollSetPoint.val > -1){
         rollSetPoint.val = 0;
@@ -380,13 +393,17 @@ void ProcessChannels(){
       break;
     case 6:
       flightMode = RATE;
-      MapVar(&GSRCValue[ELEV],&rateSetPointY.val,1000,2000,-400,400);
-      MapVar(&GSRCValue[AILE],&rateSetPointX.val,1000,2000,-400,400);
-      MapVar(&GSRCValue[RUDD],&rateSetPointZ.val,1000,2000,-400,400);
+      MapVar(&GSRCValue[ELEV],&rateSetPointY.val,1000,2000,-100,100);
+      MapVar(&GSRCValue[AILE],&rateSetPointX.val,1000,2000,-100,100);
+      MapVar(&GSRCValue[RUDD],&rateSetPointZ.val,1000,2000,-100,100);
       if (telemFailSafe == true){
         MapVar(&RCValue[ELEV],&rateSetPointY.val,1000,2000,-400,400);
         MapVar(&RCValue[AILE],&rateSetPointX.val,1000,2000,-400,400);
         MapVar(&RCValue[RUDD],&rateSetPointZ.val,1000,2000,-400,400);
+        gsCTRL = false;
+      }
+      else{
+        gsCTRL = true;
       }
       if (rollSetPointTX.val < 1 && rollSetPointTX.val > -1){
         rollSetPointTX.val = 0;
@@ -402,6 +419,7 @@ void ProcessChannels(){
 
     case 8:
     case 9:
+      gsCTRL = false;
       flightMode = RATE;
       setTrim = false;
       trimComplete = false;
@@ -419,6 +437,7 @@ void ProcessChannels(){
       }
       break;
     case 10:
+      gsCTRL = false;
       setTrim = true;
       flightMode = RATE;
       MapVar(&RCValue[ELEV],&rateSetPointY.val,1000,2000,-400,400);
@@ -442,6 +461,7 @@ void ProcessChannels(){
     case 0:
     case 1:
     case 2:
+      gsCTRL = false;
       flightMode = L0;
       MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
       MapVar(&RCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
@@ -459,6 +479,7 @@ void ProcessChannels(){
 
     case 4:
     case 5:
+      gsCTRL = false;
       flightMode = ATT;
       setTrim = false;
       trimComplete = false;
@@ -476,6 +497,7 @@ void ProcessChannels(){
       }
       break;
     case 6:
+      gsCTRL = false;
       flightMode = ATT;
       setTrim = true;
       MapVar(&RCValue[ELEV],&pitchSetPoint.val,1000,2000,-60,60);
@@ -494,6 +516,7 @@ void ProcessChannels(){
 
     case 8:
     case 9:
+      gsCTRL = false;
       flightMode = RATE;
       setTrim = false;
       trimComplete = false;
@@ -511,6 +534,7 @@ void ProcessChannels(){
       }
       break;
     case 10:
+      gsCTRL = false;
       setTrim = true;
       flightMode = RATE;
       MapVar(&RCValue[ELEV],&rateSetPointY.val,1000,2000,-400,400);
@@ -583,8 +607,8 @@ void SBusParser(){
           rcData[6].rcvd = (sBusData[9]>>2|sBusData[10]<<6) & 0x07FF;
           rcData[7].rcvd = (sBusData[10]>>5|sBusData[11]<<3) & 0x07FF;
           /*if (sBusData[23] & (1<<2)) {
-            failSafe = true;
-          }*/
+           failSafe = true;
+           }*/
           if (sBusData[23] & (1<<3)) {
             failSafe = true;
           }
@@ -821,6 +845,7 @@ void Spektrum(){
   rcType = DSMX;
   detected = true;
 }
+
 
 
 

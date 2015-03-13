@@ -172,7 +172,7 @@ void AssignPointerArray(){
   floatPointerArray[ROLL_SP_TX] = &rollSetPointTX;
   floatPointerArray[DIST_TO_WP] = &distToWayPoint;
 
-  floatPointerArray[TARGET_VEL_WP] = &targetVelWayPoint;
+  floatPointerArray[TARGET_VEL_WP] = &landingThroAdjustment;
 
 
   floatPointerArray[MOTOR_CMD_1] = &motorCommand1;
@@ -208,7 +208,7 @@ void AssignPointerArray(){
   bytePointerArray[XY_LOIT_STATE] = &gpsFailSafe;
   bytePointerArray[Z_LOIT_STATE] = &switchPositions;
 
-  bytePointerArray[RTB_STATE] = &telemFailSafe;
+  bytePointerArray[RTB_STATE] = &RTBState;
   bytePointerArray[MOTOR_STATE] = &motorState;
   bytePointerArray[TELEM_FS] = &telemFailSafe;
   bytePointerArray[GPS_FS] = &gpsFailSafe;

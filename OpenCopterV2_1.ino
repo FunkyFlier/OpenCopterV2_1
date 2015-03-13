@@ -105,7 +105,7 @@
 #define FLOOR 2
 #define TAKE_OFF_ALT 3
 
-#define LAND_VEL -0.2
+#define LAND_VEL -0.28
 //LED defines
 #define RED 38
 #define YELLOW 40
@@ -807,6 +807,11 @@ uint32_t loopTime;
 int16_u pwmHigh,pwmLow;
 uint8_t propIdlePercent,hoverPercent;
 uint16_t propIdleCommand,hoverCommand;
+
+boolean gsCTRL = false;
+int16_t loitThro;
+float_u landingThroAdjustment;
+float throAdjAlpha;
 //constructors //fix the dts
 openIMU imu(&radianGyroX,&radianGyroY,&radianGyroZ,&accToFilterX,&accToFilterY,&accToFilterZ,&filtAccX.val,&filtAccY.val,&filtAccZ.val,
 &magToFiltX,&magToFiltY,&magToFiltZ,&gpsX.val,&gpsY.val,&baroZ.val,&velN.val,&velE.val,&baroVel.val,&imuDT);
@@ -969,7 +974,6 @@ void loop(){
   if (loopTime - imuTimer >= 10000){
     imuDT = (loopTime - imuTimer) * 0.000001;
     imuTimer = loopTime;
-
     GetGyro();
     _400HzTask();
     GetMag();
@@ -1048,6 +1052,7 @@ void loop(){
       newGSRC = false;
       telemFailSafe = false;
       //Port0<<millis()<<","<<GSRCValue[THRO]<<","<<GSRCValue[AILE]<<","<<GSRCValue[ELEV]<<","<<GSRCValue[RUDD]<<","<<flightMode<<"\r\n";//<<","<<GSRCValue[GEAR]<<","<<GSRCValue[AUX1]<<","<<GSRCValue[AUX2]<<","<<GSRCValue[AUX3]<<"\r\n";
+      //Port0<<millis()<<","<<GSRCValue[THRO]<<","<<GSRCValue[AILE]<<","<<GSRCValue[ELEV]<<","<<GSRCValue[RUDD]<<","<<pitchSetPoint.val<<","<<rollSetPoint.val<<","<<yawSetPoint.val<<","<<telemFailSafe<<"\r\n";
     }
     if (groundFSCount >= 200){
       //Port0<<"************\r\n";
@@ -1319,8 +1324,8 @@ void RTBStateMachine(){
     if (imu.ZEstUp.val >= (zTarget.val - 0.1) ){
 
       RTBState = TRAVEL;
-      xTarget.val = 0 + homeBaseXOffset;
-      yTarget.val = 0 + homeBaseYOffset;
+      xTarget.val = homeBaseXOffset;
+      yTarget.val = homeBaseYOffset;
     }
     if (gpsFailSafe == true){
       velSetPointZ.val = LAND_VEL;
@@ -1363,7 +1368,7 @@ void RTBStateMachine(){
     AltHoldPosition.calculate();
     AltHoldVelocity.calculate();
     //if (fabs(imu.XEst.val - homeBaseXOffset) < 1 && fabs(imu.YEst.val - homeBaseYOffset) < 1){
-    if (fabs(imu.XEst.val + homeBaseXOffset) < 0.25 && fabs(imu.YEst.val + homeBaseYOffset) < 0.25){
+    if (fabs(imu.XEst.val - xTarget.val) < 1.0 && fabs(imu.YEst.val - yTarget.val) < 1.0){
       velSetPointZ.val = LAND_VEL;
       RTBState = DESCEND;
       motorState = LANDING;
