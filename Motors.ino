@@ -332,7 +332,7 @@ void MotorHandler(){
       }
     }
     throttleCommand.val = hoverCommand;
-    if ( (hoverCommand + throttleAdjustment.val) < 1200){
+    if ( (hoverCommand + throttleAdjustment.val) < 1350){
       motorCommand1.val = pwmLow.val;
       motorCommand2.val = pwmLow.val;
       motorCommand3.val = pwmLow.val;

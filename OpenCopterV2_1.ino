@@ -280,7 +280,7 @@ enum motorControlStates{
   HOLD,
   TO,
   FLIGHT,
-  LANDING,
+  LANDING
 };
 
 enum RC_Chan {
@@ -833,7 +833,7 @@ PID LoiterYVelocity(&velSetPointY.val,&imu.velY.val,&tiltAngleY.val,&integrate,&
 
 PID AltHoldPosition(&zTarget.val,&imu.ZEstUp.val,&velSetPointZ.val,&integrate,&kp_altitude_position.val,&ki_altitude_position.val,&kd_altitude_position.val,&fc_altitude_position.val,&imuDT,1.5,1.5);
 //ALT AltHoldVelocity(&velSetPointZ.val,&imu.velZUp.val,&throttleAdjustment.val,&integrate,&kp_altitude_velocity.val,&ki_altitude_velocity.val,&kd_altitude_velocity.val,&fc_altitude_velocity.val,&imuDT,800,800,&mul_altitude_velocity.val);
-PID AltHoldVelocity(&velSetPointZ.val,&imu.velZUp.val,&throttleAdjustment.val,&integrate,&kp_altitude_velocity.val,&ki_altitude_velocity.val,&kd_altitude_velocity.val,&fc_altitude_velocity.val,&imuDT,800,800);
+PID AltHoldVelocity(&velSetPointZ.val,&imu.velZUp.val,&throttleAdjustment.val,&integrate,&kp_altitude_velocity.val,&ki_altitude_velocity.val,&kd_altitude_velocity.val,&fc_altitude_velocity.val,&imuDT,250,250);
 
 PID WayPointPosition(&zero,&distToWayPoint.val,&targetVelWayPoint.val,&integrate,&kp_waypoint_position.val,&ki_waypoint_position.val,&kd_waypoint_position.val,&fc_waypoint_position.val,&GPSDT,10,10);
 PID WayPointRate(&targetVelWayPoint.val,&speed2D_MPS,&pitchSetPoint.val,&integrate,&kp_waypoint_velocity.val,&ki_waypoint_velocity.val,&kd_waypoint_velocity.val,&fc_waypoint_velocity.val,&imuDT,45,45);

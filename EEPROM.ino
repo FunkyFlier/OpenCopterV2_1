@@ -205,8 +205,8 @@ void AssignPointerArray(){
 
   bytePointerArray[F_MODE_] = &flightMode;
   bytePointerArray[GPS_FIX] = &gpsFix;
-  bytePointerArray[XY_LOIT_STATE] = &gpsFailSafe;
-  bytePointerArray[Z_LOIT_STATE] = &switchPositions;
+  bytePointerArray[XY_LOIT_STATE] = &XYLoiterState;
+  bytePointerArray[Z_LOIT_STATE] = &ZLoiterState;
 
   bytePointerArray[RTB_STATE] = &RTBState;
   bytePointerArray[MOTOR_STATE] = &motorState;
