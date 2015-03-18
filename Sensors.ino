@@ -596,12 +596,12 @@ void GyroInit(){
   GyroSSHigh();
   //this section takes an average of 500 samples to calculate the offset
   //if this step is skipped the IMU will still work, but this simple step gives better results
-  gyroOffsetX = 0;
-  gyroOffsetY = 0;
-  gyroOffsetZ = 0;
-  gyroSumX = 0;
-  gyroSumY = 0;
-  gyroSumZ = 0;
+  /*gyroOffsetX = 0;
+   gyroOffsetY = 0;
+   gyroOffsetZ = 0;
+   gyroSumX = 0;
+   gyroSumY = 0;
+   gyroSumZ = 0;*/
   for (uint16_t j = 0; j < 500; j ++){
     GyroSSLow();
     SPI.transfer(L3G_OUT_X_L  | READ | MULTI);
@@ -615,26 +615,29 @@ void GyroInit(){
     GyroSSHigh();
     delay(3);
   }
-  for (uint16_t j = 0; j < 500; j ++){
-    GyroSSLow();
-    SPI.transfer(L3G_OUT_X_L  | READ | MULTI);
-    gyroX.buffer[0] = SPI.transfer(0x00);
-    gyroX.buffer[1] = SPI.transfer(0x00);
-    gyroY.buffer[0] = SPI.transfer(0x00);
-    gyroY.buffer[1] = SPI.transfer(0x00);
-    gyroZ.buffer[0] = SPI.transfer(0x00);
-    gyroZ.buffer[1] = SPI.transfer(0x00);
-
-    GyroSSHigh();
-    gyroSumX += gyroX.val;
-    gyroSumY += (gyroY.val);
-    gyroSumZ += (gyroZ.val);
-
-    delay(3);
-  }
-  gyroOffsetX = gyroSumX / 500.0;
-  gyroOffsetY = gyroSumY / 500.0;
-  gyroOffsetZ = gyroSumZ / 500.0;
+  UpdateOffset();
+  /* for (uint16_t j = 0; j < 500; j ++){
+   GyroSSLow();
+   SPI.transfer(L3G_OUT_X_L  | READ | MULTI);
+   gyroX.buffer[0] = SPI.transfer(0x00);
+   gyroX.buffer[1] = SPI.transfer(0x00);
+   gyroY.buffer[0] = SPI.transfer(0x00);
+   gyroY.buffer[1] = SPI.transfer(0x00);
+   gyroZ.buffer[0] = SPI.transfer(0x00);
+   gyroZ.buffer[1] = SPI.transfer(0x00);
+   
+   GyroSSHigh();
+   gyroSumX += gyroX.val;
+   gyroSumY += (gyroY.val);
+   gyroSumZ += (gyroZ.val);
+   
+   if (
+   
+   delay(3);
+   }
+   gyroOffsetX = gyroSumX / 500.0;
+   gyroOffsetY = gyroSumY / 500.0;
+   gyroOffsetZ = gyroSumZ / 500.0;*/
 
   GetGyro();
 
@@ -676,6 +679,20 @@ void UpdateOffset(){
   gyroSumY = 0;
   gyroSumZ = 0;
 
+  GyroSSLow();
+  SPI.transfer(L3G_OUT_X_L  | READ | MULTI);
+  gyroX.buffer[0] = SPI.transfer(0x00);
+  gyroX.buffer[1] = SPI.transfer(0x00);
+  gyroY.buffer[0] = SPI.transfer(0x00);
+  gyroY.buffer[1] = SPI.transfer(0x00);
+  gyroZ.buffer[0] = SPI.transfer(0x00);
+  gyroZ.buffer[1] = SPI.transfer(0x00);
+
+  GyroSSHigh();
+  gyroPrevX = gyroX.val;
+  gyroPrevY = gyroY.val;
+  gyroPrevZ = gyroZ.val;
+
   for (uint16_t j = 0; j < 150; j ++){
     GyroSSLow();
     SPI.transfer(L3G_OUT_X_L  | READ | MULTI);
@@ -690,7 +707,16 @@ void UpdateOffset(){
     gyroSumX += gyroX.val;
     gyroSumY += (gyroY.val);
     gyroSumZ += (gyroZ.val);
-
+    if ( abs(gyroPrevX - gyroX.val) > 25 || abs(gyroPrevY - gyroY.val) > 25 || abs(gyroPrevZ - gyroZ.val) > 25 ){
+      gyroSumX = gyroX.val;
+      gyroSumY = gyroY.val;
+      gyroSumZ = gyroZ.val;
+      j = 0;
+    }
+    gyroPrevX = gyroX.val;
+    gyroPrevY = gyroY.val;
+    gyroPrevZ = gyroZ.val;
+    watchDogFailSafeCounter = 0;
     delay(3);
   }
   gyroOffsetX = gyroSumX / 150;
@@ -778,6 +804,8 @@ void GetAcc(){
   accToFilterZ = -1.0 * filtAccZ.val;
 
 }
+
+
 
 
 

@@ -509,7 +509,7 @@ boolean newBaro;
 
 //IMU related vars
 int32_t gyroSumX,gyroSumY,gyroSumZ;
-int16_t gyroOffsetX,gyroOffsetY,gyroOffsetZ;
+int16_t gyroOffsetX,gyroOffsetY,gyroOffsetZ,gyroPrevX,gyroPrevY,gyroPrevZ;
 float radianGyroX,radianGyroY,radianGyroZ;
 float_u degreeGyroX,degreeGyroY,degreeGyroZ;
 float_u filtAccX,filtAccY,filtAccZ;

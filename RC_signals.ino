@@ -286,7 +286,7 @@ void ProcessChannels(){
 
     switch (switchPositions){
     case 0:
-    gsCTRL = false;
+      gsCTRL = false;
       flightMode = L0;
       MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
       MapVar(&RCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
@@ -459,8 +459,6 @@ void ProcessChannels(){
   else{
     switch (switchPositions){
     case 0:
-    case 1:
-    case 2:
       gsCTRL = false;
       flightMode = L0;
       MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
@@ -476,7 +474,42 @@ void ProcessChannels(){
         yawInput = 0;
       }
       break;
+    case 1:
+      gsCTRL = false;
+      flightMode = L1;
+      MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
+      MapVar(&RCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
+      MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
+      if (rollSetPointTX.val < 1 && rollSetPointTX.val > -1){
+        rollSetPointTX.val = 0;
+      }
+      if (pitchSetPointTX.val < 1 && pitchSetPointTX.val > -1){
+        pitchSetPointTX.val = 0;
+      }
+      if (yawInput < 5 && yawInput > -5){
+        yawInput = 0;
+      }
+      break;
+    case 2:
+      gsCTRL = false;
+      flightMode = L2;
+      MapVar(&RCValue[AILE],&rollSetPointTX.val,1000,2000,-60,60);
+      MapVar(&RCValue[ELEV],&pitchSetPointTX.val,1000,2000,-60,60);
+      MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
+      if (rollSetPointTX.val < 1 && rollSetPointTX.val > -1){
+        rollSetPointTX.val = 0;
+      }
+      if (pitchSetPointTX.val < 1 && pitchSetPointTX.val > -1){
+        pitchSetPointTX.val = 0;
+      }
+      if (yawInput < 5 && yawInput > -5){
+        yawInput = 0;
+      }
+      if (gpsFailSafe == true){
+        flightMode = L1;
 
+      }
+      break;
     case 4:
     case 5:
       gsCTRL = false;
@@ -845,6 +878,7 @@ void Spektrum(){
   rcType = DSMX;
   detected = true;
 }
+
 
 
 
