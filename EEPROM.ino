@@ -204,7 +204,7 @@ void AssignPointerArray(){
 
 
   bytePointerArray[F_MODE_] = &flightMode;
-  bytePointerArray[GPS_FIX] = &gpsFix;
+  bytePointerArray[GPS_FIX] = &imu.magDetected;
   bytePointerArray[XY_LOIT_STATE] = &XYLoiterState;
   bytePointerArray[Z_LOIT_STATE] = &ZLoiterState;
 

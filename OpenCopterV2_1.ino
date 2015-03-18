@@ -137,7 +137,7 @@ enum CalibrationFlags {
 #define L3G_CTRL_REG4 0x23
 #define L3G_CTRL_REG5 0x24
 #define L3G_OUT_X_L 0x28
-
+#define L3G_WHO_AM_I 0x0F
 
 
 
@@ -151,12 +151,17 @@ enum CalibrationFlags {
 #define OUT_X_L_A 0x28
 
 
-//mag defines ST LSM303DLHC - will work with the HMC5883L
+//mag defines ST HMC5983DLHC - will work with the HMC5883L
 #define MAG_ADDRESS 0x1E
-#define LSM303_CRA_REG (uint8_t)0x00 
-#define LSM303_CRB_REG 0x01
-#define LSM303_MR_REG 0x02
-#define LSM303_OUT_X_H 0x03
+#define HMC5983_CRA_REG (uint8_t)0x00 //??? Wire.h needs to be fixed
+#define HMC5983_CRB_REG 0x01
+#define HMC5983_MR_REG 0x02
+#define HMC5983_OUT_X_H 0x03
+
+#define HMC5983_ID_A 0x0A
+#define HMC5983_ID_B 0x0B
+#define HMC5983_ID_C 0x0C
+
 
 
 
@@ -812,6 +817,8 @@ boolean gsCTRL = false;
 int16_t loitThro;
 float_u landingThroAdjustment;
 float throAdjAlpha;
+
+
 //constructors //fix the dts
 openIMU imu(&radianGyroX,&radianGyroY,&radianGyroZ,&accToFilterX,&accToFilterY,&accToFilterZ,&filtAccX.val,&filtAccY.val,&filtAccZ.val,
 &magToFiltX,&magToFiltY,&magToFiltZ,&gpsX.val,&gpsY.val,&baroZ.val,&velN.val,&velE.val,&baroVel.val,&imuDT);
@@ -976,7 +983,9 @@ void loop(){
     imuTimer = loopTime;
     GetGyro();
     _400HzTask();
-    GetMag();
+    if(imu.magDetected == true){
+      GetMag();
+    }
     _400HzTask();
 
     imu.AHRSupdate();
@@ -1407,6 +1416,7 @@ void LoiterCalculations(){
   tiltAngleX.val *= -1.0;
   LoiterYVelocity.calculate();
 }
+
 
 
 

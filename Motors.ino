@@ -223,6 +223,9 @@ void MotorHandler(){
       LoiterYVelocity.reset();
       homeBaseXOffset = imu.XEst.val;
       homeBaseYOffset = imu.YEst.val;
+      if (imu.magDetected == true){
+        VerifyMag();
+      }
       UpdateOffset();
     }
     throttleAdjustment.val = 0;
@@ -310,7 +313,7 @@ void MotorHandler(){
         throttleCommand.val = hoverCommand;
       }
     }
-    
+
     landingThroAdjustment.val = 0.997 * landingThroAdjustment.val + 0.003 * throttleAdjustment.val;
     motorCommand1.val = constrain((throttleCommand.val + throttleAdjustment.val + adjustmentX.val + adjustmentY.val - adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand2.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val + adjustmentY.val + adjustmentZ.val),pwmLow.val,pwmHigh.val);
@@ -359,9 +362,9 @@ void MotorHandler(){
     if (throttleAdjustment.val > 0){
       throttleAdjustment.val = 0;
     }
-    
+
     landingThroAdjustment.val = 0.997 * landingThroAdjustment.val + 0.003 * throttleAdjustment.val;
-    
+
     motorCommand1.val = constrain((throttleCommand.val + landingThroAdjustment.val + adjustmentX.val + adjustmentY.val - adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand2.val = constrain((throttleCommand.val + landingThroAdjustment.val - adjustmentX.val + adjustmentY.val + adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand3.val = constrain((throttleCommand.val + landingThroAdjustment.val - adjustmentX.val - adjustmentY.val - adjustmentZ.val),pwmLow.val,pwmHigh.val);
@@ -382,6 +385,7 @@ void MotorHandler(){
   Motor4WriteMicros(motorPWM4);
 
 }
+
 
 
 

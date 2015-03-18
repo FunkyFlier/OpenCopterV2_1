@@ -29,11 +29,12 @@ void Arm(){
 }
 
 void LoiterSM(){
-   
-  
+
+
   if (gsCTRL == false){
     loitThro = RCValue[THRO];
-  }else{
+  }
+  else{
     loitThro = GSRCValue[THRO];
   }
   switch(ZLoiterState){
@@ -104,11 +105,11 @@ void LoiterSM(){
 
   case LAND:
     /*AltHoldPosition.calculate();
-    if (velSetPointZ.val < LAND_VEL){
-      velSetPointZ.val = LAND_VEL;
-    }*/
+     if (velSetPointZ.val < LAND_VEL){
+     velSetPointZ.val = LAND_VEL;
+     }*/
     AltHoldVelocity.calculate();
-    
+
     if (loitThro > 1200 && motorState == LANDING){
       ZLoiterState = LOITERING;
       motorState = FLIGHT;
@@ -186,27 +187,34 @@ void WayPointControl(){
 }
 
 void HeadingHold(){
-  switch (HHState){
-  case HH_ON:
-    calcYaw = true;
-    if (abs(yawInput) > 1){
+  if (imu.magDetected == true){
+    switch (HHState){
+    case HH_ON:
+      calcYaw = true;
+      if (abs(yawInput) > 1){
+        HHState = HH_OFF;
+      }
+      break;
+    case HH_OFF:
+      calcYaw = false;
+      rateSetPointZ.val = yawInput;
+      if (abs(yawInput) < 1){
+        yawSetPoint = imu.yaw;
+        HHState = HH_ON;
+      }
+      break;
+    default:
       HHState = HH_OFF;
-    }
-    break;
-  case HH_OFF:
-    calcYaw = false;
-    rateSetPointZ.val = yawInput;
-    if (abs(yawInput) < 1){
-      yawSetPoint = imu.yaw;
-      HHState = HH_ON;
-    }
-    break;
-  default:
-    HHState = HH_OFF;
 
-    break;
-  }  
+      break;
+    }  
+  }
+  else{
+    rateSetPointZ.val = yawInput;
+    calcYaw = false;
+  }
 }
+
 
 
 

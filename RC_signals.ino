@@ -586,7 +586,23 @@ void ProcessChannels(){
     }
 
   }
-
+  if (flightMode > ATT && imu.magDetected == false){
+    flightMode = ATT;
+    gsCTRL = false;
+    flightMode = ATT;
+    MapVar(&RCValue[ELEV],&pitchSetPoint.val,1000,2000,-60,60);
+    MapVar(&RCValue[AILE],&rollSetPoint.val,1000,2000,-60,60);
+    MapVar(&RCValue[RUDD],&yawInput,1000,2000,-300,300);
+    if (rollSetPoint.val < 1 && rollSetPoint.val > -1){
+      rollSetPoint.val = 0;
+    }
+    if (pitchSetPoint.val < 1 && pitchSetPoint.val > -1){
+      pitchSetPoint.val = 0;
+    }
+    if (yawInput < 5 && yawInput > -5){
+      yawInput = 0;
+    }
+  }
   if (flightMode != previousFlightMode){
     enterState = true;
   }
@@ -878,6 +894,7 @@ void Spektrum(){
   rcType = DSMX;
   detected = true;
 }
+
 
 
 

@@ -65,7 +65,7 @@ float *accZ, float *scAccX, float *scAccY, float *scAccZ, float *magX, float *ma
   kiAcc = 0.0;
   kpMag = 2.5;
   kiMag = 0.0;
-  
+
   currentEstIndex = 0;
   currentEstIndex_z = 0;
 
@@ -313,57 +313,35 @@ void openIMU::AHRSupdate() {
     *ay *= recipNorm;
     *az *= recipNorm;
 
-    recipNorm = InvSqrt(*mx * *mx + *my * *my + *mz * *mz);
-    *mx *= recipNorm;
-    *my *= recipNorm;
-    *mz *= recipNorm;
+    if (magDetected == true){
+      recipNorm = InvSqrt(*mx * *mx + *my * *my + *mz * *mz);
+      *mx *= recipNorm;
+      *my *= recipNorm;
+      *mz *= recipNorm;
 
-    hx = R11 * *mx + R21 * *my + R31 * *mz;
-    hy = R12 * *mx + R22 * *my + R32 * *mz;
-    hz = R13 * *mx + R23 * *my + R33 * *mz;
-
-
-    bx = sqrt(hx * hx + hy * hy);
-    bz = hz;
+      hx = R11 * *mx + R21 * *my + R31 * *mz;
+      hy = R12 * *mx + R22 * *my + R32 * *mz;
+      hz = R13 * *mx + R23 * *my + R33 * *mz;
 
 
-    wx = R11*bx + R13*bz;
-    wy = R21*bx + R23*bz;
-    wz = R31*bx + R33*bz;
+      bx = sqrt(hx * hx + hy * hy);
+      bz = hz;
 
 
-    exm = (*my * wz - *mz * wy);
-    eym = (*mz * wx - *mx * wz);
-    ezm = (*mx * wy - *my * wx);
-    /*if (magFlag == 1){
-     recipNorm = InvSqrt(*mx * *mx + *my * *my + *mz * *mz);
-     *mx *= recipNorm;
-     *my *= recipNorm;
-     *mz *= recipNorm;
-     
-     hx = R11 * *mx + R21 * *my + R31 * *mz;
-     hy = R12 * *mx + R22 * *my + R32 * *mz;
-     hz = R13 * *mx + R23 * *my + R33 * *mz;
-     
-     
-     bx = sqrt(hx * hx + hy * hy);
-     bz = hz;
-     
-     
-     wx = R11*bx + R13*bz;
-     wy = R21*bx + R23*bz;
-     wz = R31*bx + R33*bz;
-     
-     
-     exm = (*my * wz - *mz * wy);
-     eym = (*mz * wx - *mx * wz);
-     ezm = (*mx * wy - *my * wx);
-     }
-     else{
-     exm = 0;
-     eym = 0;
-     ezm = 0;
-     }*/
+      wx = R11*bx + R13*bz;
+      wy = R21*bx + R23*bz;
+      wz = R31*bx + R33*bz;
+
+
+      exm = (*my * wz - *mz * wy);
+      eym = (*mz * wx - *mx * wz);
+      ezm = (*mx * wy - *my * wx);
+    }
+    else{
+      exm = 0;
+      eym = 0;
+      ezm = 0;
+    }
 
 
     vx = R13;
@@ -482,6 +460,7 @@ void openIMU::GetYaw(void){
     yaw.val +=360;
   }
 }
+
 
 
 

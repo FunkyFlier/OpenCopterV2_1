@@ -58,7 +58,7 @@ void CalibrateSensors(){
       accY.val = tempY;
 #endif
 
-      I2c.read(MAG_ADDRESS,LSM303_OUT_X_H,6);
+      I2c.read(MAG_ADDRESS,HMC5983_OUT_X_H,6);
       magX.buffer[1] = I2c.receive();//X
       magX.buffer[0] = I2c.receive();
       magZ.buffer[1] = I2c.receive();//Z
@@ -338,6 +338,25 @@ void GPSStart(){
 
 
 }
+
+void VerifyMag(){
+  I2c.read((uint8_t)MAG_ADDRESS,(uint8_t)HMC5983_ID_A,(uint8_t)3);
+  imu.magDetected = true;
+  if (I2c.receive() != 0x48){
+    imu.magDetected = false;
+    return;
+  }
+
+  if (I2c.receive() != 0x34){
+    imu.magDetected = false;
+    return;
+  }
+
+  if (I2c.receive() != 0x33){
+    imu.magDetected = false;
+    return;
+  }
+}
 void GetAltitude(float *press,float *pressInit, float *alti){
 
   float pressureRatio =  *press /  *pressInit;
@@ -485,10 +504,16 @@ void BaroInit(void){
 
 void MagInit(){
   //continous conversion 220Hz
-  I2c.write((uint8_t)MAG_ADDRESS,(uint8_t)LSM303_CRA_REG,(uint8_t)0x9C);
-  I2c.write((uint8_t)MAG_ADDRESS,(uint8_t)LSM303_CRB_REG,(uint8_t)0x60);
-  I2c.write((uint8_t)MAG_ADDRESS,(uint8_t)LSM303_MR_REG,(uint8_t)0x80);
-  I2c.read(MAG_ADDRESS,LSM303_OUT_X_H,6);
+  I2c.write((uint8_t)MAG_ADDRESS,(uint8_t)HMC5983_CRA_REG,(uint8_t)0x9C);
+  I2c.write((uint8_t)MAG_ADDRESS,(uint8_t)HMC5983_CRB_REG,(uint8_t)0x60);
+  I2c.write((uint8_t)MAG_ADDRESS,(uint8_t)HMC5983_MR_REG,(uint8_t)0x80);
+
+  
+  VerifyMag();
+
+
+
+  I2c.read(MAG_ADDRESS,HMC5983_OUT_X_H,6);
   magX.buffer[1] = I2c.receive();//X
   magX.buffer[0] = I2c.receive();
   magZ.buffer[1] = I2c.receive();//Z
@@ -569,6 +594,17 @@ void AccInit(){
 
 void GyroInit(){
   SPI.setDataMode(SPI_MODE0);
+  
+  GyroSSLow();
+  SPI.transfer(L3G_WHO_AM_I  | READ | SINGLE);
+  if (SPI.transfer(0x00) != 0xD4){
+    while(1){
+      Serial<<"gyro failed\r\n";
+    }
+  }
+  GyroSSHigh();
+  
+  
   GyroSSLow();
   SPI.transfer(L3G_CTRL_REG2 | WRITE | SINGLE);
   SPI.transfer(0x00); //high pass filter disabled
@@ -644,7 +680,7 @@ void GyroInit(){
 }
 
 void GetMag(){
-  I2c.read(MAG_ADDRESS,LSM303_OUT_X_H,6);
+  I2c.read(MAG_ADDRESS,HMC5983_OUT_X_H,6);
   magX.buffer[1] = I2c.receive();//X
   magX.buffer[0] = I2c.receive();
   magZ.buffer[1] = I2c.receive();//Z
@@ -804,6 +840,9 @@ void GetAcc(){
   accToFilterZ = -1.0 * filtAccZ.val;
 
 }
+
+
+
 
 
 
