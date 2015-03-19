@@ -498,6 +498,12 @@ void BaroInit(void){
   BaroSSHigh();
 
 
+  if (C1.val == 0 || C2.val == 0 || C3.val == 0 || C4.val == 0 || C5.val == 0 || C6.val == 0 ){
+    while(1){
+      Serial<<"missing barometer\r\n";
+    }
+  }
+
   CheckCRC();
   //this is to get the ground pressure for relative altitude
   //lower pressure than this means positive altitude
