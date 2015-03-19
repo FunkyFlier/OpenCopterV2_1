@@ -444,6 +444,12 @@ void BaroInit(void){
   BaroSSHigh();
   delay(5);
   BaroSSLow();
+  SPI.transfer(MS5611_PROM_Setup);
+  promSetup.buffer[1] = SPI.transfer(0x00);
+  promSetup.buffer[0] = SPI.transfer(0x00);
+  BaroSSHigh();
+  delay(1);
+  BaroSSLow();
   SPI.transfer(MS5611_PROM_C1);
   C1.buffer[1] = SPI.transfer(0x00);
   C1.buffer[0] = SPI.transfer(0x00);
@@ -478,6 +484,21 @@ void BaroInit(void){
   C6.buffer[1] = SPI.transfer(0x00);
   C6.buffer[0] = SPI.transfer(0x00);
   BaroSSHigh();
+  delay(1);
+  BaroSSLow();
+  SPI.transfer(MS5611_PROM_C6);
+  C6.buffer[1] = SPI.transfer(0x00);
+  C6.buffer[0] = SPI.transfer(0x00);
+  BaroSSHigh();
+  delay(1);
+  BaroSSLow();
+  SPI.transfer(MS5611_PROM_CRC);
+  promCRC.buffer[1] = SPI.transfer(0x00);
+  promCRC.buffer[0] = SPI.transfer(0x00);
+  BaroSSHigh();
+
+
+  CheckCRC();
   //this is to get the ground pressure for relative altitude
   //lower pressure than this means positive altitude
   //higher pressure than this means negative altitude
@@ -500,7 +521,50 @@ void BaroInit(void){
   //pressureInitial = 101325;
 
 }
+void CheckCRC(){
+  int16_t cnt;
+  uint16_t n_rem;
+  uint16_t crc_read;
+  uint8_t n_bit;
+  uint16_t n_prom[8] = {
+    promSetup.val, C1.val, C2.val, C3.val, C4.val, C5.val, C6.val,promCRC.val   };
+  n_rem = 0x00;
 
+  crc_read = n_prom[7];
+
+  n_prom[7] = (0xFF00 & (n_prom[7]));
+
+  for (cnt = 0; cnt < 16; cnt++) {
+    if (cnt & 1) {
+      n_rem ^= (uint8_t)((n_prom[cnt >> 1]) & 0x00FF);
+
+    } 
+    else {
+      n_rem ^= (uint8_t)(n_prom[cnt >> 1] >> 8);
+    }
+
+    for (n_bit = 8; n_bit > 0; n_bit--) {
+      if (n_rem & 0x8000) {
+        n_rem = (n_rem << 1) ^ 0x3000;
+
+      } 
+      else {
+        n_rem = (n_rem << 1);
+      }
+    }
+  }
+
+  n_rem = (0x000F & (n_rem >> 12));
+  n_prom[7] = crc_read;
+
+
+  if ((0x000F & crc_read) == (n_rem ^ 0x00)){
+    Serial<<"CRC passed\r\n";
+  }
+  else{
+    Serial<<"CRC failed\r\n";
+  }
+}
 
 void MagInit(){
   //continous conversion 220Hz
@@ -508,7 +572,7 @@ void MagInit(){
   I2c.write((uint8_t)MAG_ADDRESS,(uint8_t)HMC5983_CRB_REG,(uint8_t)0x60);
   I2c.write((uint8_t)MAG_ADDRESS,(uint8_t)HMC5983_MR_REG,(uint8_t)0x80);
 
-  
+
   VerifyMag();
 
 
@@ -594,7 +658,7 @@ void AccInit(){
 
 void GyroInit(){
   SPI.setDataMode(SPI_MODE0);
-  
+
   GyroSSLow();
   SPI.transfer(L3G_WHO_AM_I  | READ | SINGLE);
   if (SPI.transfer(0x00) != 0xD4){
@@ -603,8 +667,8 @@ void GyroInit(){
     }
   }
   GyroSSHigh();
-  
-  
+
+
   GyroSSLow();
   SPI.transfer(L3G_CTRL_REG2 | WRITE | SINGLE);
   SPI.transfer(0x00); //high pass filter disabled
@@ -840,6 +904,8 @@ void GetAcc(){
   accToFilterZ = -1.0 * filtAccZ.val;
 
 }
+
+
 
 
 

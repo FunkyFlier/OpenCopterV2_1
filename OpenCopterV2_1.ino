@@ -503,7 +503,7 @@ int16_u gyroX,gyroY,gyroZ,accX,accY,accZ,magX,magY,magZ;
 
 int baroCount;
 float baroSum;
-uint16_u C1,C2,C3,C4,C5,C6;
+uint16_u C1,C2,C3,C4,C5,C6,promSetup,promCRC;
 uint32_u D_rcvd;
 float D1,D2;
 float temperature,dT,TEMP,OFF,SENS,P,alti,pressureInitial;
