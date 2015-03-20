@@ -908,14 +908,17 @@ void setup(){
   imuDT = 0.01;
   lpfDT = 0.0025;
   baroDT = 0.05;
+  DetectRC();
+  _200HzISRConfig();
+  ROMFlagsCheck();
   CheckESCFlag();
 
-  DetectRC();
+  
 
-  _200HzISRConfig();
+  
 
 
-  ROMFlagsCheck();
+  
 
 
 

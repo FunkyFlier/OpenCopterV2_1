@@ -27,7 +27,21 @@ void CheckESCFlag(){
   if (pwmLow.val > 1200){
     pwmLow.val = 1200;
   }
+  newRC = false;
+  while(newRC == false){
+    ProcessChannels();
+  }
+  newRC = false;
+
   if (EEPROM.read(ESC_CAL_FLAG) == 0xAA){
+    Serial<<RCValue[THRO]<<","<<RCValue[AILE]<<","<<RCValue[ELEV]<<","<<RCValue[RUDD]<<"\r\n";
+    while(RCValue[THRO] > 1100 || RCValue[AILE] > 1100 || RCValue[ELEV] > 1100 || RCValue[RUDD] > 1100){
+      Serial<<"1\r\n";
+      if (newRC == true){
+        newRC = false;
+        ProcessChannels();
+      } 
+    }
     DDRE |= B00111000;
     DDRH |= B00111000;
 
@@ -385,6 +399,8 @@ void MotorHandler(){
   Motor4WriteMicros(motorPWM4);
 
 }
+
+
 
 
 
