@@ -908,8 +908,16 @@ void setup(){
   imuDT = 0.01;
   lpfDT = 0.0025;
   baroDT = 0.05;
+  
   DetectRC();
   _200HzISRConfig();
+  
+  I2c.begin();
+  I2c.setSpeed(1);
+  SPI.begin();
+  SPI.setBitOrder(MSBFIRST);
+  SPI.setClockDivider(SPI_CLOCK_DIV2);   
+  
   ROMFlagsCheck();
   CheckESCFlag();
 
@@ -937,11 +945,7 @@ void setup(){
       HandShake();
     }
   }
-  I2c.begin();
-  I2c.setSpeed(1);
-  SPI.begin();
-  SPI.setBitOrder(MSBFIRST);
-  SPI.setClockDivider(SPI_CLOCK_DIV2);   
+  
 
   Port0.begin(115200);
   if (calibrationMode == true){

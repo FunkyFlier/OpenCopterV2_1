@@ -402,7 +402,9 @@ void ROMFlagsCheck(){
   }  
 
   calibrationFlags = EEPROM.read(CAL_FLAGS);
-  if ( ((calibrationFlags & (1<<RC_FLAG)) >> RC_FLAG) == 0x01 || ((calibrationFlags & (1<<ACC_FLAG)) >> ACC_FLAG) == 0x01 || ((calibrationFlags & (1<<MAG_FLAG)) >> MAG_FLAG) == 0x01 ){
+  VerifyMag();
+  if ( ((calibrationFlags & (1<<RC_FLAG)) >> RC_FLAG) == 0x01 || ((calibrationFlags & (1<<ACC_FLAG)) >> ACC_FLAG) == 0x01 || ( ((calibrationFlags & (1<<MAG_FLAG)) >> MAG_FLAG) == 0x01 && imu.magDetected ) ){
+  //if ( ((calibrationFlags & (1<<RC_FLAG)) >> RC_FLAG) == 0x01 || ((calibrationFlags & (1<<ACC_FLAG)) >> ACC_FLAG) == 0x01 ||  ((calibrationFlags & (1<<MAG_FLAG)) >> MAG_FLAG) == 0x01  ){
     Port2.begin(115200);
     radioStream = &Port2;
     radioPrint = &Port2;
@@ -747,7 +749,7 @@ void LoadDEC(){
   (*floatPointerArray[MAG_DEC_]).buffer[1] = EEPROM.read(j++); 
   (*floatPointerArray[MAG_DEC_]).buffer[2] = EEPROM.read(j++); 
   (*floatPointerArray[MAG_DEC_]).buffer[3] = EEPROM.read(j++); 
-  
+
   imu.COS_DEC = cos(imu.declination.val);
   imu.SIN_DEC = sin(imu.declination.val);
 }
@@ -768,6 +770,7 @@ void LoadROM(){
 
 
 }
+
 
 
 

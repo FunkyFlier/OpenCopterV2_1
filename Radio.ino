@@ -585,13 +585,15 @@ void WriteCalibrationDataToRom(){
   itemIndex = 0;
   switch(cmdNum){
   case 0://mag calibration data
-    for(uint16_t i = MAG_CALIB_START; i <= MAG_CALIB_END; i++){
-      EEPROM.write(i,itemBuffer[itemIndex++]);
-    }
+    if (imu.magDetected == true){
+      for(uint16_t i = MAG_CALIB_START; i <= MAG_CALIB_END; i++){
+        EEPROM.write(i,itemBuffer[itemIndex++]);
+      }
 
-    calibrationFlags = EEPROM.read(CAL_FLAGS);
-    calibrationFlags &= ~(1<<MAG_FLAG);
-    EEPROM.write(CAL_FLAGS,calibrationFlags);
+      calibrationFlags = EEPROM.read(CAL_FLAGS);
+      calibrationFlags &= ~(1<<MAG_FLAG);
+      EEPROM.write(CAL_FLAGS,calibrationFlags);
+    }
     break;//--------------------------------------------
   case 1://acc calibration data
     for(uint16_t i = ACC_CALIB_START; i <= ACC_CALIB_END; i++){
@@ -1202,6 +1204,7 @@ void SendHandShakeResponse(){
 
   }
 }
+
 
 
 
