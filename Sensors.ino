@@ -264,6 +264,42 @@ void GPSStart(){
       switch (LEDState){
       case 0:
         digitalWrite(13,HIGH);
+        digitalWrite(RED,HIGH);
+        digitalWrite(YELLOW,HIGH);
+        digitalWrite(GREEN,HIGH);
+        break;
+      case 1:
+        digitalWrite(13,LOW);
+        digitalWrite(RED,HIGH);
+        digitalWrite(YELLOW,HIGH);
+        digitalWrite(GREEN,LOW);
+        break;
+      case 2:
+        digitalWrite(13,HIGH);
+        digitalWrite(RED,LOW);
+        digitalWrite(YELLOW,LOW);
+        digitalWrite(GREEN,HIGH);
+        break;
+      case 3:
+        digitalWrite(13,LOW);
+        digitalWrite(RED,HIGH);
+        digitalWrite(YELLOW,LOW);
+        digitalWrite(GREEN,LOW);
+        break;
+      }
+    }
+    while(gps.data.vars.numSV < MIN_SATS){
+      gps.Monitor();
+      if (millis() - generalPurposeTimer > 500){
+        generalPurposeTimer = millis();
+        LEDState++;
+        if (LEDState == 4){
+          LEDState = 0;
+        }
+      }
+      switch (LEDState){
+      case 0:
+        digitalWrite(13,HIGH);
         digitalWrite(RED,LOW);
         digitalWrite(YELLOW,LOW);
         digitalWrite(GREEN,LOW);
@@ -288,7 +324,43 @@ void GPSStart(){
         break;
       }
     }
-    while(gps.data.vars.hAcc > 500000){
+   while(gps.data.vars.hAcc * 0.001 > HACC_MAX){
+      gps.Monitor();
+      if (millis() - generalPurposeTimer > 500){
+        generalPurposeTimer = millis();
+        LEDState++;
+        if (LEDState == 4){
+          LEDState = 0;
+        }
+      }
+      switch (LEDState){
+      case 0:
+        digitalWrite(13,HIGH);
+        digitalWrite(RED,HIGH);
+        digitalWrite(YELLOW,LOW);
+        digitalWrite(GREEN,LOW);
+        break;
+      case 1:
+        digitalWrite(13,LOW);
+        digitalWrite(RED,LOW);
+        digitalWrite(YELLOW,HIGH);
+        digitalWrite(GREEN,HIGH);
+        break;
+      case 2:
+        digitalWrite(13,HIGH);
+        digitalWrite(RED,HIGH);
+        digitalWrite(YELLOW,LOW);
+        digitalWrite(GREEN,LOW);
+        break;
+      case 3:
+        digitalWrite(13,LOW);
+        digitalWrite(RED,LOW);
+        digitalWrite(YELLOW,HIGH);
+        digitalWrite(GREEN,HIGH);
+        break;
+      }
+    }
+  while(gps.data.vars.sAcc * 0.001 > SACC_MAX){
       gps.Monitor();
       if (millis() - generalPurposeTimer > 500){
         generalPurposeTimer = millis();
@@ -302,25 +374,25 @@ void GPSStart(){
         digitalWrite(13,HIGH);
         digitalWrite(RED,LOW);
         digitalWrite(YELLOW,LOW);
-        digitalWrite(GREEN,LOW);
+        digitalWrite(GREEN,HIGH);
         break;
       case 1:
-        digitalWrite(13,HIGH);
+        digitalWrite(13,LOW);
         digitalWrite(RED,HIGH);
-        digitalWrite(YELLOW,LOW);
+        digitalWrite(YELLOW,HIGH);
         digitalWrite(GREEN,LOW);
         break;
       case 2:
         digitalWrite(13,HIGH);
         digitalWrite(RED,LOW);
-        digitalWrite(YELLOW,HIGH);
-        digitalWrite(GREEN,LOW);
-        break;
-      case 3:
-        digitalWrite(13,HIGH);
-        digitalWrite(RED,LOW);
         digitalWrite(YELLOW,LOW);
         digitalWrite(GREEN,HIGH);
+        break;
+      case 3:
+        digitalWrite(13,LOW);
+        digitalWrite(RED,HIGH);
+        digitalWrite(YELLOW,HIGH);
+        digitalWrite(GREEN,LOW);
         break;
       }
     }
@@ -564,12 +636,10 @@ void CheckCRC(){
   n_prom[7] = crc_read;
 
 
-  if ((0x000F & crc_read) == (n_rem ^ 0x00)){
-    Serial<<"CRC passed\r\n";
-  }
-  else{
+  if ((0x000F & crc_read) != (n_rem ^ 0x00)){
     Serial<<"CRC failed\r\n";
   }
+
 }
 
 void MagInit(){

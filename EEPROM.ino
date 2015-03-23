@@ -59,9 +59,9 @@ void AssignPointerArray(){
   floatPointerArray[INERTIAL_Y_BIASED] = &imu.inertialYBiased;
   floatPointerArray[INERTIAL_Z_BIASED] = &imu.inertialZBiased;
 
-  floatPointerArray[RAW_PITCH] = &imu.rawPitch;
-  floatPointerArray[RAW_ROLL] = &imu.rawRoll;
-  floatPointerArray[PITCH_OFF] = &imu.pitchOffset;
+  floatPointerArray[RAW_PITCH] = &outFloat1;
+  floatPointerArray[RAW_ROLL] = &outFloat2;
+  floatPointerArray[PITCH_OFF] = &outFloat3;
   floatPointerArray[ROLL_OFF] = &imu.rollOffset;
 
 
@@ -203,7 +203,7 @@ void AssignPointerArray(){
   int16PointerArray[THRO_CMD] = &throttleCommand;
 
 
-  bytePointerArray[F_MODE_] = &flightMode;
+  bytePointerArray[F_MODE_] = &gps.data.vars.numSV;
   bytePointerArray[GPS_FIX] = &imu.magDetected;
   bytePointerArray[XY_LOIT_STATE] = &XYLoiterState;
   bytePointerArray[Z_LOIT_STATE] = &ZLoiterState;

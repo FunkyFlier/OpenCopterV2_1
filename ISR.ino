@@ -10,6 +10,7 @@ ISR(TIMER5_COMPA_vect, ISR_NOBLOCK){
     watchDogFailSafeCounter++;
     RCFailSafeCounter++;
     groundFSCount++;
+    GPSFailSafeCounter++;
   }
   ReadSerialStreams();
 

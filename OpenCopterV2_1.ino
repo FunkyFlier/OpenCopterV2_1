@@ -9,7 +9,11 @@
 #include <AUXMATH.h>
 #include "UBLOXL.h"
 
-#define ROT_45
+#define SACC_MAX 0.35
+#define HACC_MAX 1.5
+#define MIN_SATS 12
+
+//#define ROT_45
 
 #define CAL_FLAGS 0
 #define HS_FLAG 1
@@ -717,7 +721,7 @@ boolean calcYaw;
 volatile boolean failSafe = false;
 boolean toggle;
 volatile boolean watchDogStartCount;
-volatile uint32_t watchDogFailSafeCounter,RCFailSafeCounter;
+volatile uint32_t watchDogFailSafeCounter,RCFailSafeCounter,GPSFailSafeCounter;
 
 float_u xTarget,yTarget;
 uint8_t calibrationFlags;
@@ -771,7 +775,7 @@ uint32_t hsMillis,lsMillis,hsTXTimer,lsTXTimer;
 boolean offsetFlag,sendCalibrationData,hsTX,lsTX,tuningTrasnmitOK;
 
 
-boolean gpsFailSafe = true,txFailSafe,telemFailSafe,battFailSafe;
+boolean gpsFailSafe = false,txFailSafe,telemFailSafe,battFailSafe;
 
 boolean trimMode,setTrim,trimComplete,autoMaticReady;
 uint8_t throttleCheckFlag;
@@ -818,7 +822,7 @@ int16_t loitThro;
 float_u landingThroAdjustment;
 float throAdjAlpha;
 
-
+float_u outFloat1,outFloat2,outFloat3;
 //constructors //fix the dts
 openIMU imu(&radianGyroX,&radianGyroY,&radianGyroZ,&accToFilterX,&accToFilterY,&accToFilterZ,&filtAccX.val,&filtAccY.val,&filtAccZ.val,
 &magToFiltX,&magToFiltY,&magToFiltZ,&gpsX.val,&gpsY.val,&baroZ.val,&velN.val,&velE.val,&baroVel.val,&imuDT);
@@ -973,6 +977,7 @@ void setup(){
   imuTimer = micros();
   _400HzTimer = micros();
   generalPurposeTimer = millis();
+
   currentTime = micros();
   watchDogStartCount = true;
   digitalWrite(RED,1);
@@ -1025,16 +1030,23 @@ void loop(){
       velE.val = gps.data.vars.velE * 0.01;
       velD.val = gps.data.vars.velD * 0.01;
       gps.DistBearing(&homeBase.lat.val,&homeBase.lon.val,&gps.data.vars.lat,&gps.data.vars.lon,&gpsX.val,&gpsY.val,&distToCraft.val,&headingToCraft.val);
-      if (gps.data.vars.gpsFix != 3){
+      outFloat1.val = gps.data.vars.hAcc * 0.001;///raw pitch
+      outFloat2.val = gps.data.vars.sAcc * 0.001;//raw roll
+      outFloat3.val = gps.data.vars.pDop * 0.01;//pitch offset
+      if (gps.data.vars.gpsFix != 3 || gps.data.vars.numSV < MIN_SATS || outFloat1.val > HACC_MAX || outFloat2.val > SACC_MAX){
+      //if (gps.data.vars.gpsFix != 3){
         gpsFailSafe = true;
       }
-      else{
-        gpsFailSafe = false;
-      }
+      //Serial<<GPSFailSafeCounter<<"\r\n";  
+      GPSFailSafeCounter = 0;
+      
       imu.CorrectGPS();
 
     }
-
+    
+    if (GPSFailSafeCounter > 200){
+      gpsFailSafe = true;
+    }
     PollPressure();
     _400HzTask();
     if (newBaro == true){
