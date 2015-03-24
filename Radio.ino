@@ -639,7 +639,15 @@ void WriteCalibrationDataToRom(){
     delay(500);
     asm volatile ("  jmp 0"); 
 
-    break;
+    break;//--------------------------------------
+    case 4://mag calibration data
+    txLossRTB = itemBuffer[0];
+    if (txLossRTB == 0 ||txLossRTB ==1){
+      txLossRTB = 0;
+    }
+    EEPROM.write(TX_FS_FLAG,0xAA);
+    EEPROM.write(TX_FS,txLossRTB);
+    break;//--------------------------------------------
   }
 
 

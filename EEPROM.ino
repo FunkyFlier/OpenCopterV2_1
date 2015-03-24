@@ -59,9 +59,9 @@ void AssignPointerArray(){
   floatPointerArray[INERTIAL_Y_BIASED] = &imu.inertialYBiased;
   floatPointerArray[INERTIAL_Z_BIASED] = &imu.inertialZBiased;
 
-  floatPointerArray[RAW_PITCH] = &outFloat1;
-  floatPointerArray[RAW_ROLL] = &outFloat2;
-  floatPointerArray[PITCH_OFF] = &outFloat3;
+  floatPointerArray[RAW_PITCH] = &imu.rawPitch;
+  floatPointerArray[RAW_ROLL] = &imu.rawRoll;
+  floatPointerArray[PITCH_OFF] = &imu.pitchOffset;
   floatPointerArray[ROLL_OFF] = &imu.rollOffset;
 
 
@@ -369,6 +369,10 @@ void ROMFlagsCheck(){
     EEPROM.write(VER_FLAG_2,VER_NUM_2);
   }
   uint16_t j;
+  if (EEPROM.read(TX_FS_FLAG != 0xAA){
+    EEPROM.write(TX_FS,0);
+    EEPROM.write(TX_FS_FLAG,0xAA);
+  }
   if (EEPROM.read(PR_FLAG) != 0xAA){
     imu.pitchOffset.val = 0;
     imu.rollOffset.val = 0;
@@ -623,6 +627,11 @@ void LoadRC(){
       break;
     }
   }
+  txLossRTB = EEPROM.read(TX_FS_FLAG);
+  if (txLossRTB > 1){
+    txLossRTB = 0;
+  }
+
 }
 void LoadACC(){
   uint8_t outFloatIndex = 0;

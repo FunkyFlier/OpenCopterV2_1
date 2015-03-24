@@ -82,7 +82,7 @@
 #define VER_FLAG_2 429
 
 #define VER_NUM_1 0x01
-#define VER_NUM_2 0x00
+#define VER_NUM_2 0x01
 
 #define PWM_LIM_HIGH_START 430
 #define PWM_LIM_HIGH_END 431
@@ -94,6 +94,8 @@
 #define HOVER_THRO 437
 #define HOVER_THRO_FLAG 438
 
+#define TX_FS_FLAG 439
+#define TX_FS 440
 
 #define FC 5
 #define RC_CONST 1/(2.0 * 3.14 * FC)
@@ -323,7 +325,9 @@ enum Int16s {
   MAG_X,
   MAG_Y,
   MAG_Z,
-  THRO_CMD
+  THRO_CMD,
+  PWM_HIGH,
+  PWM_LOW
 
 };
 
@@ -336,7 +340,14 @@ enum BYTES {
   MOTOR_STATE,
   TELEM_FS,
   GPS_FS,
-  SWITCH_POS
+  SWITCH_POS,
+  NUM_SATS,
+  IDLE_PERCENT,
+  HOVER_PERCENT,
+  TX_LOSS_RTB,
+  MAG_DET,
+  GPS_DET
+
 };
 
 
@@ -482,7 +493,10 @@ enum Floats {
   LAT_,
   LON_,
   HB_LAT,
-  HB_LON
+  HB_LON,
+  H_ACC,
+  S_ACC,
+  P_DOP
 
 };
 
@@ -915,25 +929,25 @@ void setup(){
   imuDT = 0.01;
   lpfDT = 0.0025;
   baroDT = 0.05;
-  
+
   DetectRC();
   _200HzISRConfig();
-  
+
   I2c.begin();
   I2c.setSpeed(1);
   SPI.begin();
   SPI.setBitOrder(MSBFIRST);
   SPI.setClockDivider(SPI_CLOCK_DIV2);   
-  
+
   ROMFlagsCheck();
   CheckESCFlag();
 
-  
-
-  
 
 
-  
+
+
+
+
 
 
 
@@ -952,7 +966,7 @@ void setup(){
       HandShake();
     }
   }
-  
+
 
   Port0.begin(115200);
   if (calibrationMode == true){
@@ -1038,16 +1052,16 @@ void loop(){
       pDop.val = gps.data.vars.pDop * 0.01;//pitch offset
       numSats = gps.data.vars.numSV;
       if (gps.data.vars.gpsFix != 3 || numSats < MIN_SATS || hAcc.val > HACC_MAX || sAcc.val > SACC_MAX){
-      //if (gps.data.vars.gpsFix != 3){
+        //if (gps.data.vars.gpsFix != 3){
         gpsFailSafe = true;
       }
       //Serial<<GPSFailSafeCounter<<"\r\n";  
       GPSFailSafeCounter = 0;
-      
+
       imu.CorrectGPS();
 
     }
-    
+
     if (GPSFailSafeCounter > 200){
       gpsFailSafe = true;
     }
@@ -1093,34 +1107,36 @@ void loop(){
     _400HzTask();
     if (RCFailSafeCounter >= 200 || failSafe == true){
       txFailSafe = true;
-      TIMSK5 = (0<<OCIE5A);
-      digitalWrite(13,LOW);
-      digitalWrite(RED,LOW);
-      digitalWrite(YELLOW,LOW);
-      digitalWrite(GREEN,LOW);
-      Motor1WriteMicros(1000);//set the output compare value
-      Motor2WriteMicros(1000);
-      Motor3WriteMicros(1000);
-      Motor4WriteMicros(1000);
-      Motor5WriteMicros(1000);
-      Motor6WriteMicros(1000);
-      //Motor7WriteMicros(1000);
-      //Motor8WriteMicros(1000);
-      if (failSafe == true){
-        digitalWrite(RED,HIGH);
-      }
-      while(1){
-
-        digitalWrite(YELLOW,HIGH);
-        if (RCFailSafeCounter >= 200 ){
-          digitalWrite(GREEN,LOW);
-        }
-        delay(500);
+      if (txLossRTB == 0){
+        TIMSK5 = (0<<OCIE5A);
+        digitalWrite(13,LOW);
+        digitalWrite(RED,LOW);
         digitalWrite(YELLOW,LOW);
-        if (RCFailSafeCounter >= 200 ){
-          digitalWrite(GREEN,HIGH);
+        digitalWrite(GREEN,LOW);
+        Motor1WriteMicros(1000);//set the output compare value
+        Motor2WriteMicros(1000);
+        Motor3WriteMicros(1000);
+        Motor4WriteMicros(1000);
+        Motor5WriteMicros(1000);
+        Motor6WriteMicros(1000);
+        //Motor7WriteMicros(1000);
+        //Motor8WriteMicros(1000);
+        if (failSafe == true){
+          digitalWrite(RED,HIGH);
         }
-        delay(500);
+        while(1){
+
+          digitalWrite(YELLOW,HIGH);
+          if (RCFailSafeCounter >= 200 ){
+            digitalWrite(GREEN,LOW);
+          }
+          delay(500);
+          digitalWrite(YELLOW,LOW);
+          if (RCFailSafeCounter >= 200 ){
+            digitalWrite(GREEN,HIGH);
+          }
+          delay(500);
+        }
       }
 
     }
@@ -1439,6 +1455,10 @@ void LoiterCalculations(){
   tiltAngleX.val *= -1.0;
   LoiterYVelocity.calculate();
 }
+
+
+
+
 
 
 
