@@ -822,7 +822,10 @@ int16_t loitThro;
 float_u landingThroAdjustment;
 float throAdjAlpha;
 
-float_u outFloat1,outFloat2,outFloat3;
+float_u hAcc,sAcc,pDop;
+
+uint8_t numSats;
+uint8_t txLossRTB;
 //constructors //fix the dts
 openIMU imu(&radianGyroX,&radianGyroY,&radianGyroZ,&accToFilterX,&accToFilterY,&accToFilterZ,&filtAccX.val,&filtAccY.val,&filtAccZ.val,
 &magToFiltX,&magToFiltY,&magToFiltZ,&gpsX.val,&gpsY.val,&baroZ.val,&velN.val,&velE.val,&baroVel.val,&imuDT);
@@ -1030,10 +1033,11 @@ void loop(){
       velE.val = gps.data.vars.velE * 0.01;
       velD.val = gps.data.vars.velD * 0.01;
       gps.DistBearing(&homeBase.lat.val,&homeBase.lon.val,&gps.data.vars.lat,&gps.data.vars.lon,&gpsX.val,&gpsY.val,&distToCraft.val,&headingToCraft.val);
-      outFloat1.val = gps.data.vars.hAcc * 0.001;///raw pitch
-      outFloat2.val = gps.data.vars.sAcc * 0.001;//raw roll
-      outFloat3.val = gps.data.vars.pDop * 0.01;//pitch offset
-      if (gps.data.vars.gpsFix != 3 || gps.data.vars.numSV < MIN_SATS || outFloat1.val > HACC_MAX || outFloat2.val > SACC_MAX){
+      hAcc.val = gps.data.vars.hAcc * 0.001;///raw pitch
+      sAcc.val = gps.data.vars.sAcc * 0.001;//raw roll
+      pDop.val = gps.data.vars.pDop * 0.01;//pitch offset
+      numSats = gps.data.vars.numSV;
+      if (gps.data.vars.gpsFix != 3 || numSats < MIN_SATS || hAcc.val > HACC_MAX || sAcc.val > SACC_MAX){
       //if (gps.data.vars.gpsFix != 3){
         gpsFailSafe = true;
       }
