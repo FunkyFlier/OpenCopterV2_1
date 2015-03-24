@@ -510,11 +510,11 @@ enum Floats {
 #define Port2 Serial2
 #define gpsPort Serial3
 
-float_u *floatPointerArray[143];
+float_u *floatPointerArray[145];
 
-int16_u *int16PointerArray[10];
+int16_u *int16PointerArray[12];
 
-uint8_t *bytePointerArray[9];
+uint8_t *bytePointerArray[15];
 
 int16_u gyroX,gyroY,gyroZ,accX,accY,accZ,magX,magY,magZ;
 

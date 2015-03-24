@@ -640,13 +640,24 @@ void WriteCalibrationDataToRom(){
     asm volatile ("  jmp 0"); 
 
     break;//--------------------------------------
-    case 4://mag calibration data
+  case 4://tx failsafe
     txLossRTB = itemBuffer[0];
     if (txLossRTB == 0 ||txLossRTB ==1){
       txLossRTB = 0;
     }
     EEPROM.write(TX_FS_FLAG,0xAA);
     EEPROM.write(TX_FS,txLossRTB);
+    break;//--------------------------------------------
+  case 5://pwms
+    EEPROM.write(HOVER_THRO,itemBuffer[itemIndex++]);
+    EEPROM.write(HOVER_THRO_FLAG,0xAA);
+    EEPROM.write(PROP_IDLE,itemBuffer[itemIndex++]);
+    EEPROM.write(PROP_IDLE_FLAG,0xAA);
+    EEPROM.write(PWM_LIM_HIGH_START,itemBuffer[itemIndex++]);
+    EEPROM.write(PWM_LIM_HIGH_END,itemBuffer[itemIndex++]);
+    EEPROM.write(PWM_LIM_LOW_START,itemBuffer[itemIndex++]);
+    EEPROM.write(PWM_LIM_LOW_END,itemBuffer[itemIndex++]);
+    EEPROM.write(PWM_FLAG,0xAA);
     break;//--------------------------------------------
   }
 
@@ -1212,6 +1223,9 @@ void SendHandShakeResponse(){
 
   }
 }
+
+
+
 
 
 

@@ -190,6 +190,12 @@ void AssignPointerArray(){
   floatPointerArray[LON_] = &floatLon;
   floatPointerArray[HB_LAT] = &homeLat;
   floatPointerArray[HB_LON] = &homeLon;
+  
+  floatPointerArray[H_ACC] = &hAcc;
+  floatPointerArray[S_ACC] = &sAcc;
+  floatPointerArray[P_DOP] = &pDop;
+  
+  
 
   int16PointerArray[GYRO_X] = &gyroX;
   int16PointerArray[GYRO_Y] = &gyroY;
@@ -201,10 +207,13 @@ void AssignPointerArray(){
   int16PointerArray[MAG_Y] = &magY;
   int16PointerArray[MAG_Z] = &magZ;
   int16PointerArray[THRO_CMD] = &throttleCommand;
+  
+  int16PointerArray[PWM_HIGH] = &pwmHigh;
+  int16PointerArray[PWM_LOW] = &pwmLow;
 
 
-  bytePointerArray[F_MODE_] = &gps.data.vars.numSV;
-  bytePointerArray[GPS_FIX] = &imu.magDetected;
+  bytePointerArray[F_MODE_] = &flightMode;
+  bytePointerArray[GPS_FIX] = &gps.data.vars.gpsFix;
   bytePointerArray[XY_LOIT_STATE] = &XYLoiterState;
   bytePointerArray[Z_LOIT_STATE] = &ZLoiterState;
 
@@ -213,7 +222,13 @@ void AssignPointerArray(){
   bytePointerArray[TELEM_FS] = &telemFailSafe;
   bytePointerArray[GPS_FS] = &gpsFailSafe;
   bytePointerArray[SWITCH_POS] = &switchPositions;
-
+  
+    bytePointerArray[NUM_SATS] = &RTBState;
+  bytePointerArray[IDLE_PERCENT] = &motorState;
+  bytePointerArray[HOVER_PERCENT] = &telemFailSafe;
+  bytePointerArray[TX_LOSS_RTB] = &gpsFailSafe;
+  bytePointerArray[MAG_DET] = &switchPositions;
+  bytePointerArray[GPS_DET] = &switchPositions;
 }
 /*
 void DEBUG_DUMP(){
@@ -369,7 +384,7 @@ void ROMFlagsCheck(){
     EEPROM.write(VER_FLAG_2,VER_NUM_2);
   }
   uint16_t j;
-  if (EEPROM.read(TX_FS_FLAG != 0xAA){
+  if (EEPROM.read(TX_FS_FLAG != 0xAA)){
     EEPROM.write(TX_FS,0);
     EEPROM.write(TX_FS_FLAG,0xAA);
   }
@@ -553,8 +568,8 @@ void LoadPWMLimits(){
   if (pwmHigh.val > 2000){
     pwmHigh.val = 2000;
   }
-  if (pwmHigh.val < 1900){
-    pwmHigh.val = 1900;
+  if (pwmHigh.val < 1800){
+    pwmHigh.val = 1800;
   }
   outInt16.buffer[0] = EEPROM.read(PWM_LIM_LOW_START);
   outInt16.buffer[1] = EEPROM.read(PWM_LIM_LOW_END);
