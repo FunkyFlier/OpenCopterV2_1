@@ -6,7 +6,7 @@
 #include "openIMUL.h"
 #include "PID.h"
 #include <Streaming.h>
-#include <AUXMATH.h>
+#include "AUXMATH.h"
 #include "UBLOXL.h"
 
 #define SACC_MAX 0.35
@@ -789,7 +789,7 @@ uint32_t hsMillis,lsMillis,hsTXTimer,lsTXTimer;
 boolean offsetFlag,sendCalibrationData,hsTX,lsTX,tuningTrasnmitOK;
 
 
-boolean gpsFailSafe = false,txFailSafe,telemFailSafe,battFailSafe;
+uint8_t gpsFailSafe = false,txFailSafe = false,telemFailSafe = false,battFailSafe = false;
 
 boolean trimMode,setTrim,trimComplete,autoMaticReady;
 uint8_t throttleCheckFlag;
