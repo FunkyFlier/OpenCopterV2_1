@@ -137,7 +137,7 @@ enum RTBStates{
 
 
 
-//#define ROT_45
+#define ROT_45
 //LED defines GREEN, YELLOW, BLUE, RED
 #define GREEN 42
 #define YELLOW 40
@@ -610,7 +610,7 @@ unsigned long b7;
 unsigned int ut;
 unsigned long up;
 uint32_t baroPollTimer;
-boolean newBaro = false;
+bool newBaro = false;
 float pressureRatio;
 //int baroCount;
 //float baroSum;
@@ -628,7 +628,7 @@ float D1, D2;
 float pres, temperature, dT, TEMP, OFF, SENS, P;
 uint8_t baroState;
 uint32_t baroPollTimer, baroDelayTimer;
-boolean newBaro;
+bool newBaro;
 
 
 #endif//#ifdef V2
@@ -647,7 +647,7 @@ float accToFilterX,accToFilterY,accToFilterZ;
 
 UBLOX gps;
 //TinyGPS gps;
-volatile boolean GPSDetected;
+volatile bool GPSDetected;
 float_u distToCraft;
 float_u headingToCraft;
 
@@ -668,15 +668,15 @@ float_u homeLat,homeLon;
 uint8_t readState,inByte,byteCount,channelNumber;
 volatile uint8_t rcType;
 uint32_t frameTime;
-boolean detected = false;
-volatile boolean newRC = false;
-boolean frameStart = true;
-boolean frameValid = false;
+bool detected = false;
+volatile bool newRC = false;
+bool frameStart = true;
+bool frameValid = false;
 
 uint8_t spekBuffer[14];
 
 uint16_t bufferIndex=0;
-boolean newGSRC = false;
+bool newGSRC = false;
 
 
 
@@ -828,16 +828,16 @@ float_u tiltAngleX,tiltAngleY;
 uint8_t HHState = 1;
 float_u motorCommand1,motorCommand2,motorCommand3,motorCommand4;
 float motorPWM1,motorPWM2,motorPWM3,motorPWM4;
-boolean integrate = false;
-boolean enterState = true;
+bool integrate = false;
+bool enterState = true;
 
-boolean calcYaw;
+bool calcYaw;
 
 
 //failsafe related vars
-volatile boolean failSafe = false;
-boolean toggle;
-volatile boolean watchDogStartCount;
+volatile bool failSafe = false;
+bool toggle;
+volatile bool watchDogStartCount;
 volatile uint32_t watchDogFailSafeCounter,RCFailSafeCounter,GPSFailSafeCounter;
 
 float_u xTarget,yTarget;
@@ -845,8 +845,8 @@ uint8_t calibrationFlags;
 
 //uint8_t outFloatIndex;
 
-boolean allCalibrated = false;
-boolean calibrationMode = false;
+bool allCalibrated = false;
+bool calibrationMode = false;
 
 float magOffSetX;
 float magOffSetY;
@@ -884,19 +884,19 @@ float homeBaseXOffset=0,homeBaseYOffset=0;
 //radio protocol vars
 uint16_t localPacketNumberOrdered,localPacketNumberUn,remotePacketNumberOrdered,remotePacketNumberUn,packetTemp[2];
 uint32_t radioTimer;
-boolean handShake;
+bool handShake;
 uint8_t handShakeState,rxSum,rxDoubleSum,txSum,txDoubleSum,radioByte,
 packetLength,numRXBytes,radioState,numRXbytes,typeNum,cmdNum,
 itemBuffer[255],itemIndex,temp,hsNumItems,lsNumItems,hsList[40],lsList[40],liveDataBuffer[200],hsRequestNumber,lsRequestNumber,hsListIndex,lsListIndex;
 uint32_t hsMillis,lsMillis,hsTXTimer,lsTXTimer;
-boolean offsetFlag,sendCalibrationData,hsTX,lsTX,tuningTrasnmitOK;
+bool offsetFlag,sendCalibrationData,hsTX,lsTX,tuningTrasnmitOK;
 
 
 uint8_t gpsFailSafe = false,txFailSafe = false,telemFailSafe = false,battFailSafe = false;
 
-boolean trimMode,setTrim,trimComplete,autoMaticReady;
+bool trimMode,setTrim,trimComplete,autoMaticReady;
 uint8_t throttleCheckFlag;
-boolean modeSelect = false;
+bool modeSelect = false;
 uint8_t switchPositions,clearTXRTB;
 uint8_t previousFlightMode,motorState;
 float_u initialYaw;
@@ -906,7 +906,7 @@ uint32_t radioLimitTimer;
 Print* radioPrint;
 Stream* radioStream;
 
-boolean USBFlag = false,saveGainsFlag = false;
+bool USBFlag = false,saveGainsFlag = false;
 
 uint32_t ledTimer;
 
@@ -938,7 +938,7 @@ int16_u pwmHigh,pwmLow;
 uint8_t propIdlePercent,hoverPercent;
 uint16_t propIdleCommand,hoverCommand;
 
-boolean gsCTRL = false;
+bool gsCTRL = false;
 int16_t loitThro;
 float_u landingThroAdjustment;
 float throAdjAlpha;
@@ -1064,7 +1064,7 @@ void setup(){
       HandShake();
     }
   }
-
+  //Serial<<localPacketNumberOrdered<<","<<localPacketNumberUn<<"\r\n";
 
   Port0.begin(115200);
   if (calibrationMode == true){
