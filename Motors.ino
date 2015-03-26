@@ -255,7 +255,7 @@ void MotorHandler(){
     motorCommand3.val = propIdleCommand;
     motorCommand4.val = propIdleCommand;
     throttleCheckFlag = false;
-    pressureInitial = pressure.val;
+    initialPressure = pressure.val;
     imu.ZEst.val = 0;
     imu.ZEstUp.val = 0;
     imu.velZ.val = 0;

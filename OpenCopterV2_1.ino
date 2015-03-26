@@ -13,8 +13,6 @@
 #define HACC_MAX 1.5
 #define MIN_SATS 12
 
-//#define ROT_45
-
 #define CAL_FLAGS 0
 #define HS_FLAG 1
 
@@ -112,10 +110,7 @@
 #define TAKE_OFF_ALT 3
 
 #define LAND_VEL -0.28
-//LED defines
-#define RED 38
-#define YELLOW 40
-#define GREEN 42
+
 //ROM defines
 enum CalibrationFlags {
   RC_FLAG,
@@ -124,11 +119,30 @@ enum CalibrationFlags {
   GAINS_FLAG
 };
 
+enum RTBStates{
+  CLIMB,
+  TRAVEL,
+  DESCEND
+};
 
-#define CLIMB 0
-#define TRAVEL 1
-#define DESCEND 2
 
+//#define V1
+#define V2
+
+#ifdef V2
+#ifdef V1
+#undef V1
+#endif
+#endif
+
+
+
+//#define ROT_45
+//LED defines GREEN, YELLOW, BLUE, RED
+#define GREEN 42
+#define YELLOW 40
+#define BLUE 13
+#define RED 38
 
 //general SPI defines
 #define READ 0x80
@@ -145,21 +159,9 @@ enum CalibrationFlags {
 #define L3G_OUT_X_L 0x28
 #define L3G_WHO_AM_I 0x0F
 
-
-
-//acc defines
-#define CTRL_REG1_A 0x20
-#define CTRL_REG2_A 0x21
-#define CTRL_REG3_A 0x22
-#define CTRL_REG4_A 0x23
-#define CTRL_REG5_A 0x24
-#define CTRL_REG6_A 0x25
-#define OUT_X_L_A 0x28
-
-
 //mag defines ST HMC5983DLHC - will work with the HMC5883L
 #define MAG_ADDRESS 0x1E
-#define HMC5983_CRA_REG (uint8_t)0x00 //??? Wire.h needs to be fixed
+#define HMC5983_CRA_REG (uint8_t)0x00
 #define HMC5983_CRB_REG 0x01
 #define HMC5983_MR_REG 0x02
 #define HMC5983_OUT_X_H 0x03
@@ -169,7 +171,54 @@ enum CalibrationFlags {
 #define HMC5983_ID_C 0x0C
 
 
+#define Port0 Serial
+#define RCSigPort Serial1
+#define Port2 Serial2
+#define gpsPort Serial3
 
+
+
+//V1 defines
+#ifdef V1
+//acc defines - Analog Devices ADXL345
+#define BW_RATE 0x2C
+#define POWER_CTL 0x2D
+#define DATA_FORMAT 0x31
+#define DATAX0 0x32
+
+//barometer defines
+#define BMP085_ADDRESS 0x77
+#define POLL_RATE 20
+/*#define OSS 0x00
+ #define CONV_TIME 5*/
+/*#define OSS 0x01
+ #define CONV_TIME 8*/
+/*#define OSS 0x02
+ #define CONV_TIME 14*/
+#define OSS 0x03
+#define CONV_TIME 27
+
+#define Motor1WriteMicros(x) OCR3B = x * 2
+#define Motor2WriteMicros(x) OCR3C = x * 2
+#define Motor3WriteMicros(x) OCR3A = x * 2
+#define Motor4WriteMicros(x) OCR4A = x * 2
+#define Motor5WriteMicros(x) OCR4B = x * 2
+#define Motor6WriteMicros(x) OCR4C = x * 2
+#define Motor7WriteMicros(x) OCR1A = x * 2
+#define Motor8WriteMicros(x) OCR1B = x * 2
+#endif//#ifdef V1
+//end V1 defines
+
+//V2 defines
+#ifdef V2
+//acc defines
+#define CTRL_REG1_A 0x20
+#define CTRL_REG2_A 0x21
+#define CTRL_REG3_A 0x22
+#define CTRL_REG4_A 0x23
+#define CTRL_REG5_A 0x24
+#define CTRL_REG6_A 0x25
+#define OUT_X_L_A 0x28
 
 //baro defines
 #define MS5611_RESET 0x1E
@@ -186,9 +235,22 @@ enum CalibrationFlags {
 
 #define ADC_READ 0x00
 
-#define BARO_CONV_TIME 0
+#define BARO_CONV_TIME 50
 
-//however digitalWrite will work when using SPI 
+
+#define Motor1WriteMicros(x) OCR3A = x * 2//motor 1 is attached to pin2
+#define Motor2WriteMicros(x) OCR3B = x * 2//motor 2 is attached to pin3
+#define Motor3WriteMicros(x) OCR3C = x * 2//motor 3 is attached to pin5
+#define Motor4WriteMicros(x) OCR4A = x * 2//motor 4 is attached to pin6
+#define Motor5WriteMicros(x) OCR4B = x * 2//motor 1 is attached to pin7
+#define Motor6WriteMicros(x) OCR4C = x * 2//motor 2 is attached to pin8
+#define Motor7WriteMicros(x) OCR1A = x * 2//motor 3 is attached to pin11
+#define Motor8WriteMicros(x) OCR1B = x * 2//motor 4 is attached to pin12
+#endif//#ifdef V2
+//end V2 defines
+
+
+
 #define D22Output() DDRA |= 1<<0 
 #define D22High() PORTA |= 1<<0 
 #define D22Low() PORTA &= ~(1<<0)
@@ -269,14 +331,7 @@ enum CalibrationFlags {
 #define PERIOD ((F_CPU/PRESCALE/FREQ) - 1)
 
 
-#define Motor1WriteMicros(x) OCR3A = x * 2//motor 1 is attached to pin2
-#define Motor2WriteMicros(x) OCR3B = x * 2//motor 2 is attached to pin3
-#define Motor3WriteMicros(x) OCR3C = x * 2//motor 3 is attached to pin5
-#define Motor4WriteMicros(x) OCR4A = x * 2//motor 4 is attached to pin6
-#define Motor5WriteMicros(x) OCR4B = x * 2//motor 1 is attached to pin7
-#define Motor6WriteMicros(x) OCR4C = x * 2//motor 2 is attached to pin8
-//#define Motor7WriteMicros(x) OCR1A = x * 2//motor 3 is attached to pin11
-//#define Motor8WriteMicros(x) OCR1B = x * 2//motor 4 is attached to pin12
+
 
 //radio control defines
 //RC defines
@@ -521,15 +576,63 @@ int16_u gyroX,gyroY,gyroZ,accX,accY,accZ,magX,magY,magZ;
 
 int baroCount;
 float baroSum;
-uint16_u C1,C2,C3,C4,C5,C6,promSetup,promCRC;
+
+#ifdef V1
+//v1 vars
+//barometer variables
+//int32_t pres;
+short temperature;
+uint32_t baroDelayTimer;
+int pressureState;
+int ac1;
+int ac2;
+int ac3;
+unsigned int ac4;
+unsigned int ac5;
+unsigned int ac6;
+int b1;
+int b2;
+int mb;
+int mc;
+int md;
+unsigned char msb;
+unsigned char lsb;
+unsigned char xlsb;
+long x1;
+long x2;
+long x3;
+long b3;
+long b5;
+long b6;
+long p;
+unsigned long b4;
+unsigned long b7;
+unsigned int ut;
+unsigned long up;
+uint32_t baroPollTimer;
+boolean newBaro = false;
+float pressureRatio;
+//int baroCount;
+//float baroSum;
+long pressureInitial;
+#endif//#ifdef V1
+//end v1 vars
+
+
+//v2 vars
+#ifdef V2
+//barometer
+uint16_u C1, C2, C3, C4, C5, C6, promSetup, promCRC;
 uint32_u D_rcvd;
-float D1,D2;
-float temperature,dT,TEMP,OFF,SENS,P,alti,pressureInitial;
-float_u pressure;
+float D1, D2;
+float pres, temperature, dT, TEMP, OFF, SENS, P;
 uint8_t baroState;
-uint32_t baroPollTimer,baroDelayTimer;
+uint32_t baroPollTimer, baroDelayTimer;
 boolean newBaro;
 
+
+#endif//#ifdef V2
+//end barometer
 //IMU related vars
 int32_t gyroSumX,gyroSumY,gyroSumZ;
 int16_t gyroOffsetX,gyroOffsetY,gyroOffsetZ,gyroPrevX,gyroPrevY,gyroPrevZ;
@@ -814,6 +917,10 @@ float_u gpsAlt;
 float_u floatLat, floatLon;
 float_u velN,velE,velD;
 
+float initialPressure, alti;
+float_u pressure;
+uint32_t pollTimer;
+
 uint32_t romWriteDelayTimer;
 uint32_t _400Time;
 float_u gpsX,gpsY;
@@ -942,15 +1049,6 @@ void setup(){
   ROMFlagsCheck();
   CheckESCFlag();
 
-
-
-
-
-
-
-
-
-
   CalibrateESC();
   MotorInit();
   delay(3500);//this allows the telemetry radios to connect before trying the handshake
@@ -1069,7 +1167,7 @@ void loop(){
     _400HzTask();
     if (newBaro == true){
       newBaro = false;
-      GetAltitude(&pressure.val,&pressureInitial,&baroAlt.val);
+      GetAltitude(&pressure.val,&initialPressure,&baroAlt.val);
       baroDT = (millis() - baroTimer) * 0.001;
       baroTimer = millis();
 
