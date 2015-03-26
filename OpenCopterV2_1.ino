@@ -9,9 +9,9 @@
 #include <AUXMATH.h>
 #include "UBLOXL.h"
 
-#define SACC_MAX 0.35
+#define SACC_MAX 0.5
 #define HACC_MAX 1.5
-#define MIN_SATS 12
+#define MIN_SATS 10
 
 //#define ROT_45
 
