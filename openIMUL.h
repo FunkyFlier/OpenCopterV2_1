@@ -78,7 +78,7 @@ public:
   float kpMag;
   float kiMag;
   float FEEDBACK_LIMIT;
-  //boolean skipFeedBack;
+  //bool skipFeedBack;
   //float FEEDBACK_LIMIT;
   float COS_DEC,SIN_DEC;
   float kPosGPS,kVelGPS,kAccGPS,kPosBaro,kVelBaro,kAccBaro;
@@ -88,7 +88,7 @@ public:
   uint8_t lagAmount;
   //uint8_t magFlag;
   float_u biasedX,biasedY,biasedZ;
-  boolean magDetected;
+  bool magDetected;
 private:
 
   

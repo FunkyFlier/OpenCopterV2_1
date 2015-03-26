@@ -442,6 +442,7 @@ void ROMFlagsCheck() {
       digitalWrite(13, LOW);
       return;
     }
+    toggle = false;
     while (1) {
       if ( ((calibrationFlags & (1 << RC_FLAG)) >> RC_FLAG) == 0x01 ) {
         digitalWrite(RED, toggle);
@@ -452,7 +453,7 @@ void ROMFlagsCheck() {
       if ( ((calibrationFlags & (1 << MAG_FLAG)) >> MAG_FLAG) == 0x01 ) {
         digitalWrite(GREEN, toggle);
       }
-      toggle = ~toggle;
+      toggle = toggle ^ 1;
       delay(300);
     }
   }
@@ -599,6 +600,7 @@ void LoadPWMLimits() {
       hoverCommand = 1000 * (1 + ((float)hoverPercent / 100.0));
     }
   }
+  Serial<<pwmLow.val<<","<<pwmHigh.val<<","<<propIdleCommand<<","<<hoverCommand<<"\r\n";
 }
 void LoadRC() {
   uint16_t j = 0; //index for input buffers
@@ -642,7 +644,8 @@ void LoadRC() {
         break;
     }
   }
-  txLossRTB = EEPROM.read(TX_FS_FLAG);
+  txLossRTB = EEPROM.read(TX_FS);
+  Serial<<_HEX(txLossRTB)<<"\r\n";
   if (txLossRTB > 1) {
     txLossRTB = 0;
   }

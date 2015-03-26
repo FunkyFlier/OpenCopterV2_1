@@ -193,7 +193,7 @@ void Radio(){
       rxSum += radioByte;
       rxDoubleSum += rxSum;
       numRXbytes++; 
-      if (packetLength > 255){
+      if (packetLength > 250){
         radioState = 0;
       }
       if (numRXbytes == packetLength){
@@ -642,9 +642,9 @@ void WriteCalibrationDataToRom(){
     break;//--------------------------------------
   case 4://tx failsafe
     txLossRTB = itemBuffer[0];
-    if (txLossRTB == 0 ||txLossRTB ==1){
+    /*if (txLossRTB == 0 ||txLossRTB ==1){
       txLossRTB = 0;
-    }
+    }*/
     EEPROM.write(TX_FS_FLAG,0xAA);
     EEPROM.write(TX_FS,txLossRTB);
     break;//--------------------------------------------
