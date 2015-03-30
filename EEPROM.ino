@@ -223,12 +223,12 @@ void AssignPointerArray() {
   bytePointerArray[GPS_FS] = &gpsFailSafe;
   bytePointerArray[SWITCH_POS] = &switchPositions;
 
-  bytePointerArray[NUM_SATS] = &RTBState;
-  bytePointerArray[IDLE_PERCENT] = &motorState;
-  bytePointerArray[HOVER_PERCENT] = &telemFailSafe;
-  bytePointerArray[TX_LOSS_RTB] = &gpsFailSafe;
-  bytePointerArray[MAG_DET] = &switchPositions;
-  bytePointerArray[GPS_DET] = &switchPositions;
+  bytePointerArray[NUM_SATS] = &gps.data.vars.numSV;
+  bytePointerArray[IDLE_PERCENT] = &propIdlePercent;
+  bytePointerArray[HOVER_PERCENT] = &hoverPercent;
+  bytePointerArray[TX_LOSS_RTB] = &txLossRTB;
+  bytePointerArray[MAG_DET] = &imu.magDetected;
+  bytePointerArray[GPS_DET] = &txFailSafe;
 }
 /*
 void DEBUG_DUMP(){
@@ -384,7 +384,7 @@ void ROMFlagsCheck() {
     EEPROM.write(VER_FLAG_2, VER_NUM_2);
   }
   uint16_t j;
-  if (EEPROM.read(TX_FS_FLAG != 0xAA)) {
+  if (EEPROM.read(TX_FS_FLAG) != 0xAA) {
     EEPROM.write(TX_FS, 0);
     EEPROM.write(TX_FS_FLAG, 0xAA);
   }
@@ -600,7 +600,7 @@ void LoadPWMLimits() {
       hoverCommand = 1000 * (1 + ((float)hoverPercent / 100.0));
     }
   }
-  Serial<<pwmLow.val<<","<<pwmHigh.val<<","<<propIdleCommand<<","<<hoverCommand<<"\r\n";
+  //Serial << pwmLow.val << "," << pwmHigh.val << "," << propIdleCommand << "," << hoverCommand << "\r\n";
 }
 void LoadRC() {
   uint16_t j = 0; //index for input buffers
@@ -645,7 +645,7 @@ void LoadRC() {
     }
   }
   txLossRTB = EEPROM.read(TX_FS);
-  Serial<<_HEX(txLossRTB)<<"\r\n";
+  //Serial << txLossRTB << " " << EEPROM.read(TX_FS) << "\r\n";
   if (txLossRTB > 1) {
     txLossRTB = 0;
   }
