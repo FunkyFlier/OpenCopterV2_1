@@ -229,6 +229,7 @@ void AssignPointerArray() {
   bytePointerArray[TX_LOSS_RTB] = &txLossRTB;
   bytePointerArray[MAG_DET] = &imu.magDetected;
   bytePointerArray[GPS_DET] = &txFailSafe;
+  bytePointerArray[TX_FS_STATUS] = &txFailSafe;
 }
 /*
 void DEBUG_DUMP(){

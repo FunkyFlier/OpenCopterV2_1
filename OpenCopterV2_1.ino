@@ -9,6 +9,19 @@
 #include "AUXMATH.h"
 #include "UBLOXL.h"
 
+#define ROT_45
+
+
+//#define V1
+#define V2
+
+#ifdef V2
+#ifdef V1
+#undef V1
+#endif
+#endif
+
+
 #define SACC_MAX 0.35
 #define HACC_MAX 1.5
 #define MIN_SATS 12
@@ -119,25 +132,15 @@ enum CalibrationFlags {
   GAINS_FLAG
 };
 
-enum RTBStates{
+enum RTBStates {
   CLIMB,
   TRAVEL,
   DESCEND
 };
 
 
-//#define V1
-#define V2
-
-#ifdef V2
-#ifdef V1
-#undef V1
-#endif
-#endif
 
 
-
-#define ROT_45
 //LED defines GREEN, YELLOW, BLUE, RED
 #define GREEN 42
 #define YELLOW 40
@@ -175,7 +178,6 @@ enum RTBStates{
 #define RCSigPort Serial1
 #define Port2 Serial2
 #define gpsPort Serial3
-
 
 
 //V1 defines
@@ -251,59 +253,59 @@ enum RTBStates{
 
 
 
-#define D22Output() DDRA |= 1<<0 
-#define D22High() PORTA |= 1<<0 
+#define D22Output() DDRA |= 1<<0
+#define D22High() PORTA |= 1<<0
 #define D22Low() PORTA &= ~(1<<0)
 #define D22Toggle() PORTA ^= (1<<0);
 
-#define D23Output() DDRA |= 1<<1 
-#define D23High() PORTA |= 1<<1 
+#define D23Output() DDRA |= 1<<1
+#define D23High() PORTA |= 1<<1
 #define D23Low() PORTA &= ~(1<<1)
 #define D23Toggle() PORTA ^= (1<<1);
 
-#define D24Output() DDRA |= 1<<2 
-#define D24High() PORTA |= 1<<2 
+#define D24Output() DDRA |= 1<<2
+#define D24High() PORTA |= 1<<2
 #define D24Low() PORTA &= ~(1<<2)
 #define D24Toggle() PORTA ^= (1<<2);
 
-#define D25Output() DDRA |= 1<<3 
-#define D25High() PORTA |= 1<<3 
+#define D25Output() DDRA |= 1<<3
+#define D25High() PORTA |= 1<<3
 #define D25Low() PORTA &= ~(1<<3)
 #define D25Toggle() PORTA ^= (1<<3);
 
-#define D26Output() DDRA |= 1<<4 
-#define D26High() PORTA |= 1<<4 
+#define D26Output() DDRA |= 1<<4
+#define D26High() PORTA |= 1<<4
 #define D26Low() PORTA &= ~(1<<4)
 #define D26Toggle() PORTA ^= (1<<4);
 
-#define D27Output() DDRA |= 1<<5 
-#define D27High() PORTA |= 1<<5 
+#define D27Output() DDRA |= 1<<5
+#define D27High() PORTA |= 1<<5
 #define D27Low() PORTA &= ~(1<<5)
 #define D27Toggle() PORTA ^= (1<<5);
 
-#define D28Output() DDRA |= 1<<6 
-#define D28High() PORTA |= 1<<6 
+#define D28Output() DDRA |= 1<<6
+#define D28High() PORTA |= 1<<6
 #define D28Low() PORTA &= ~(1<<6)
 #define D28Toggle() PORTA ^= (1<<6);
 
-#define D29Output() DDRA |= 1<<7 
-#define D29High() PORTA |= 1<<7 
+#define D29Output() DDRA |= 1<<7
+#define D29High() PORTA |= 1<<7
 #define D29Low() PORTA &= ~(1<<7)
 #define D29Toggle() PORTA ^= (1<<7);
 
-#define GyroSSOutput() DDRL |= 1<<0 
-#define GyroSSHigh() PORTL |= 1<<0 
+#define GyroSSOutput() DDRL |= 1<<0
+#define GyroSSHigh() PORTL |= 1<<0
 #define GyroSSLow() PORTL &= ~(1<<0)
 
-#define AccSSOutput() DDRL |= 1<<1 
-#define AccSSHigh() PORTL |= 1<<1 
+#define AccSSOutput() DDRL |= 1<<1
+#define AccSSHigh() PORTL |= 1<<1
 #define AccSSLow() PORTL &= ~(1<<1)
 
-#define BaroSSOutput() DDRL |= 1<<2 
-#define BaroSSHigh() PORTL |= 1<<2 
+#define BaroSSOutput() DDRL |= 1<<2
+#define BaroSSHigh() PORTL |= 1<<2
 #define BaroSSLow() PORTL &= ~(1<<2)
 
-#define MagSSOutput() DDRL |= 1<<3 
+#define MagSSOutput() DDRL |= 1<<3
 #define MagSSHigh() PORTL |= 1<<3
 #define MagSSLow() PORTL &= ~(1<<3)
 
@@ -311,11 +313,11 @@ enum RTBStates{
 #define FlashSSHigh() PORTL |= 1<<4
 #define FlashSSLow() PORTL &= ~(1<<4)
 
-#define RC_SS_Output() DDRH |= 1<<7 
-#define RC_SSHigh() PORTH |= 1<<7 
+#define RC_SS_Output() DDRH |= 1<<7
+#define RC_SSHigh() PORTH |= 1<<7
 #define RC_SSLow() PORTH &= ~(1<<7)
 
-//control defines 
+//control defines
 #define HH_ON 0
 #define HH_OFF 1
 
@@ -336,13 +338,15 @@ enum RTBStates{
 //radio control defines
 //RC defines
 enum RC_Types {
-  DSMX = 1, SBUS, RC};
+  DSMX = 1, SBUS, RC
+};
 
 
 enum ISR_States {
-  STAND,PPM};
+  STAND, PPM
+};
 
-enum motorControlStates{
+enum motorControlStates {
   HOLD,
   TO,
   FLIGHT,
@@ -350,9 +354,10 @@ enum motorControlStates{
 };
 
 enum RC_Chan {
-  THRO, AILE, ELEV, RUDD, GEAR, AUX1, AUX2, AUX3};
+  THRO, AILE, ELEV, RUDD, GEAR, AUX1, AUX2, AUX3
+};
 
-enum loiterStates{
+enum loiterStates {
   LOITERING,
   RCINPUT,
   LAND,
@@ -401,8 +406,8 @@ enum BYTES {
   HOVER_PERCENT,
   TX_LOSS_RTB,
   MAG_DET,
-  GPS_DET
-
+  GPS_DET,
+  TX_FS_STATUS
 };
 
 
@@ -560,7 +565,7 @@ enum Floats {
 
 #define RADIO_BUF_SIZE 256
 #define NUM_WAY_POINTS 0x14
-#define Port0 Serial 
+#define Port0 Serial
 #define RCSigPort Serial1
 #define Port2 Serial2
 #define gpsPort Serial3
@@ -569,9 +574,9 @@ float_u *floatPointerArray[145];
 
 int16_u *int16PointerArray[12];
 
-uint8_t *bytePointerArray[15];
+uint8_t *bytePointerArray[16];
 
-int16_u gyroX,gyroY,gyroZ,accX,accY,accZ,magX,magY,magZ;
+int16_u gyroX, gyroY, gyroZ, accX, accY, accZ, magX, magY, magZ;
 
 
 int baroCount;
@@ -634,16 +639,16 @@ bool newBaro;
 #endif//#ifdef V2
 //end barometer
 //IMU related vars
-int32_t gyroSumX,gyroSumY,gyroSumZ;
-int16_t gyroOffsetX,gyroOffsetY,gyroOffsetZ,gyroPrevX,gyroPrevY,gyroPrevZ;
-float radianGyroX,radianGyroY,radianGyroZ;
-float_u degreeGyroX,degreeGyroY,degreeGyroZ;
-float_u filtAccX,filtAccY,filtAccZ;
-float_u calibMagX,calibMagY,calibMagZ;//needs to be a float so the vector can be normalized
-float shiftedMagX,shiftedMagY,shiftedMagZ;
-float shiftedAccX,shiftedAccY,shiftedAccZ;
-float_u scaledAccX,scaledAccY,scaledAccZ;
-float accToFilterX,accToFilterY,accToFilterZ;
+int32_t gyroSumX, gyroSumY, gyroSumZ;
+int16_t gyroOffsetX, gyroOffsetY, gyroOffsetZ, gyroPrevX, gyroPrevY, gyroPrevZ;
+float radianGyroX, radianGyroY, radianGyroZ;
+float_u degreeGyroX, degreeGyroY, degreeGyroZ;
+float_u filtAccX, filtAccY, filtAccZ;
+float_u calibMagX, calibMagY, calibMagZ; //needs to be a float so the vector can be normalized
+float shiftedMagX, shiftedMagY, shiftedMagZ;
+float shiftedAccX, shiftedAccY, shiftedAccZ;
+float_u scaledAccX, scaledAccY, scaledAccZ;
+float accToFilterX, accToFilterY, accToFilterZ;
 
 UBLOX gps;
 //TinyGPS gps;
@@ -652,7 +657,7 @@ float_u distToCraft;
 float_u headingToCraft;
 
 //GPS related vars
-typedef struct{
+typedef struct {
   int32_u lat;
   int32_u lon;
   //int32_u alt;
@@ -663,9 +668,9 @@ WayPoint_t homeBase;
 WayPoint_t wayPoints[20];
 WayPoint_t loiterWP;//rename
 
-float_u homeLat,homeLon;
+float_u homeLat, homeLon;
 //RC related vars
-uint8_t readState,inByte,byteCount,channelNumber;
+uint8_t readState, inByte, byteCount, channelNumber;
 volatile uint8_t rcType;
 uint32_t frameTime;
 bool detected = false;
@@ -675,7 +680,7 @@ bool frameValid = false;
 
 uint8_t spekBuffer[14];
 
-uint16_t bufferIndex=0;
+uint16_t bufferIndex = 0;
 bool newGSRC = false;
 
 
@@ -694,7 +699,7 @@ uint8_t ISRState = STAND;
 uint8_t channelCount = 0;
 
 
-typedef struct{
+typedef struct {
   int16_t max;
   int16_t min;
   int16_t mid;
@@ -712,12 +717,12 @@ int16_t GSRCValue[8];
 int16_u throttleCommand;
 
 //timers and DTs
-uint32_t imuTimer,GPSTimer;
+uint32_t imuTimer, GPSTimer;
 uint32_t generalPurposeTimer;
 uint16_t groundFSCount;
 float imuDT;
 float GPSDT;
-float lpfDT,beta,alphaBaro,betaBaro;
+float lpfDT, beta, alphaBaro, betaBaro;
 float_u alpha;
 
 float_u kp_pitch_rate;//52
@@ -810,24 +815,24 @@ float_u outFloat;
 float_u pitchSetPoint;
 float_u rollSetPoint;
 float_u yawSetPoint;
-float_u rateSetPointX;    
+float_u rateSetPointX;
 float_u rateSetPointY;
 float_u rateSetPointZ;
 float_u adjustmentX;
 float_u adjustmentY;
-float_u adjustmentZ; 
-float_u throttleAdjustment;    
-float_u velSetPointX,velSetPointY;
-float_u zTarget,velSetPointZ;
+float_u adjustmentZ;
+float_u throttleAdjustment;
+float_u velSetPointX, velSetPointY;
+float_u zTarget, velSetPointZ;
 float yawInput;
 float zero = 0.0;
-float_u pitchSetPointTX,rollSetPointTX;
-float_u distToWayPoint,targetVelWayPoint;
+float_u pitchSetPointTX, rollSetPointTX;
+float_u distToWayPoint, targetVelWayPoint;
 float speed2D_MPS;
-float_u tiltAngleX,tiltAngleY;
+float_u tiltAngleX, tiltAngleY;
 uint8_t HHState = 1;
-float_u motorCommand1,motorCommand2,motorCommand3,motorCommand4;
-float motorPWM1,motorPWM2,motorPWM3,motorPWM4;
+float_u motorCommand1, motorCommand2, motorCommand3, motorCommand4;
+float motorPWM1, motorPWM2, motorPWM3, motorPWM4;
 bool integrate = false;
 bool enterState = true;
 
@@ -838,9 +843,9 @@ bool calcYaw;
 volatile bool failSafe = false;
 bool toggle;
 volatile bool watchDogStartCount;
-volatile uint32_t watchDogFailSafeCounter,RCFailSafeCounter,GPSFailSafeCounter;
+volatile uint32_t watchDogFailSafeCounter, RCFailSafeCounter, GPSFailSafeCounter;
 
-float_u xTarget,yTarget;
+float_u xTarget, yTarget;
 uint8_t calibrationFlags;
 
 //uint8_t outFloatIndex;
@@ -865,7 +870,7 @@ float accXScale, accYScale, accZScale, accXOffset, accYOffset, accZOffset;
 
 
 
-float scaledMagX,scaledMagY,scaledMagZ,magNorm,magToFiltX,magToFiltY,magToFiltZ;
+float scaledMagX, scaledMagY, scaledMagZ, magNorm, magToFiltX, magToFiltY, magToFiltZ;
 
 
 //x and y setpoints are rotated into pitch and roll set points
@@ -873,32 +878,32 @@ float scaledMagX,scaledMagY,scaledMagZ,magNorm,magToFiltX,magToFiltY,magToFiltZ;
 
 uint32_t _400HzTimer;
 float_u controlBearing;
-uint8_t XYLoiterState,ZLoiterState;
+uint8_t XYLoiterState, ZLoiterState;
 int16_t rcDifference;
 uint32_t waitTimer;
 uint8_t RTBState;
 
-float homeBaseXOffset=0,homeBaseYOffset=0;
+float homeBaseXOffset = 0, homeBaseYOffset = 0;
 
 
 //radio protocol vars
-uint16_t localPacketNumberOrdered,localPacketNumberUn,remotePacketNumberOrdered,remotePacketNumberUn,packetTemp[2];
+uint16_t localPacketNumberOrdered, localPacketNumberUn, remotePacketNumberOrdered, remotePacketNumberUn, packetTemp[2];
 uint32_t radioTimer;
 bool handShake;
-uint8_t handShakeState,rxSum,rxDoubleSum,txSum,txDoubleSum,radioByte,
-packetLength,numRXBytes,radioState,numRXbytes,typeNum,cmdNum,
-itemBuffer[255],itemIndex,temp,hsNumItems,lsNumItems,hsList[40],lsList[40],liveDataBuffer[200],hsRequestNumber,lsRequestNumber,hsListIndex,lsListIndex;
-uint32_t hsMillis,lsMillis,hsTXTimer,lsTXTimer;
-bool offsetFlag,sendCalibrationData,hsTX,lsTX,tuningTrasnmitOK;
+uint8_t handShakeState, rxSum, rxDoubleSum, txSum, txDoubleSum, radioByte,
+        packetLength, numRXBytes, radioState, numRXbytes, typeNum, cmdNum,
+        itemBuffer[255], itemIndex, temp, hsNumItems, lsNumItems, hsList[40], lsList[40], liveDataBuffer[200], hsRequestNumber, lsRequestNumber, hsListIndex, lsListIndex;
+uint32_t hsMillis, lsMillis, hsTXTimer, lsTXTimer;
+bool offsetFlag, sendCalibrationData, hsTX, lsTX, tuningTrasnmitOK;
 
 
-uint8_t gpsFailSafe = false,txFailSafe = false,telemFailSafe = false,battFailSafe = false;
+uint8_t gpsFailSafe = false, txFailSafe = false, telemFailSafe = false, battFailSafe = false;
 
-bool trimMode,setTrim,trimComplete,autoMaticReady;
+bool trimMode, setTrim, trimComplete, autoMaticReady;
 uint8_t throttleCheckFlag;
 bool modeSelect = false;
-uint8_t switchPositions,clearTXRTB;
-uint8_t previousFlightMode,motorState;
+uint8_t switchPositions, clearTXRTB;
+uint8_t previousFlightMode, motorState;
 float_u initialYaw;
 uint32_t tuningItemIndex;
 uint32_t radioLimitTimer;
@@ -906,7 +911,7 @@ uint32_t radioLimitTimer;
 Print* radioPrint;
 Stream* radioStream;
 
-bool USBFlag = false,saveGainsFlag = false;
+bool USBFlag = false, saveGainsFlag = false;
 
 uint32_t ledTimer;
 
@@ -915,7 +920,7 @@ float_u baroZ;
 float_u gpsAlt;
 
 float_u floatLat, floatLon;
-float_u velN,velE,velD;
+float_u velN, velE, velD;
 
 float initialPressure, alti;
 float_u pressure;
@@ -923,56 +928,56 @@ uint32_t pollTimer;
 
 uint32_t romWriteDelayTimer;
 uint32_t _400Time;
-float_u gpsX,gpsY;
+float_u gpsX, gpsY;
 
 uint32_t baroTimer;
-float baroDT,prevBaro;
+float baroDT, prevBaro;
 float_u baroRate;
-float_u baroVel,baroAlt;
-int16_t tempX,tempY;
+float_u baroVel, baroAlt;
+int16_t tempX, tempY;
 
-float rotGyroX,rotGyroY,rotAccX,rotAccY;
+float rotGyroX, rotGyroY, rotAccX, rotAccY;
 
 uint32_t loopTime;
-int16_u pwmHigh,pwmLow;
-uint8_t propIdlePercent,hoverPercent;
-uint16_t propIdleCommand,hoverCommand;
+int16_u pwmHigh, pwmLow;
+uint8_t propIdlePercent, hoverPercent;
+uint16_t propIdleCommand, hoverCommand;
 
 bool gsCTRL = false;
 int16_t loitThro;
 float_u landingThroAdjustment;
 float throAdjAlpha;
 
-float_u hAcc,sAcc,pDop;
+float_u hAcc, sAcc, pDop;
 
 uint8_t numSats;
 uint8_t txLossRTB;
 //constructors //fix the dts
-openIMU imu(&radianGyroX,&radianGyroY,&radianGyroZ,&accToFilterX,&accToFilterY,&accToFilterZ,&filtAccX.val,&filtAccY.val,&filtAccZ.val,
-&magToFiltX,&magToFiltY,&magToFiltZ,&gpsX.val,&gpsY.val,&baroZ.val,&velN.val,&velE.val,&baroVel.val,&imuDT);
+openIMU imu(&radianGyroX, &radianGyroY, &radianGyroZ, &accToFilterX, &accToFilterY, &accToFilterZ, &filtAccX.val, &filtAccY.val, &filtAccZ.val,
+            &magToFiltX, &magToFiltY, &magToFiltZ, &gpsX.val, &gpsY.val, &baroZ.val, &velN.val, &velE.val, &baroVel.val, &imuDT);
 //openIMU imu(&radianGyroX,&radianGyroY,&radianGyroZ,&accToFilterX,&accToFilterY,&accToFilterZ,&filtAccX.val,&filtAccY.val,&filtAccZ.val,&magToFiltX,&magToFiltY,&magToFiltZ,&gpsX.val,&gpsY.val,&baroZ.val,&zero,&zero,&imuDT);
 
-PID PitchRate(&rateSetPointY.val,&degreeGyroY.val,&adjustmentY.val,&integrate,&kp_pitch_rate.val,&ki_pitch_rate.val,&kd_pitch_rate.val,&fc_pitch_rate.val,&imuDT,400,400);
-PID RollRate(&rateSetPointX.val,&degreeGyroX.val,&adjustmentX.val,&integrate,&kp_roll_rate.val,&ki_roll_rate.val,&kd_roll_rate.val,&fc_roll_rate.val,&imuDT,400,400);
-PID YawRate(&rateSetPointZ.val,&degreeGyroZ.val,&adjustmentZ.val,&integrate,&kp_yaw_rate.val,&ki_yaw_rate.val,&kd_yaw_rate.val,&fc_yaw_rate.val,&imuDT,400,400);
+PID PitchRate(&rateSetPointY.val, &degreeGyroY.val, &adjustmentY.val, &integrate, &kp_pitch_rate.val, &ki_pitch_rate.val, &kd_pitch_rate.val, &fc_pitch_rate.val, &imuDT, 400, 400);
+PID RollRate(&rateSetPointX.val, &degreeGyroX.val, &adjustmentX.val, &integrate, &kp_roll_rate.val, &ki_roll_rate.val, &kd_roll_rate.val, &fc_roll_rate.val, &imuDT, 400, 400);
+PID YawRate(&rateSetPointZ.val, &degreeGyroZ.val, &adjustmentZ.val, &integrate, &kp_yaw_rate.val, &ki_yaw_rate.val, &kd_yaw_rate.val, &fc_yaw_rate.val, &imuDT, 400, 400);
 
-PID PitchAngle(&pitchSetPoint.val,&imu.pitch.val,&rateSetPointY.val,&integrate,&kp_pitch_attitude.val,&ki_pitch_attitude.val,&kd_pitch_attitude.val,&fc_pitch_attitude.val,&imuDT,800,800);
-PID RollAngle(&rollSetPoint.val,&imu.roll.val,&rateSetPointX.val,&integrate,&kp_roll_attitude.val,&ki_roll_attitude.val,&kd_roll_attitude.val,&fc_roll_attitude.val,&imuDT,800,800);
-YAW YawAngle(&yawSetPoint.val,&imu.yaw.val,&rateSetPointZ.val,&integrate,&kp_yaw_attitude.val,&ki_yaw_attitude.val,&kd_yaw_attitude.val,&fc_yaw_attitude.val,&imuDT,800,800);
+PID PitchAngle(&pitchSetPoint.val, &imu.pitch.val, &rateSetPointY.val, &integrate, &kp_pitch_attitude.val, &ki_pitch_attitude.val, &kd_pitch_attitude.val, &fc_pitch_attitude.val, &imuDT, 800, 800);
+PID RollAngle(&rollSetPoint.val, &imu.roll.val, &rateSetPointX.val, &integrate, &kp_roll_attitude.val, &ki_roll_attitude.val, &kd_roll_attitude.val, &fc_roll_attitude.val, &imuDT, 800, 800);
+YAW YawAngle(&yawSetPoint.val, &imu.yaw.val, &rateSetPointZ.val, &integrate, &kp_yaw_attitude.val, &ki_yaw_attitude.val, &kd_yaw_attitude.val, &fc_yaw_attitude.val, &imuDT, 800, 800);
 
-PID LoiterXPosition(&xTarget.val,&imu.XEst.val,&velSetPointX.val,&integrate,&kp_loiter_pos_x.val,&ki_loiter_pos_x.val,&kd_loiter_pos_x.val,&fc_loiter_pos_x.val,&imuDT,1,1);
-PID LoiterXVelocity(&velSetPointX.val,&imu.velX.val,&tiltAngleX.val,&integrate,&kp_loiter_velocity_x.val,&ki_loiter_velocity_x.val,&kd_loiter_velocity_x.val,&fc_loiter_velocity_x.val,&imuDT,30,30);
+PID LoiterXPosition(&xTarget.val, &imu.XEst.val, &velSetPointX.val, &integrate, &kp_loiter_pos_x.val, &ki_loiter_pos_x.val, &kd_loiter_pos_x.val, &fc_loiter_pos_x.val, &imuDT, 1, 1);
+PID LoiterXVelocity(&velSetPointX.val, &imu.velX.val, &tiltAngleX.val, &integrate, &kp_loiter_velocity_x.val, &ki_loiter_velocity_x.val, &kd_loiter_velocity_x.val, &fc_loiter_velocity_x.val, &imuDT, 30, 30);
 
-PID LoiterYPosition(&yTarget.val,&imu.YEst.val,&velSetPointY.val,&integrate,&kp_loiter_pos_y.val,&ki_loiter_pos_y.val,&kd_loiter_pos_y.val,&fc_loiter_pos_y.val,&imuDT,1,1);
-PID LoiterYVelocity(&velSetPointY.val,&imu.velY.val,&tiltAngleY.val,&integrate,&kp_loiter_velocity_y.val,&ki_loiter_velocity_y.val,&kd_loiter_velocity_y.val,&fc_loiter_velocity_y.val,&imuDT,30,30);
+PID LoiterYPosition(&yTarget.val, &imu.YEst.val, &velSetPointY.val, &integrate, &kp_loiter_pos_y.val, &ki_loiter_pos_y.val, &kd_loiter_pos_y.val, &fc_loiter_pos_y.val, &imuDT, 1, 1);
+PID LoiterYVelocity(&velSetPointY.val, &imu.velY.val, &tiltAngleY.val, &integrate, &kp_loiter_velocity_y.val, &ki_loiter_velocity_y.val, &kd_loiter_velocity_y.val, &fc_loiter_velocity_y.val, &imuDT, 30, 30);
 
-PID AltHoldPosition(&zTarget.val,&imu.ZEstUp.val,&velSetPointZ.val,&integrate,&kp_altitude_position.val,&ki_altitude_position.val,&kd_altitude_position.val,&fc_altitude_position.val,&imuDT,1.5,1.5);
+PID AltHoldPosition(&zTarget.val, &imu.ZEstUp.val, &velSetPointZ.val, &integrate, &kp_altitude_position.val, &ki_altitude_position.val, &kd_altitude_position.val, &fc_altitude_position.val, &imuDT, 1.5, 1.5);
 //ALT AltHoldVelocity(&velSetPointZ.val,&imu.velZUp.val,&throttleAdjustment.val,&integrate,&kp_altitude_velocity.val,&ki_altitude_velocity.val,&kd_altitude_velocity.val,&fc_altitude_velocity.val,&imuDT,800,800,&mul_altitude_velocity.val);
-PID AltHoldVelocity(&velSetPointZ.val,&imu.velZUp.val,&throttleAdjustment.val,&integrate,&kp_altitude_velocity.val,&ki_altitude_velocity.val,&kd_altitude_velocity.val,&fc_altitude_velocity.val,&imuDT,250,250);
+PID AltHoldVelocity(&velSetPointZ.val, &imu.velZUp.val, &throttleAdjustment.val, &integrate, &kp_altitude_velocity.val, &ki_altitude_velocity.val, &kd_altitude_velocity.val, &fc_altitude_velocity.val, &imuDT, 250, 250);
 
-PID WayPointPosition(&zero,&distToWayPoint.val,&targetVelWayPoint.val,&integrate,&kp_waypoint_position.val,&ki_waypoint_position.val,&kd_waypoint_position.val,&fc_waypoint_position.val,&GPSDT,10,10);
-PID WayPointRate(&targetVelWayPoint.val,&speed2D_MPS,&pitchSetPoint.val,&integrate,&kp_waypoint_velocity.val,&ki_waypoint_velocity.val,&kd_waypoint_velocity.val,&fc_waypoint_velocity.val,&imuDT,45,45);
-//PID CrossTrack 
+PID WayPointPosition(&zero, &distToWayPoint.val, &targetVelWayPoint.val, &integrate, &kp_waypoint_position.val, &ki_waypoint_position.val, &kd_waypoint_position.val, &fc_waypoint_position.val, &GPSDT, 10, 10);
+PID WayPointRate(&targetVelWayPoint.val, &speed2D_MPS, &pitchSetPoint.val, &integrate, &kp_waypoint_velocity.val, &ki_waypoint_velocity.val, &kd_waypoint_velocity.val, &fc_waypoint_velocity.val, &imuDT, 45, 45);
+//PID CrossTrack
 //2D speed from GPS best idea where or use the vel from the estimator?
 
 
@@ -984,18 +989,18 @@ PID WayPointRate(&targetVelWayPoint.val,&speed2D_MPS,&pitchSetPoint.val,&integra
  }*/
 
 /*char hex[17]="0123456789ABCDEF";
- 
+
  void ShowHex(byte convertByte){
  Port0 << hex[(convertByte >>4) & 0x0F];
  Port0 << hex[convertByte & 0x0F]<<"\r\n";
  }*/
 
-void setup(){
-  pinMode(RED,OUTPUT);
-  pinMode(YELLOW,OUTPUT);
-  pinMode(GREEN,OUTPUT);
+void setup() {
+  pinMode(RED, OUTPUT);
+  pinMode(YELLOW, OUTPUT);
+  pinMode(GREEN, OUTPUT);
   //digitalWrite(RED,HIGH);
-  pinMode(13,OUTPUT);
+  pinMode(13, OUTPUT);
   RC_SS_Output();
   Port0.begin(115200);
   Port2.begin(115200);
@@ -1011,7 +1016,7 @@ void setup(){
   //DEBUG_DUMP();
   //while(1){}
 
-  //----------------------------  
+  //----------------------------
 
   GyroSSOutput();
   AccSSOutput();
@@ -1044,7 +1049,7 @@ void setup(){
   I2c.setSpeed(1);
   SPI.begin();
   SPI.setBitOrder(MSBFIRST);
-  SPI.setClockDivider(SPI_CLOCK_DIV2);   
+  SPI.setClockDivider(SPI_CLOCK_DIV2);
 
   ROMFlagsCheck();
   CheckESCFlag();
@@ -1052,12 +1057,12 @@ void setup(){
   CalibrateESC();
   MotorInit();
   delay(3500);//this allows the telemetry radios to connect before trying the handshake
-  if (handShake == false){
+  if (handShake == false) {
     radioStream = &Port2;
     radioPrint = &Port2;
     HandShake();
 
-    if (handShake == false){
+    if (handShake == false) {
       USBFlag = true;
       radioStream = &Port0;
       radioPrint = &Port0;
@@ -1067,12 +1072,12 @@ void setup(){
   //Serial<<localPacketNumberOrdered<<","<<localPacketNumberUn<<"\r\n";
 
   Port0.begin(115200);
-  if (calibrationMode == true){
+  if (calibrationMode == true) {
     //Port0<<"cal mode\r\n";
     BaroInit();
     AccInit();
     MagInit();
-    CalibrateSensors();  
+    CalibrateSensors();
     ROMFlagsCheck();
   }
 
@@ -1095,22 +1100,22 @@ void setup(){
 
   currentTime = micros();
   watchDogStartCount = true;
-  digitalWrite(RED,1);
-  digitalWrite(YELLOW,1);
-  digitalWrite(GREEN,1);
-  digitalWrite(13,1);
+  digitalWrite(RED, 1);
+  digitalWrite(YELLOW, 1);
+  digitalWrite(GREEN, 1);
+  digitalWrite(13, 1);
 }
 
-void loop(){
+void loop() {
 
   _400HzTask();
   loopTime = micros();
-  if (loopTime - imuTimer >= 10000){
+  if (loopTime - imuTimer >= 10000) {
     imuDT = (loopTime - imuTimer) * 0.000001;
     imuTimer = loopTime;
     GetGyro();
     _400HzTask();
-    if(imu.magDetected == true){
+    if (imu.magDetected == true) {
       GetMag();
     }
     _400HzTask();
@@ -1126,15 +1131,15 @@ void loop(){
     imu.Predict();
     _400HzTask();
     imu.UpdateLagIndex();
-    _400HzTask();  
+    _400HzTask();
     FlightSM();
     _400HzTask();
 
-    if (GPSDetected == true){
+    if (GPSDetected == true) {
       gps.Monitor();
     }
     _400HzTask();
-    if (gps.newData == true){
+    if (gps.newData == true) {
 
       gps.newData = false;
 
@@ -1144,34 +1149,34 @@ void loop(){
       velN.val = gps.data.vars.velN * 0.01;
       velE.val = gps.data.vars.velE * 0.01;
       velD.val = gps.data.vars.velD * 0.01;
-      gps.DistBearing(&homeBase.lat.val,&homeBase.lon.val,&gps.data.vars.lat,&gps.data.vars.lon,&gpsX.val,&gpsY.val,&distToCraft.val,&headingToCraft.val);
+      gps.DistBearing(&homeBase.lat.val, &homeBase.lon.val, &gps.data.vars.lat, &gps.data.vars.lon, &gpsX.val, &gpsY.val, &distToCraft.val, &headingToCraft.val);
       hAcc.val = gps.data.vars.hAcc * 0.001;///raw pitch
       sAcc.val = gps.data.vars.sAcc * 0.001;//raw roll
       pDop.val = gps.data.vars.pDop * 0.01;//pitch offset
       numSats = gps.data.vars.numSV;
-      if (gps.data.vars.gpsFix != 3 || numSats < MIN_SATS || hAcc.val > HACC_MAX || sAcc.val > SACC_MAX){
+      if (gps.data.vars.gpsFix != 3 || numSats < MIN_SATS || hAcc.val > HACC_MAX || sAcc.val > SACC_MAX) {
         //if (gps.data.vars.gpsFix != 3){
         gpsFailSafe = true;
       }
-      //Serial<<GPSFailSafeCounter<<"\r\n";  
+      //Serial<<GPSFailSafeCounter<<"\r\n";
       GPSFailSafeCounter = 0;
 
       imu.CorrectGPS();
 
     }
 
-    if (GPSFailSafeCounter > 200){
+    if (GPSFailSafeCounter > 200) {
       gpsFailSafe = true;
     }
     PollPressure();
     _400HzTask();
-    if (newBaro == true){
+    if (newBaro == true) {
       newBaro = false;
-      GetAltitude(&pressure.val,&initialPressure,&baroAlt.val);
+      GetAltitude(&pressure.val, &initialPressure, &baroAlt.val);
       baroDT = (millis() - baroTimer) * 0.001;
       baroTimer = millis();
 
-      if (baroDT >= 0.1 || baroDT < 0){
+      if (baroDT >= 0.1 || baroDT < 0) {
         baroDT = 0.1;
 
 
@@ -1185,32 +1190,32 @@ void loop(){
       imu.CorrectAlt();
     }
     _400HzTask();
-    if (newRC == true){
+    if (newRC == true) {
       newRC = false;
       ProcessChannels();
       GetSwitchPositions();
       RCFailSafeCounter = 0;
-    }  
-    if (newGSRC == true){
+    }
+    if (newGSRC == true) {
       groundFSCount = 0;
       newGSRC = false;
       telemFailSafe = false;
       //Port0<<millis()<<","<<GSRCValue[THRO]<<","<<GSRCValue[AILE]<<","<<GSRCValue[ELEV]<<","<<GSRCValue[RUDD]<<","<<flightMode<<"\r\n";//<<","<<GSRCValue[GEAR]<<","<<GSRCValue[AUX1]<<","<<GSRCValue[AUX2]<<","<<GSRCValue[AUX3]<<"\r\n";
       //Port0<<millis()<<","<<GSRCValue[THRO]<<","<<GSRCValue[AILE]<<","<<GSRCValue[ELEV]<<","<<GSRCValue[RUDD]<<","<<pitchSetPoint.val<<","<<rollSetPoint.val<<","<<yawSetPoint.val<<","<<telemFailSafe<<"\r\n";
     }
-    if (groundFSCount >= 200){
+    if (groundFSCount >= 200) {
       //Port0<<"************\r\n";
       telemFailSafe = true;
     }
     _400HzTask();
-    if (RCFailSafeCounter >= 200 || failSafe == true){
+    if (RCFailSafeCounter >= 200 || failSafe == true) {
       txFailSafe = true;
-      if (txLossRTB == 0){
-        TIMSK5 = (0<<OCIE5A);
-        digitalWrite(13,LOW);
-        digitalWrite(RED,LOW);
-        digitalWrite(YELLOW,LOW);
-        digitalWrite(GREEN,LOW);
+      if (txLossRTB == 0) {
+        TIMSK5 = (0 << OCIE5A);
+        digitalWrite(13, LOW);
+        digitalWrite(RED, LOW);
+        digitalWrite(YELLOW, LOW);
+        digitalWrite(GREEN, LOW);
         Motor1WriteMicros(1000);//set the output compare value
         Motor2WriteMicros(1000);
         Motor3WriteMicros(1000);
@@ -1219,32 +1224,40 @@ void loop(){
         Motor6WriteMicros(1000);
         //Motor7WriteMicros(1000);
         //Motor8WriteMicros(1000);
-        if (failSafe == true){
-          digitalWrite(RED,HIGH);
+        if (failSafe == true) {
+          digitalWrite(RED, HIGH);
         }
-        while(1){
+        while (1) {
 
-          digitalWrite(YELLOW,HIGH);
-          if (RCFailSafeCounter >= 200 ){
-            digitalWrite(GREEN,LOW);
+          digitalWrite(YELLOW, HIGH);
+          if (RCFailSafeCounter >= 200 ) {
+            digitalWrite(GREEN, LOW);
           }
           delay(500);
-          digitalWrite(YELLOW,LOW);
-          if (RCFailSafeCounter >= 200 ){
-            digitalWrite(GREEN,HIGH);
+          digitalWrite(YELLOW, LOW);
+          if (RCFailSafeCounter >= 200 ) {
+            digitalWrite(GREEN, HIGH);
           }
           delay(500);
         }
       }
 
     }
+    if (txFailSafe == true) {
+      if (motorState >= FLIGHT) {
+        if (flightMode != RTB) {
+          enterState = true;
+          flightMode = RTB;
+        }
+      }
+    }
 
 
     _400HzTask();
-    if (flightMode > 0){
+    if (flightMode > 0) {
       PitchAngle.calculate();
       RollAngle.calculate();
-      if (calcYaw == true){
+      if (calcYaw == true) {
         YawAngle.calculate();
       }
     }
@@ -1260,25 +1273,25 @@ void loop(){
 
 
   _400HzTask();
-  if (handShake == true){
+  if (handShake == true) {
     Radio();
 
-    if (tuningTrasnmitOK == true){
+    if (tuningTrasnmitOK == true) {
       TuningTransmitter();
 
       tuningTrasnmitOK = false;
 
     }
 
-  }  
+  }
   _400HzTask();
   watchDogFailSafeCounter = 0;
 }
 
-void _400HzTask(){
+void _400HzTask() {
   _400Time = micros();
-  if ( _400Time -_400HzTimer  >=2500 ){
-    lpfDT = (_400Time -_400HzTimer)*0.000001;
+  if ( _400Time - _400HzTimer  >= 2500 ) {
+    lpfDT = (_400Time - _400HzTimer) * 0.000001;
     _400HzTimer = _400Time;
     GetAcc();
   }
@@ -1286,165 +1299,165 @@ void _400HzTask(){
 
 
 
-void FlightSM(){
+void FlightSM() {
 
-  switch(flightMode){
-  case RATE:
-    if (enterState == true){
-      enterState = false;
-      if (previousFlightMode != RATE && previousFlightMode != ATT){
-        throttleCheckFlag = true;
+  switch (flightMode) {
+    case RATE:
+      if (enterState == true) {
+        enterState = false;
+        if (previousFlightMode != RATE && previousFlightMode != ATT) {
+          throttleCheckFlag = true;
+        }
+        digitalWrite(13, HIGH);
+        digitalWrite(RED, HIGH);
+        digitalWrite(YELLOW, HIGH);
+        digitalWrite(GREEN, HIGH);
       }
-      digitalWrite(13,HIGH);
-      digitalWrite(RED,HIGH);
-      digitalWrite(YELLOW,HIGH);
-      digitalWrite(GREEN,HIGH);
-    }
-    TrimCheck();
+      TrimCheck();
 
-    break;
-  case ATT:
-    if (enterState == true){
-      if (previousFlightMode != RATE && previousFlightMode != ATT){
-        throttleCheckFlag = true;
+      break;
+    case ATT:
+      if (enterState == true) {
+        if (previousFlightMode != RATE && previousFlightMode != ATT) {
+          throttleCheckFlag = true;
+
+        }
+        yawSetPoint = imu.yaw;
+        enterState = false;
+        digitalWrite(13, LOW);
+        digitalWrite(RED, LOW);
+        digitalWrite(YELLOW, LOW);
+        digitalWrite(GREEN, LOW);
+      }
+      HeadingHold();
+      TrimCheck();
+      break;
+    case L0:
+      if (enterState == true) {
+        enterState = false;
+        InitLoiter();
+        yawSetPoint = imu.yaw;
+        digitalWrite(13, HIGH);
+        digitalWrite(RED, HIGH);
+        digitalWrite(YELLOW, LOW);
+        digitalWrite(GREEN, LOW);
+      }
+      HeadingHold();
+      controlBearing.val = imu.yaw.val;
+      LoiterSM();
+      break;
+    case L1:
+      if (enterState == true) {
+        enterState = false;
+        InitLoiter();
+        yawSetPoint = imu.yaw;
+        digitalWrite(13, HIGH);
+        digitalWrite(RED, LOW);
+        digitalWrite(YELLOW, HIGH);
+        digitalWrite(GREEN, LOW);
+        controlBearing.val = initialYaw.val;
 
       }
-      yawSetPoint = imu.yaw;
-      enterState = false;
-      digitalWrite(13,LOW);
-      digitalWrite(RED,LOW);
-      digitalWrite(YELLOW,LOW);
-      digitalWrite(GREEN,LOW);
-    }
-    HeadingHold();
-    TrimCheck();
-    break;
-  case L0:
-    if (enterState == true){
-      enterState = false;
-      InitLoiter();
-      yawSetPoint = imu.yaw;
-      digitalWrite(13,HIGH);
-      digitalWrite(RED,HIGH);
-      digitalWrite(YELLOW,LOW);
-      digitalWrite(GREEN,LOW);
-    }
-    HeadingHold();
-    controlBearing.val = imu.yaw.val;
-    LoiterSM();
-    break;
-  case L1:
-    if (enterState == true){
-      enterState = false;
-      InitLoiter();
-      yawSetPoint = imu.yaw;
-      digitalWrite(13,HIGH);
-      digitalWrite(RED,LOW);
-      digitalWrite(YELLOW,HIGH);
-      digitalWrite(GREEN,LOW);
-      controlBearing.val = initialYaw.val;
+      HeadingHold();
+      LoiterSM();
+      break;
+    case L2:
+      if (enterState == true) {
+        InitLoiter();
+        yawSetPoint = imu.yaw;
+        digitalWrite(13, HIGH);
+        digitalWrite(RED, LOW);
+        digitalWrite(YELLOW, LOW);
+        digitalWrite(GREEN, HIGH);
 
-    }
-    HeadingHold();
-    LoiterSM();
-    break;
-  case L2:
-    if (enterState == true){
-      InitLoiter();
-      yawSetPoint = imu.yaw;
-      digitalWrite(13,HIGH);
-      digitalWrite(RED,LOW);
-      digitalWrite(YELLOW,LOW);
-      digitalWrite(GREEN,HIGH);
-
-      enterState = false;
-    }
-    HeadingHold();
-    controlBearing.val = headingToCraft.val;
-    LoiterSM();
-    break;
-  case FOLLOW:
-    digitalWrite(13,LOW);
-    digitalWrite(RED,HIGH);
-    digitalWrite(YELLOW,LOW);
-    digitalWrite(GREEN,LOW);
-    if (enterState == true){
-      enterState = false;
-      yawSetPoint = imu.yaw;
-    }
-    break;
-  case WP:
-    digitalWrite(13,LOW);
-    digitalWrite(RED,LOW);
-    digitalWrite(YELLOW,HIGH);
-    digitalWrite(GREEN,LOW);
-    if (enterState == true){
-      enterState = false;
-      yawSetPoint = imu.yaw;
-    }
-    break;
-  case RTB:
-    digitalWrite(13,LOW);
-    digitalWrite(RED,LOW);
-    digitalWrite(YELLOW,LOW);
-    digitalWrite(GREEN,HIGH);
-    if (enterState == true){
-      enterState = false;
-      xTarget.val = imu.XEst.val;
-      yTarget.val = imu.YEst.val;
-      zTarget.val = imu.ZEstUp.val + 1; 
-      if (zTarget.val > CEILING){
-        zTarget.val = CEILING;
+        enterState = false;
       }
-      if (zTarget.val < FLOOR){
-        zTarget.val = FLOOR;
+      HeadingHold();
+      controlBearing.val = headingToCraft.val;
+      LoiterSM();
+      break;
+    case FOLLOW:
+      digitalWrite(13, LOW);
+      digitalWrite(RED, HIGH);
+      digitalWrite(YELLOW, LOW);
+      digitalWrite(GREEN, LOW);
+      if (enterState == true) {
+        enterState = false;
+        yawSetPoint = imu.yaw;
       }
-      RTBState = CLIMB;
-      yawSetPoint = imu.yaw;
-    }
-    HeadingHold();
-    RTBStateMachine();
-    break;
+      break;
+    case WP:
+      digitalWrite(13, LOW);
+      digitalWrite(RED, LOW);
+      digitalWrite(YELLOW, HIGH);
+      digitalWrite(GREEN, LOW);
+      if (enterState == true) {
+        enterState = false;
+        yawSetPoint = imu.yaw;
+      }
+      break;
+    case RTB:
+      digitalWrite(13, LOW);
+      digitalWrite(RED, LOW);
+      digitalWrite(YELLOW, LOW);
+      digitalWrite(GREEN, HIGH);
+      if (enterState == true) {
+        enterState = false;
+        xTarget.val = imu.XEst.val;
+        yTarget.val = imu.YEst.val;
+        zTarget.val = imu.ZEstUp.val + 1;
+        if (zTarget.val > CEILING) {
+          zTarget.val = CEILING;
+        }
+        if (zTarget.val < FLOOR) {
+          zTarget.val = FLOOR;
+        }
+        RTBState = CLIMB;
+        yawSetPoint = imu.yaw;
+      }
+      HeadingHold();
+      RTBStateMachine();
+      break;
 
   }
 
 }
 
-void TrimCheck(){
+void TrimCheck() {
   uint8_t j;
-  if (setTrim == true){
-    if (trimComplete == false){
+  if (setTrim == true) {
+    if (trimComplete == false) {
       trimComplete = true;
       imu.pitchOffset.val = imu.rawPitch.val;
       imu.rollOffset.val = imu.rawRoll.val;
       j = 0;
-      for(uint16_t i = PITCH_OFFSET_START; i <=PITCH_OFFSET_END; i++){
-        EEPROM.write(i,imu.pitchOffset.buffer[j++]);
+      for (uint16_t i = PITCH_OFFSET_START; i <= PITCH_OFFSET_END; i++) {
+        EEPROM.write(i, imu.pitchOffset.buffer[j++]);
       }
       j = 0;
-      for(uint16_t i = ROLL_OFFSET_START; i <=ROLL_OFFSET_END; i++){
-        EEPROM.write(i,imu.rollOffset.buffer[j++]);
+      for (uint16_t i = ROLL_OFFSET_START; i <= ROLL_OFFSET_END; i++) {
+        EEPROM.write(i, imu.rollOffset.buffer[j++]);
       }
-      EEPROM.write(PR_FLAG,0xAA);
+      EEPROM.write(PR_FLAG, 0xAA);
     }
   }
 }
 
-void InitLoiter(){
+void InitLoiter() {
 
-  if (previousFlightMode != L1 && previousFlightMode != L2 && previousFlightMode != L0){
-    if (motorState == LANDING){
+  if (previousFlightMode != L1 && previousFlightMode != L2 && previousFlightMode != L0) {
+    if (motorState == LANDING) {
       motorState = FLIGHT;
     }
     throttleCheckFlag = true;
     throttleAdjustment.val = 0;
     xTarget.val = imu.XEst.val;
     yTarget.val = imu.YEst.val;
-    zTarget.val = imu.ZEstUp.val; 
-    if (zTarget.val < FLOOR){
+    zTarget.val = imu.ZEstUp.val;
+    if (zTarget.val < FLOOR) {
       zTarget.val = FLOOR;
-    } 
-    if (zTarget.val > CEILING){
+    }
+    if (zTarget.val > CEILING) {
       zTarget.val = FLOOR;
     }
     LoiterXPosition.reset();
@@ -1457,96 +1470,96 @@ void InitLoiter(){
 
 }
 
-void RTBStateMachine(){
-  if (motorState == HOLD || motorState == TO){
+void RTBStateMachine() {
+  if (motorState == HOLD || motorState == TO) {
     return;
   }
-  switch(RTBState){
-  case CLIMB:
-    LoiterCalculations();
-    RotatePitchRoll(&imu.yaw.val,&zero,&tiltAngleX.val,&tiltAngleY.val,&pitchSetPoint.val,&rollSetPoint.val);
-    AltHoldPosition.calculate();
-    AltHoldVelocity.calculate();
-    if (imu.ZEstUp.val >= (zTarget.val - 0.1) ){
-
-      RTBState = TRAVEL;
-      xTarget.val = homeBaseXOffset;
-      yTarget.val = homeBaseYOffset;
-    }
-    if (gpsFailSafe == true){
-      velSetPointZ.val = LAND_VEL;
-      RTBState = DESCEND;
-    }
-
-    break;
-  case TRAVEL:
-    //make special PID loops for the loiter positions
-    /*if (fabs(xTarget.val - imu.XEst.val) < 1.5){
-     velSetPointX.val = 0;
-     }
-     else{
-     
-     }
-     if (fabs(yTarget.val - imu.YEst.val) < 1.5){
-     velSetPointY.val = 0;
-     }
-     else{
-     
-     }*/
-    LoiterXPosition.calculate();
-    LoiterYPosition.calculate();
-    if (velSetPointX.val > 0.25){
-      velSetPointX.val = 0.25;
-    }
-    if (velSetPointX.val < -0.25){
-      velSetPointX.val = -0.25;
-    }
-    if (velSetPointY.val > 0.25){
-      velSetPointY.val = 0.25;
-    }
-    if (velSetPointY.val < -0.25){
-      velSetPointY.val = -0.25;
-    }
-    LoiterXVelocity.calculate();
-    tiltAngleX.val *= -1.0;
-    LoiterYVelocity.calculate();
-    RotatePitchRoll(&imu.yaw.val,&zero,&tiltAngleX.val,&tiltAngleY.val,&pitchSetPoint.val,&rollSetPoint.val);
-    AltHoldPosition.calculate();
-    AltHoldVelocity.calculate();
-    //if (fabs(imu.XEst.val - homeBaseXOffset) < 1 && fabs(imu.YEst.val - homeBaseYOffset) < 1){
-    if (fabs(imu.XEst.val - xTarget.val) < 1.0 && fabs(imu.YEst.val - yTarget.val) < 1.0){
-      velSetPointZ.val = LAND_VEL;
-      RTBState = DESCEND;
-      motorState = LANDING;
-    }
-    if (gpsFailSafe == true){
-      velSetPointZ.val = LAND_VEL;
-      RTBState = DESCEND;
-      motorState = LANDING;
-    }
-    break;
-  case DESCEND:
-    if (gpsFailSafe == true){
-      pitchSetPoint.val = pitchSetPointTX.val;
-      rollSetPoint.val = rollSetPointTX.val;
-
-      if (txFailSafe == true){
-        pitchSetPoint.val = 0;
-        rollSetPoint.val = 0;
-      }
-    }
-    else{
+  switch (RTBState) {
+    case CLIMB:
       LoiterCalculations();
-      RotatePitchRoll(&imu.yaw.val,&zero,&tiltAngleX.val,&tiltAngleY.val,&pitchSetPoint.val,&rollSetPoint.val);
-    }
-    //velSetPointZ.val = LAND_VEL;
-    AltHoldVelocity.calculate();
-    //motorState = LANDING;
-    break;
-  }  
+      RotatePitchRoll(&imu.yaw.val, &zero, &tiltAngleX.val, &tiltAngleY.val, &pitchSetPoint.val, &rollSetPoint.val);
+      AltHoldPosition.calculate();
+      AltHoldVelocity.calculate();
+      if (imu.ZEstUp.val >= (zTarget.val - 0.1) ) {
+
+        RTBState = TRAVEL;
+        xTarget.val = homeBaseXOffset;
+        yTarget.val = homeBaseYOffset;
+      }
+      if (gpsFailSafe == true) {
+        velSetPointZ.val = LAND_VEL;
+        RTBState = DESCEND;
+      }
+
+      break;
+    case TRAVEL:
+      //make special PID loops for the loiter positions
+      /*if (fabs(xTarget.val - imu.XEst.val) < 1.5){
+       velSetPointX.val = 0;
+       }
+       else{
+
+       }
+       if (fabs(yTarget.val - imu.YEst.val) < 1.5){
+       velSetPointY.val = 0;
+       }
+       else{
+
+       }*/
+      LoiterXPosition.calculate();
+      LoiterYPosition.calculate();
+      if (velSetPointX.val > 0.25) {
+        velSetPointX.val = 0.25;
+      }
+      if (velSetPointX.val < -0.25) {
+        velSetPointX.val = -0.25;
+      }
+      if (velSetPointY.val > 0.25) {
+        velSetPointY.val = 0.25;
+      }
+      if (velSetPointY.val < -0.25) {
+        velSetPointY.val = -0.25;
+      }
+      LoiterXVelocity.calculate();
+      tiltAngleX.val *= -1.0;
+      LoiterYVelocity.calculate();
+      RotatePitchRoll(&imu.yaw.val, &zero, &tiltAngleX.val, &tiltAngleY.val, &pitchSetPoint.val, &rollSetPoint.val);
+      AltHoldPosition.calculate();
+      AltHoldVelocity.calculate();
+      //if (fabs(imu.XEst.val - homeBaseXOffset) < 1 && fabs(imu.YEst.val - homeBaseYOffset) < 1){
+      if (fabs(imu.XEst.val - xTarget.val) < 1.0 && fabs(imu.YEst.val - yTarget.val) < 1.0) {
+        velSetPointZ.val = LAND_VEL;
+        RTBState = DESCEND;
+        motorState = LANDING;
+      }
+      if (gpsFailSafe == true) {
+        velSetPointZ.val = LAND_VEL;
+        RTBState = DESCEND;
+        motorState = LANDING;
+      }
+      break;
+    case DESCEND:
+      if (gpsFailSafe == true) {
+        pitchSetPoint.val = pitchSetPointTX.val;
+        rollSetPoint.val = rollSetPointTX.val;
+
+        if (txFailSafe == true) {
+          pitchSetPoint.val = 0;
+          rollSetPoint.val = 0;
+        }
+      }
+      else {
+        LoiterCalculations();
+        RotatePitchRoll(&imu.yaw.val, &zero, &tiltAngleX.val, &tiltAngleY.val, &pitchSetPoint.val, &rollSetPoint.val);
+      }
+      //velSetPointZ.val = LAND_VEL;
+      AltHoldVelocity.calculate();
+      //motorState = LANDING;
+      break;
+  }
 }
 
-void LoiterCalculations(){
+void LoiterCalculations() {
   LoiterXPosition.calculate();
   LoiterYPosition.calculate();
   LoiterXVelocity.calculate();
