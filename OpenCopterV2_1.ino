@@ -22,9 +22,9 @@
 #endif
 
 
-#define SACC_MAX 0.35
-#define HACC_MAX 1.5
-#define MIN_SATS 12
+#define SACC_MAX 0.5
+#define HACC_MAX 2
+#define MIN_SATS 10
 
 #define CAL_FLAGS 0
 #define HS_FLAG 1
@@ -406,7 +406,6 @@ enum BYTES {
   HOVER_PERCENT,
   TX_LOSS_RTB,
   MAG_DET,
-  GPS_DET,
   TX_FS_STATUS
 };
 
@@ -1092,7 +1091,7 @@ void setup() {
   MagInit();
   GetInitialQuat();
   CheckTXPositions();
-  gpsFailSafe = false;
+  
 
   imuTimer = micros();
   _400HzTimer = micros();

@@ -140,7 +140,7 @@ void SendCalData() {
 
       radioPrint->write(txSum);
       radioPrint->write(txDoubleSum);
-      Serial<<"mag cal sendingr\n";
+      //Serial<<"mag cal sendingr\n";
       break;
     case 1:
       radioPrint->write(7);
@@ -176,7 +176,7 @@ void SendCalData() {
 
       radioPrint->write(txSum);
       radioPrint->write(txDoubleSum);
-      Serial<<"acc cal sending\r\n";
+      //Serial<<"acc cal sending\r\n";
       break;
     case 2:
       radioPrint->write(17);
@@ -251,7 +251,7 @@ void SendCalData() {
 
       radioPrint->write(txSum);
       radioPrint->write(txDoubleSum);
-      Serial<<"rc cal sending\r\n";
+      //Serial<<"rc cal sending\r\n";
       break;
   }
 }
@@ -310,7 +310,7 @@ void GPSStart() {
           break;
       }
     }
-    while (gps.data.vars.numSV < MIN_SATS) {
+    while (gps.data.vars.numSV < (MIN_SATS + 2) ) {
       gps.Monitor();
       if (millis() - generalPurposeTimer > 500) {
         generalPurposeTimer = millis();
@@ -346,7 +346,7 @@ void GPSStart() {
           break;
       }
     }
-    while (gps.data.vars.hAcc * 0.001 > HACC_MAX) {
+    while (gps.data.vars.hAcc * 0.001 > (HACC_MAX - 0.5) ) {
       gps.Monitor();
       if (millis() - generalPurposeTimer > 500) {
         generalPurposeTimer = millis();
@@ -382,7 +382,7 @@ void GPSStart() {
           break;
       }
     }
-    while (gps.data.vars.sAcc * 0.001 > SACC_MAX) {
+    while (gps.data.vars.sAcc * 0.001 > (SACC_MAX - 0.25) ) {
       gps.Monitor();
       if (millis() - generalPurposeTimer > 500) {
         generalPurposeTimer = millis();
