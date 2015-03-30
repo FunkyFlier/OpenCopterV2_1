@@ -14,7 +14,7 @@ ISR(TIMER5_COMPA_vect, ISR_NOBLOCK){
   }
   ReadSerialStreams();
 
-  if (watchDogFailSafeCounter >=200){
+  /*if (watchDogFailSafeCounter >=200){
     TIMSK5 = (0<<OCIE5A);
     digitalWrite(13,LOW);
     digitalWrite(RED,LOW);
@@ -39,8 +39,38 @@ ISR(TIMER5_COMPA_vect, ISR_NOBLOCK){
       digitalWrite(YELLOW,HIGH);
       digitalWrite(GREEN,HIGH);
       delay(500);
+      digitalWrite(13,LOW);
+      digitalWrite(RED,LOW);
+      digitalWrite(YELLOW,LOW);
+      digitalWrite(GREEN,LOW);
+      delay(500);
+      digitalWrite(13,HIGH);
+      digitalWrite(RED,HIGH);
+      digitalWrite(YELLOW,HIGH);
+      digitalWrite(GREEN,HIGH);
+      delay(500);
+      digitalWrite(13,HIGH);
+      digitalWrite(RED,LOW);
+      digitalWrite(YELLOW,HIGH);
+      digitalWrite(GREEN,HIGH);
+      delay(500);
+      digitalWrite(13,HIGH);
+      digitalWrite(RED,HIGH);
+      digitalWrite(YELLOW,LOW);
+      digitalWrite(GREEN,HIGH);
+      delay(500);
+      digitalWrite(13,HIGH);
+      digitalWrite(RED,HIGH);
+      digitalWrite(YELLOW,HIGH);
+      digitalWrite(GREEN,LOW);
+      delay(500);
+      digitalWrite(13,LOW);
+      digitalWrite(RED,HIGH);
+      digitalWrite(YELLOW,HIGH);
+      digitalWrite(GREEN,HIGH);
+      delay(500);
     }
-  }
+  }*/
 }
 void ReadSerialStreams(){
   if (rcType != RC){

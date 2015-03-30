@@ -1,6 +1,8 @@
 void Radio() {
   uint8_t j;
   while (radioStream->available() > 0) { //---
+
+    //Port2<<radioStream->available()<<"\r\n";
     radioByte = radioStream->read();
     //Port0<<"* "<<_HEX(radioByte)<<"\r\n";
     switch (radioState) { //+++
@@ -23,16 +25,20 @@ void Radio() {
         break;
 
       case 2:
+
         //Port0<<"2\r\n";
         rxSum += radioByte;
         rxDoubleSum += rxSum;
         numRXbytes++;
         if (radioByte == 0xFA) { //reliable querie
           radioState = 6;
+
           break;
         }
         if (radioByte == 0xFD) { //reliable set
+          D22High();
           radioState = 12;
+          D22Low();
           break;
         }
         typeNum = radioByte;
@@ -50,28 +56,35 @@ void Radio() {
         break;
 
       case 3://unrelaible
+
         cmdNum = radioByte;
         rxSum += radioByte;
         rxDoubleSum += rxSum;
         radioState = 4;
+
         break;
 
       case 4://unreliable checksum 1
+
         if (rxSum == radioByte) {
           radioState = 5;
           break;
         }
         radioState = 0;
+
         break;
 
       case 5://unreliable check sum 2
+
         if (rxDoubleSum == radioByte) {
           UnReliableTransmit();
         }
         radioState = 0;
+
         break;
 
       case 6://reliable queries - get packet num LSB
+
         rxSum += radioByte;
         rxDoubleSum += rxSum;
         numRXbytes++;
@@ -144,6 +157,7 @@ void Radio() {
         break;
 
       case 12://reliable set get packet num lsb
+      
         rxSum += radioByte;
         rxDoubleSum += rxSum;
         numRXbytes++;
@@ -152,6 +166,7 @@ void Radio() {
         break;
 
       case 13://get packet num msb and verify
+      D25High();
         rxSum += radioByte;
         rxDoubleSum += rxSum;
         numRXbytes++;
@@ -163,17 +178,21 @@ void Radio() {
           break;
         }
         radioState = 14;
+        D25Low();
         break;
 
       case 14:
+      D26High();
         typeNum = radioByte;
         rxSum += radioByte;
         rxDoubleSum += rxSum;
         numRXbytes++;
         radioState = 15;
+        D26Low();
         break;
 
       case 15:
+      D27High();
         cmdNum = radioByte;
         rxSum += radioByte;
         rxDoubleSum += rxSum;
@@ -186,9 +205,11 @@ void Radio() {
         if (typeNum == 7 && cmdNum == 3) {
           radioState = 17;
         }
+        D27Low();
         break;
 
       case 16://buffer in data
+      D28High();
         itemBuffer[itemIndex++] = radioByte;
         rxSum += radioByte;
         rxDoubleSum += rxSum;
@@ -199,35 +220,53 @@ void Radio() {
         if (numRXbytes == packetLength) {
           radioState = 17;
         }
+        D28Low();
         break;
 
       case 17://check first sum
+      D29High();
         if (rxSum != radioByte) {
           radioState = 0;
           break;
         }
         radioState = 18;
+        D29Low();
         break;
 
       case 18:
+        D22High();
+        D23High();
+        D24High();
+        D25High();
+        D26High();
+        D27High();
+        D28High();
+        D29High();
         if (rxDoubleSum == radioByte) {
           if (calibrationMode == true) {
+            D22Low();
             if (typeNum == 6) {
+              D23Low();
               sendCalibrationData = true;
             }
             if (typeNum == 7) {
+              D24Low();
               WriteCalibrationDataToRom();
               sendCalibrationData = false;
             }
           }
           else {
+            D25Low();
             if (typeNum < 3) {
+              D26Low();
               OrderedSet();
             }
             if (typeNum == 4 || typeNum == 5) {
+              D27Low();
               SetTransmissionRate();
             }
             if (typeNum == 8) {
+              D28Low();
               imu.pitchOffset.val = imu.rawPitch.val;
               imu.rollOffset.val = imu.rawRoll.val;
               j = 0;
@@ -242,6 +281,7 @@ void Radio() {
             }
           }
           SendOrdAck();
+          D29Low();
         }
         /*else{
          if (remotePacketNumberOrdered != localPacketNumberOrdered){
@@ -298,7 +338,17 @@ void Radio() {
         break;
 
     }//+++
+    /*  D23Low();
+      D24Low();
+      D25Low();
+      D26Low();
+      D27Low();
+      D28Low();
+      D29Low();*/
+
   }//---
+
+  D22Low();
 }
 
 void HandleGSRCData() {
@@ -645,7 +695,7 @@ void WriteCalibrationDataToRom() {
       /*if (txLossRTB == 0 ||txLossRTB ==1){
         txLossRTB = 0;
       }*/
-      
+
       EEPROM.write(TX_FS_FLAG, 0xAA);
       //Serial << "tx fs flag a" << txLossRTB << "\r\n";
       EEPROM.write(TX_FS, txLossRTB);

@@ -3,7 +3,7 @@
 
 
 void UBLOX::init(void){
-  gpsPort.begin(38400);
+  gpsPort.begin(115200);
   GPSState=0;
   newData = false;
 }

@@ -1091,32 +1091,43 @@ void setup() {
   MagInit();
   GetInitialQuat();
   CheckTXPositions();
-  
+
 
   imuTimer = micros();
   _400HzTimer = micros();
   generalPurposeTimer = millis();
 
   currentTime = micros();
+  FlushRadio();
+  D22High();
+  D27High();
+  delay(10);
+  D27Low();
   watchDogStartCount = true;
   digitalWrite(RED, 1);
   digitalWrite(YELLOW, 1);
   digitalWrite(GREEN, 1);
   digitalWrite(13, 1);
+  //Port2<<"start\r\n";
 }
-
-void loop() {
-
+void FlushRadio(){
+  while(radioStream->available() >0){
+    radioStream->read();
+  }
+}
+void loop() {//0
+  D22Low();
+  //Port2<<"a\r\n";
   _400HzTask();
   loopTime = micros();
-  if (loopTime - imuTimer >= 10000) {
+  if (loopTime - imuTimer >= 10000) {//1-
     imuDT = (loopTime - imuTimer) * 0.000001;
     imuTimer = loopTime;
     GetGyro();
     _400HzTask();
-    if (imu.magDetected == true) {
+    if (imu.magDetected == true) {//2
       GetMag();
-    }
+    }//2
     _400HzTask();
 
     imu.AHRSupdate();
@@ -1134,11 +1145,11 @@ void loop() {
     FlightSM();
     _400HzTask();
 
-    if (GPSDetected == true) {
+    if (GPSDetected == true) {//3
       gps.Monitor();
-    }
+    }//3
     _400HzTask();
-    if (gps.newData == true) {
+    if (gps.newData == true) {//4
 
       gps.newData = false;
 
@@ -1153,33 +1164,29 @@ void loop() {
       sAcc.val = gps.data.vars.sAcc * 0.001;//raw roll
       pDop.val = gps.data.vars.pDop * 0.01;//pitch offset
       numSats = gps.data.vars.numSV;
-      if (gps.data.vars.gpsFix != 3 || numSats < MIN_SATS || hAcc.val > HACC_MAX || sAcc.val > SACC_MAX) {
-        //if (gps.data.vars.gpsFix != 3){
+      if (gps.data.vars.gpsFix != 3 || numSats < MIN_SATS || hAcc.val > HACC_MAX || sAcc.val > SACC_MAX) {//5
         gpsFailSafe = true;
-      }
-      //Serial<<GPSFailSafeCounter<<"\r\n";
+      }//5
       GPSFailSafeCounter = 0;
 
       imu.CorrectGPS();
 
-    }
+    }//4
 
-    if (GPSFailSafeCounter > 200) {
+    if (GPSFailSafeCounter > 200) {//6
       gpsFailSafe = true;
-    }
+    }//6
     PollPressure();
     _400HzTask();
-    if (newBaro == true) {
+    if (newBaro == true) {//7
       newBaro = false;
       GetAltitude(&pressure.val, &initialPressure, &baroAlt.val);
       baroDT = (millis() - baroTimer) * 0.001;
       baroTimer = millis();
 
-      if (baroDT >= 0.1 || baroDT < 0) {
+      if (baroDT >= 0.1 || baroDT < 0) {//8
         baroDT = 0.1;
-
-
-      }
+      }//8
       alphaBaro = baroDT / (baroDT + RC_CONST_BARO);
       betaBaro = 1 - alphaBaro;
       baroZ.val = baroZ.val * betaBaro + baroAlt.val * alphaBaro;
@@ -1187,29 +1194,26 @@ void loop() {
       baroVel.val = baroVel.val * betaBaro + baroRate.val * alphaBaro;
       prevBaro = baroZ.val;
       imu.CorrectAlt();
-    }
+    }//7
     _400HzTask();
-    if (newRC == true) {
+    if (newRC == true) {//9
       newRC = false;
       ProcessChannels();
       GetSwitchPositions();
       RCFailSafeCounter = 0;
-    }
-    if (newGSRC == true) {
+    }//9
+    if (newGSRC == true) {//10
       groundFSCount = 0;
       newGSRC = false;
       telemFailSafe = false;
-      //Port0<<millis()<<","<<GSRCValue[THRO]<<","<<GSRCValue[AILE]<<","<<GSRCValue[ELEV]<<","<<GSRCValue[RUDD]<<","<<flightMode<<"\r\n";//<<","<<GSRCValue[GEAR]<<","<<GSRCValue[AUX1]<<","<<GSRCValue[AUX2]<<","<<GSRCValue[AUX3]<<"\r\n";
-      //Port0<<millis()<<","<<GSRCValue[THRO]<<","<<GSRCValue[AILE]<<","<<GSRCValue[ELEV]<<","<<GSRCValue[RUDD]<<","<<pitchSetPoint.val<<","<<rollSetPoint.val<<","<<yawSetPoint.val<<","<<telemFailSafe<<"\r\n";
-    }
-    if (groundFSCount >= 200) {
-      //Port0<<"************\r\n";
+    }//10
+    if (groundFSCount >= 200) {//11
       telemFailSafe = true;
-    }
+    }//11
     _400HzTask();
-    if (RCFailSafeCounter >= 200 || failSafe == true) {
+    if (RCFailSafeCounter >= 200 || failSafe == true) {//12
       txFailSafe = true;
-      if (txLossRTB == 0) {
+      if (txLossRTB == 0) {//13
         TIMSK5 = (0 << OCIE5A);
         digitalWrite(13, LOW);
         digitalWrite(RED, LOW);
@@ -1223,43 +1227,43 @@ void loop() {
         Motor6WriteMicros(1000);
         //Motor7WriteMicros(1000);
         //Motor8WriteMicros(1000);
-        if (failSafe == true) {
+        if (failSafe == true) {//14
           digitalWrite(RED, HIGH);
-        }
+        }//14
         while (1) {
 
           digitalWrite(YELLOW, HIGH);
-          if (RCFailSafeCounter >= 200 ) {
+          if (RCFailSafeCounter >= 200 ) {//15
             digitalWrite(GREEN, LOW);
-          }
+          }//15
           delay(500);
           digitalWrite(YELLOW, LOW);
-          if (RCFailSafeCounter >= 200 ) {
+          if (RCFailSafeCounter >= 200 ) {//16
             digitalWrite(GREEN, HIGH);
-          }
+          }//16
           delay(500);
         }
-      }
+      }//13
 
-    }
-    if (txFailSafe == true) {
-      if (motorState >= FLIGHT) {
-        if (flightMode != RTB) {
+    }//12
+    if (txFailSafe == true) {//17
+      if (motorState >= FLIGHT) {//18
+        if (flightMode != RTB) {//19
           enterState = true;
           flightMode = RTB;
-        }
-      }
-    }
+        }//19
+      }//18
+    }//17
 
 
     _400HzTask();
-    if (flightMode > 0) {
+    if (flightMode > 0) {//20
       PitchAngle.calculate();
       RollAngle.calculate();
-      if (calcYaw == true) {
+      if (calcYaw == true) {//21
         YawAngle.calculate();
-      }
-    }
+      }//21
+    }//20
     _400HzTask();
     PitchRate.calculate();
     RollRate.calculate();
@@ -1268,24 +1272,21 @@ void loop() {
     MotorHandler();
     tuningTrasnmitOK = true;
     _400HzTask();
-  }
-
+  }//1-
 
   _400HzTask();
-  if (handShake == true) {
+  if (handShake == true) {//22
     Radio();
-
-    if (tuningTrasnmitOK == true) {
+    if (tuningTrasnmitOK == true) {//23
       TuningTransmitter();
 
       tuningTrasnmitOK = false;
 
-    }
-
-  }
+    }//23
+  }//22
   _400HzTask();
   watchDogFailSafeCounter = 0;
-}
+}//0
 
 void _400HzTask() {
   _400Time = micros();
