@@ -228,7 +228,6 @@ void AssignPointerArray() {
   bytePointerArray[HOVER_PERCENT] = &hoverPercent;
   bytePointerArray[TX_LOSS_RTB] = &txLossRTB;
   bytePointerArray[MAG_DET] = &imu.magDetected;
-  bytePointerArray[GPS_DET] = &txFailSafe;
   bytePointerArray[TX_FS_STATUS] = &txFailSafe;
 }
 /*
