@@ -9,11 +9,11 @@
 #include "AUXMATH.h"
 #include "UBLOXL.h"
 
-#define ROT_45
+//#define ROT_45
 
 
-//#define V1
-#define V2
+#define V1
+//#define V2
 
 #ifdef V2
 #ifdef V1
@@ -614,7 +614,7 @@ unsigned long b7;
 unsigned int ut;
 unsigned long up;
 uint32_t baroPollTimer;
-bool newBaro = false;
+boolean newBaro = false;
 float pressureRatio;
 //int baroCount;
 //float baroSum;
@@ -632,7 +632,7 @@ float D1, D2;
 float pres, temperature, dT, TEMP, OFF, SENS, P;
 uint8_t baroState;
 uint32_t baroPollTimer, baroDelayTimer;
-bool newBaro;
+boolean newBaro;
 
 
 #endif//#ifdef V2
@@ -651,7 +651,7 @@ float accToFilterX, accToFilterY, accToFilterZ;
 
 UBLOX gps;
 //TinyGPS gps;
-volatile bool GPSDetected;
+volatile boolean GPSDetected;
 float_u distToCraft;
 float_u headingToCraft;
 
@@ -672,15 +672,15 @@ float_u homeLat, homeLon;
 uint8_t readState, inByte, byteCount, channelNumber;
 volatile uint8_t rcType;
 uint32_t frameTime;
-bool detected = false;
-volatile bool newRC = false;
-bool frameStart = true;
-bool frameValid = false;
+boolean detected = false;
+volatile boolean newRC = false;
+boolean frameStart = true;
+boolean frameValid = false;
 
 uint8_t spekBuffer[14];
 
 uint16_t bufferIndex = 0;
-bool newGSRC = false;
+boolean newGSRC = false;
 
 
 
@@ -832,16 +832,16 @@ float_u tiltAngleX, tiltAngleY;
 uint8_t HHState = 1;
 float_u motorCommand1, motorCommand2, motorCommand3, motorCommand4;
 float motorPWM1, motorPWM2, motorPWM3, motorPWM4;
-bool integrate = false;
-bool enterState = true;
+boolean integrate = false;
+boolean enterState = true;
 
-bool calcYaw;
+boolean calcYaw;
 
 
 //failsafe related vars
-volatile bool failSafe = false;
-bool toggle;
-volatile bool watchDogStartCount;
+volatile boolean failSafe = false;
+boolean toggle;
+volatile boolean watchDogStartCount;
 volatile uint32_t watchDogFailSafeCounter, RCFailSafeCounter, GPSFailSafeCounter;
 
 float_u xTarget, yTarget;
@@ -849,8 +849,8 @@ uint8_t calibrationFlags;
 
 //uint8_t outFloatIndex;
 
-bool allCalibrated = false;
-bool calibrationMode = false;
+boolean allCalibrated = false;
+boolean calibrationMode = false;
 
 float magOffSetX;
 float magOffSetY;
@@ -888,19 +888,19 @@ float homeBaseXOffset = 0, homeBaseYOffset = 0;
 //radio protocol vars
 uint16_t localPacketNumberOrdered, localPacketNumberUn, remotePacketNumberOrdered, remotePacketNumberUn, packetTemp[2];
 uint32_t radioTimer;
-bool handShake;
+boolean handShake;
 uint8_t handShakeState, rxSum, rxDoubleSum, txSum, txDoubleSum, radioByte,
         packetLength, numRXBytes, radioState, numRXbytes, typeNum, cmdNum,
         itemBuffer[255], itemIndex, temp, hsNumItems, lsNumItems, hsList[40], lsList[40], liveDataBuffer[200], hsRequestNumber, lsRequestNumber, hsListIndex, lsListIndex;
 uint32_t hsMillis, lsMillis, hsTXTimer, lsTXTimer;
-bool offsetFlag, sendCalibrationData, hsTX, lsTX, tuningTrasnmitOK;
+boolean offsetFlag, sendCalibrationData, hsTX, lsTX, tuningTrasnmitOK;
 
 
 uint8_t gpsFailSafe = false, txFailSafe = false, telemFailSafe = false, battFailSafe = false;
 
-bool trimMode, setTrim, trimComplete, autoMaticReady;
+boolean trimMode, setTrim, trimComplete, autoMaticReady;
 uint8_t throttleCheckFlag;
-bool modeSelect = false;
+boolean modeSelect = false;
 uint8_t switchPositions, clearTXRTB;
 uint8_t previousFlightMode, motorState;
 float_u initialYaw;
@@ -910,7 +910,7 @@ uint32_t radioLimitTimer;
 Print* radioPrint;
 Stream* radioStream;
 
-bool USBFlag = false, saveGainsFlag = false;
+boolean USBFlag = false, saveGainsFlag = false;
 
 uint32_t ledTimer;
 
@@ -942,7 +942,7 @@ int16_u pwmHigh, pwmLow;
 uint8_t propIdlePercent, hoverPercent;
 uint16_t propIdleCommand, hoverCommand;
 
-bool gsCTRL = false;
+boolean gsCTRL = false;
 int16_t loitThro;
 float_u landingThroAdjustment;
 float throAdjAlpha;
@@ -1098,26 +1098,16 @@ void setup() {
   generalPurposeTimer = millis();
 
   currentTime = micros();
-  FlushRadio();
-  D22High();
-  D27High();
-  delay(10);
-  D27Low();
+
   watchDogStartCount = true;
   digitalWrite(RED, 1);
   digitalWrite(YELLOW, 1);
   digitalWrite(GREEN, 1);
   digitalWrite(13, 1);
-  //Port2<<"start\r\n";
 }
-void FlushRadio(){
-  while(radioStream->available() >0){
-    radioStream->read();
-  }
-}
+
 void loop() {//0
-  D22Low();
-  //Port2<<"a\r\n";
+
   _400HzTask();
   loopTime = micros();
   if (loopTime - imuTimer >= 10000) {//1-

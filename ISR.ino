@@ -14,7 +14,7 @@ ISR(TIMER5_COMPA_vect, ISR_NOBLOCK){
   }
   ReadSerialStreams();
 
-  /*if (watchDogFailSafeCounter >=200){
+  if (watchDogFailSafeCounter >=200){
     TIMSK5 = (0<<OCIE5A);
     digitalWrite(13,LOW);
     digitalWrite(RED,LOW);
@@ -70,7 +70,7 @@ ISR(TIMER5_COMPA_vect, ISR_NOBLOCK){
       digitalWrite(GREEN,HIGH);
       delay(500);
     }
-  }*/
+  }
 }
 void ReadSerialStreams(){
   if (rcType != RC){

@@ -78,7 +78,7 @@ public:
   float kpMag;
   float kiMag;
   float FEEDBACK_LIMIT;
-  //bool skipFeedBack;
+  //boolean skipFeedBack;
   //float FEEDBACK_LIMIT;
   float COS_DEC,SIN_DEC;
   float kPosGPS,kVelGPS,kAccGPS,kPosBaro,kVelBaro,kAccBaro;

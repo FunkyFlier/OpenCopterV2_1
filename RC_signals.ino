@@ -203,25 +203,20 @@ void ProcessChannels() {
 
 
   if (txFailSafe == true) {
-    //Serial<<RCValue[THRO]<<","<<RCValue[AILE]<<","<<RCValue[ELEV]<<","<<RCValue[RUDD]<<","<<RCValue[GEAR]<<","<<clearTXRTB<<","<<txFailSafe<<"\r\n";
     switch (clearTXRTB) {
 
       case 0:
         if (RCValue[GEAR] > 1850) {
           clearTXRTB = 1;
-          //Serial<<"a1\r\n";
         }
-        //Serial<<"a2\r\n";
         return;
         break;
 
       case 1:
         if (RCValue[GEAR] < 1150) {
-          //Serial<<"b1\r\n";
           txFailSafe = false;
           failSafe = false;
           RCFailSafeCounter = 0;
-          //Serial<<txFailSafe<<" b2\r\n";
           clearTXRTB = 0;
           break;
         }
@@ -229,7 +224,6 @@ void ProcessChannels() {
         break;
       default:
         clearTXRTB = 0;
-        //Serial<<"C\r\n";
         return;
         break;
 
@@ -666,9 +660,7 @@ void SBusParser() {
             rcData[5].rcvd = (sBusData[7] >> 7 | sBusData[8] << 1 | sBusData[9] << 9) & 0x07FF;
             rcData[6].rcvd = (sBusData[9] >> 2 | sBusData[10] << 6) & 0x07FF;
             rcData[7].rcvd = (sBusData[10] >> 5 | sBusData[11] << 3) & 0x07FF;
-            /*if (sBusData[23] & (1<<2)) {
-             failSafe = true;
-             }*/
+
             if (sBusData[23] & (1 << 3)) {
               failSafe = true;
             }
