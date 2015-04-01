@@ -1,92 +1,81 @@
-void Radio(){
+void Radio() {
   uint8_t j;
-  while(radioStream->available() > 0){//---
-    radioByte = radioStream->read();
-    //Port0<<"* "<<_HEX(radioByte)<<"\r\n";
-    switch (radioState){//+++
+  while (radioStream->available() > 0) { //---
 
+    radioByte = radioStream->read();
+    switch (radioState) { //+++
     case 0://check for start byte
-      //Port0<<"0\r\n";
       rxSum = 0;
       rxDoubleSum = 0;
-      if (radioByte == 0xAA){
+      if (radioByte == 0xAA) {
         radioState = 1;
       }
       break;
-
     case 1:
-      //Port0<<"1\r\n";
       packetLength = radioByte;
-      //Port0<<"1 "<<packetLength<<"\r\n";
       numRXbytes = 0;
       radioState = 2;
       break;
 
     case 2:
-      //Port0<<"2\r\n";
       rxSum += radioByte;
       rxDoubleSum += rxSum;
       numRXbytes++;
-      if (radioByte == 0xFA){//reliable querie
+      if (radioByte == 0xFA) { //reliable querie
         radioState = 6;
-        break;  
+        break;
       }
-      if (radioByte == 0xFD){//reliable set
+      if (radioByte == 0xFD) { //reliable set
         radioState = 12;
         break;
       }
       typeNum = radioByte;
-      //Port0<<"2 "<<typeNum<<"\r\n";
-      if (typeNum == 11 && packetLength == 18){
+      if (typeNum == 11 && packetLength == 18) {
         radioState = 19;
         break;
       }
-      if (packetLength == 2){//length for unrelaible will always be 2
+      if (packetLength == 2) { //length for unrelaible will always be 2
         radioState = 3;//unrelaible data
       }
-      else{
+      else {
         radioState = 0;
       }
       break;
 
-    case 3://unrelaible 
+    case 3://unrelaible
       cmdNum = radioByte;
       rxSum += radioByte;
       rxDoubleSum += rxSum;
       radioState = 4;
       break;
-
     case 4://unreliable checksum 1
-      if (rxSum == radioByte){
+      if (rxSum == radioByte) {
         radioState = 5;
         break;
       }
       radioState = 0;
       break;
-
     case 5://unreliable check sum 2
-      if (rxDoubleSum == radioByte){
+      if (rxDoubleSum == radioByte) {
         UnReliableTransmit();
       }
       radioState = 0;
       break;
-
     case 6://reliable queries - get packet num LSB
       rxSum += radioByte;
       rxDoubleSum += rxSum;
-      numRXbytes++;    
+      numRXbytes++;
       packetTemp[0] = radioByte;
       radioState = 7;
       break;
-
     case 7://packet num MSB and verify
       rxSum += radioByte;
       rxDoubleSum += rxSum;
-      numRXbytes++;    
+      numRXbytes++;
       packetTemp[1] = radioByte;
       remotePacketNumberUn = (packetTemp[1] << 8 ) | packetTemp[0];
-      if (remotePacketNumberUn > localPacketNumberUn){
-        if ( (remotePacketNumberUn - localPacketNumberUn) > 1000){
+      if (remotePacketNumberUn > localPacketNumberUn) {
+        if ( (remotePacketNumberUn - localPacketNumberUn) > 1000) {
           radioState = 8;
           break;
         }
@@ -94,38 +83,36 @@ void Radio(){
         radioState = 0;
         break;
       }
-      if (remotePacketNumberUn == localPacketNumberUn){
+      if (remotePacketNumberUn == localPacketNumberUn) {
         radioState = 8;
         break;
       }
-      if (remotePacketNumberUn < localPacketNumberUn){
-        if ((localPacketNumberUn - remotePacketNumberUn) > 1000){
+      if (remotePacketNumberUn < localPacketNumberUn) {
+        if ((localPacketNumberUn - remotePacketNumberUn) > 1000) {
           SendUnMis();
           radioState = 0;
         }
         radioState = 8;
       }
       break;
-
     case 8://get typeNum
       typeNum = radioByte;
       rxSum += radioByte;
       rxDoubleSum += rxSum;
-      numRXbytes++; 
+      numRXbytes++;
       radioState = 9;
       break;
-
     case 9://get cmdNum
-      cmdNum= radioByte;
+      cmdNum = radioByte;
       rxSum += radioByte;
       rxDoubleSum += rxSum;
-      numRXbytes++; 
+      numRXbytes++;
       itemIndex = 0;
       radioState = 10;
       break;
 
     case 10://check the first sum
-      if (rxSum == radioByte){
+      if (rxSum == radioByte) {
         radioState = 11;
         break;
       }
@@ -133,9 +120,9 @@ void Radio(){
       break;
 
     case 11://check the second sum
-      if (rxDoubleSum == radioByte){
+      if (rxDoubleSum == radioByte) {
         SendUnAck();
-        if (remotePacketNumberUn == localPacketNumberUn){
+        if (remotePacketNumberUn == localPacketNumberUn) {
           localPacketNumberUn++;
         }
       }
@@ -144,6 +131,7 @@ void Radio(){
       break;
 
     case 12://reliable set get packet num lsb
+
       rxSum += radioByte;
       rxDoubleSum += rxSum;
       numRXbytes++;
@@ -154,10 +142,10 @@ void Radio(){
     case 13://get packet num msb and verify
       rxSum += radioByte;
       rxDoubleSum += rxSum;
-      numRXbytes++;    
+      numRXbytes++;
       packetTemp[1] = radioByte;
       remotePacketNumberOrdered = (packetTemp[1] << 8 ) | packetTemp[0];
-      if (remotePacketNumberOrdered != localPacketNumberOrdered){
+      if (remotePacketNumberOrdered != localPacketNumberOrdered) {
         SendOrdMis();
         radioState = 0;
         break;
@@ -169,7 +157,7 @@ void Radio(){
       typeNum = radioByte;
       rxSum += radioByte;
       rxDoubleSum += rxSum;
-      numRXbytes++; 
+      numRXbytes++;
       radioState = 15;
       break;
 
@@ -177,13 +165,13 @@ void Radio(){
       cmdNum = radioByte;
       rxSum += radioByte;
       rxDoubleSum += rxSum;
-      numRXbytes++; 
+      numRXbytes++;
       itemIndex = 0;
       radioState = 16;
-      if (typeNum == 6 || typeNum == 8 ){
+      if (typeNum == 6 || typeNum == 8 ) {
         radioState = 17;
       }
-      if (typeNum == 7 && cmdNum == 3){
+      if (typeNum == 7 && cmdNum == 3) {
         radioState = 17;
       }
       break;
@@ -192,53 +180,52 @@ void Radio(){
       itemBuffer[itemIndex++] = radioByte;
       rxSum += radioByte;
       rxDoubleSum += rxSum;
-      numRXbytes++; 
-      if (packetLength > 255){
+      numRXbytes++;
+      if (packetLength > 250) {
         radioState = 0;
       }
-      if (numRXbytes == packetLength){
+      if (numRXbytes == packetLength) {
         radioState = 17;
       }
       break;
-
     case 17://check first sum
-      if (rxSum != radioByte){
+      if (rxSum != radioByte) {
         radioState = 0;
         break;
       }
       radioState = 18;
       break;
-
     case 18:
-      if (rxDoubleSum == radioByte){
-        if (calibrationMode == true){
-          if (typeNum == 6){
+      if (rxDoubleSum == radioByte) {
+        if (calibrationMode == true) {
+          if (typeNum == 6) {
             sendCalibrationData = true;
           }
-          if (typeNum == 7){
+          if (typeNum == 7) {
             WriteCalibrationDataToRom();
             sendCalibrationData = false;
           }
         }
-        else{
-          if (typeNum < 3){
+        else {
+          if (typeNum < 3) {
             OrderedSet();
           }
-          if (typeNum == 4 || typeNum == 5){
+          if (typeNum == 4 || typeNum == 5) {
             SetTransmissionRate();
           }
-          if (typeNum == 8){
+          if (typeNum == 8) {
+
             imu.pitchOffset.val = imu.rawPitch.val;
             imu.rollOffset.val = imu.rawRoll.val;
             j = 0;
-            for(uint16_t i = PITCH_OFFSET_START; i <=PITCH_OFFSET_END; i++){
-              EEPROM.write(i,imu.pitchOffset.buffer[j++]);
+            for (uint16_t i = PITCH_OFFSET_START; i <= PITCH_OFFSET_END; i++) {
+              EEPROM.write(i, imu.pitchOffset.buffer[j++]);
             }
             j = 0;
-            for(uint16_t i = ROLL_OFFSET_START; i <=ROLL_OFFSET_END; i++){
-              EEPROM.write(i,imu.rollOffset.buffer[j++]);
+            for (uint16_t i = ROLL_OFFSET_START; i <= ROLL_OFFSET_END; i++) {
+              EEPROM.write(i, imu.rollOffset.buffer[j++]);
             }
-            EEPROM.write(PR_FLAG,0xAA);
+            EEPROM.write(PR_FLAG, 0xAA);
           }
         }
         SendOrdAck();
@@ -253,44 +240,35 @@ void Radio(){
       radioState = 0;
       break;
     case 19:
-      //Port0<<"19\r\n";
       cmdNum = radioByte;
-      //Port0<<"19 "<<cmdNum<<"\r\n";
       rxSum += radioByte;
       rxDoubleSum += rxSum;
       itemIndex = 0;
-      if (cmdNum == 8){
+      if (cmdNum == 8) {
         radioState = 20;
       }
-      else{
+      else {
         radioState = 0;
       }
       break;
     case 20:
-      //Port0<<"20\r\n";
       itemBuffer[itemIndex++] = radioByte;
-      //Port0<<"20 "<<_HEX(radioByte)<<"\r\n";
       rxSum += radioByte;
       rxDoubleSum += rxSum;
-      if (itemIndex == (cmdNum * 2)){
+      if (itemIndex == (cmdNum * 2)) {
         radioState = 21;
       }
       break;
     case 21:
-      //Port0<<"21\r\n";
-      //Port0<<"21 "<<rxSum<<","<<radioByte<<"\r\n";
-      if (rxSum == radioByte){
+      if (rxSum == radioByte) {
         radioState = 22;
       }
-      else{
+      else {
         radioState = 0;
       }
       break;
     case 22:
-      //Port0<<"22\r\n";
-      //Port0<<"22 "<<rxDoubleSum<<","<<radioByte<<"\r\n";
-      if (rxDoubleSum == radioByte){
-        //Port0<"a\r\n";
+      if (rxDoubleSum == radioByte) {
         HandleGSRCData();
 
       }
@@ -299,13 +277,14 @@ void Radio(){
 
     }//+++
   }//---
+
 }
 
-void HandleGSRCData(){
+void HandleGSRCData() {
   int16_u inShort;
   itemIndex = 0;
-  for(uint8_t i = 0; i < cmdNum; i++){
-    switch(i){
+  for (uint8_t i = 0; i < cmdNum; i++) {
+    switch (i) {
     case THRO:
       inShort.buffer[0] = itemBuffer[itemIndex++];
       inShort.buffer[1] = itemBuffer[itemIndex++];
@@ -352,14 +331,14 @@ void HandleGSRCData(){
   groundFSCount = 0;
 }
 
-void TuningTransmitter(){//
+void TuningTransmitter() { //
   uint32_u now;
   now.val = millis();
 
 
-  if (hsTX == true){//---
+  if (hsTX == true) { //---
 
-    if (now.val - hsTXTimer >= hsMillis){//+++
+    if (now.val - hsTXTimer >= hsMillis) { //+++
       hsTXTimer = now.val;
       txSum = 0;
       txDoubleSum = 0;
@@ -369,7 +348,7 @@ void TuningTransmitter(){//
       //assemble the transmit buffer
       liveDataBuffer[tuningItemIndex++] = 0xAA;
       tuningItemIndex++;//skip packet length for now
-      liveDataBuffer[tuningItemIndex++] = 4;   
+      liveDataBuffer[tuningItemIndex++] = 4;
       txSum += 4;
       txDoubleSum += txSum;
       packetLength++;
@@ -384,7 +363,7 @@ void TuningTransmitter(){//
       txDoubleSum += txSum;
       packetLength++;
 
-      for(uint8_t i = 0; i < 4; i++){//always include millis
+      for (uint8_t i = 0; i < 4; i++) { //always include millis
         liveDataBuffer[tuningItemIndex++] = now.buffer[i];
         txSum += now.buffer[i];
         txDoubleSum += txSum;
@@ -392,10 +371,10 @@ void TuningTransmitter(){//
       }
 
 
-      for(uint8_t i = 0; i < hsNumItems; i++){//***
-        switch(hsList[hsListIndex++]){
+      for (uint8_t i = 0; i < hsNumItems; i++) { //***
+        switch (hsList[hsListIndex++]) {
         case 0://floats
-          for(uint8_t j = 0; j < 4; j++){
+          for (uint8_t j = 0; j < 4; j++) {
             liveDataBuffer[tuningItemIndex++] = (*floatPointerArray[hsList[hsListIndex]]).buffer[j];
             txSum += (*floatPointerArray[hsList[hsListIndex]]).buffer[j];
             txDoubleSum += txSum;
@@ -404,7 +383,7 @@ void TuningTransmitter(){//
           hsListIndex++;
           break;
         case 1://int16
-          for(uint8_t j = 0; j < 2; j++){
+          for (uint8_t j = 0; j < 2; j++) {
             liveDataBuffer[tuningItemIndex++] = (*int16PointerArray[hsList[hsListIndex]]).buffer[j];
             txSum += (*int16PointerArray[hsList[hsListIndex]]).buffer[j];
             txDoubleSum += txSum;
@@ -433,7 +412,7 @@ void TuningTransmitter(){//
       }//***
 
       liveDataBuffer[1] = packetLength;
-      for(uint8_t i = 0; i < (packetLength +2); i++){
+      for (uint8_t i = 0; i < (packetLength + 2); i++) {
         radioPrint->write(liveDataBuffer[i]);
       }
       radioPrint->write(txSum);
@@ -444,9 +423,9 @@ void TuningTransmitter(){//
 
   }//---
 
-  if (lsTX == true){//---
+  if (lsTX == true) { //---
 
-    if (now.val - lsTXTimer >= lsMillis){//+++
+    if (now.val - lsTXTimer >= lsMillis) { //+++
       lsTXTimer = now.val;
       txSum = 0;
       txDoubleSum = 0;
@@ -456,7 +435,7 @@ void TuningTransmitter(){//
       //assemble the transmit buffer
       liveDataBuffer[tuningItemIndex++] = 0xAA;
       tuningItemIndex++;//skip packet length for now
-      liveDataBuffer[tuningItemIndex++] = 5;   
+      liveDataBuffer[tuningItemIndex++] = 5;
       txSum += 5;
       txDoubleSum += txSum;
       packetLength++;
@@ -471,7 +450,7 @@ void TuningTransmitter(){//
       txDoubleSum += txSum;
       packetLength++;
 
-      for(uint8_t i = 0; i < 4; i++){//always include millis
+      for (uint8_t i = 0; i < 4; i++) { //always include millis
         liveDataBuffer[tuningItemIndex++] = now.buffer[i];
         txSum += now.buffer[i];
         txDoubleSum += txSum;
@@ -479,10 +458,10 @@ void TuningTransmitter(){//
       }
 
 
-      for(uint8_t i = 0; i < lsNumItems; i++){//***
-        switch(lsList[lsListIndex++]){
+      for (uint8_t i = 0; i < lsNumItems; i++) { //***
+        switch (lsList[lsListIndex++]) {
         case 0://floats
-          for(uint8_t j = 0; j < 4; j++){
+          for (uint8_t j = 0; j < 4; j++) {
             liveDataBuffer[tuningItemIndex++] = (*floatPointerArray[lsList[lsListIndex]]).buffer[j];
             txSum += (*floatPointerArray[lsList[lsListIndex]]).buffer[j];
             txDoubleSum += txSum;
@@ -491,7 +470,7 @@ void TuningTransmitter(){//
           lsListIndex++;
           break;
         case 1://int16
-          for(uint8_t j = 0; j < 2; j++){
+          for (uint8_t j = 0; j < 2; j++) {
             liveDataBuffer[tuningItemIndex++] = (*int16PointerArray[lsList[lsListIndex]]).buffer[j];
             txSum += (*int16PointerArray[lsList[lsListIndex]]).buffer[j];
             txDoubleSum += txSum;
@@ -522,7 +501,7 @@ void TuningTransmitter(){//
       }//***
 
       liveDataBuffer[1] = packetLength;
-      for(uint8_t i = 0; i < (packetLength + 2); i++){
+      for (uint8_t i = 0; i < (packetLength + 2); i++) {
         radioPrint->write(liveDataBuffer[i]);
       }
       radioPrint->write(txSum);
@@ -535,43 +514,42 @@ void TuningTransmitter(){//
 }//
 
 
-void SetTransmissionRate(){
-  if (typeNum == 4){
-    //Port0<<cmdNum<<"\r\n";
-    if (cmdNum == 0){
+void SetTransmissionRate() {
+  if (typeNum == 4) {
+    if (cmdNum == 0) {
       hsTX = false;
     }
-    else{
+    else {
       hsTX = true;
-      hsMillis = uint32_t((1.0/cmdNum)*1000);
+      hsMillis = uint32_t((1.0 / cmdNum) * 1000);
       hsRequestNumber = itemBuffer[0];
       hsNumItems = itemBuffer[1];
-      if (hsNumItems > 20){
+      if (hsNumItems > 20) {
         hsTX = false;
       }
-      else{
-        memcpy( &hsList[0],&itemBuffer[2],(hsNumItems *2) );
+      else {
+        memcpy( &hsList[0], &itemBuffer[2], (hsNumItems * 2) );
       }
     }
 
 
 
   }
-  else{
+  else {
 
-    if (cmdNum == 0){
+    if (cmdNum == 0) {
       lsTX = false;
     }
-    else{
+    else {
       lsTX = true;
-      lsMillis = uint32_t((1.0/cmdNum)*1000);
+      lsMillis = uint32_t((1.0 / cmdNum) * 1000);
       lsRequestNumber = itemBuffer[0];
       lsNumItems = itemBuffer[1];
-      if (lsNumItems > 20){
+      if (lsNumItems > 20) {
         lsTX = false;
       }
-      else{
-        memcpy( &lsList[0],&itemBuffer[2],(lsNumItems *2) );
+      else {
+        memcpy( &lsList[0], &itemBuffer[2], (lsNumItems * 2) );
       }
     }
 
@@ -579,67 +557,89 @@ void SetTransmissionRate(){
   }
 }
 
-void WriteCalibrationDataToRom(){
+void WriteCalibrationDataToRom() {
   uint8_t temp;
   //int16_u temp16;
   itemIndex = 0;
-  switch(cmdNum){
+  switch (cmdNum) {
   case 0://mag calibration data
-    if (imu.magDetected == true){
-      for(uint16_t i = MAG_CALIB_START; i <= MAG_CALIB_END; i++){
-        EEPROM.write(i,itemBuffer[itemIndex++]);
+    if (imu.magDetected == true) {
+      for (uint16_t i = MAG_CALIB_START; i <= MAG_CALIB_END; i++) {
+        EEPROM.write(i, itemBuffer[itemIndex++]);
       }
 
       calibrationFlags = EEPROM.read(CAL_FLAGS);
-      calibrationFlags &= ~(1<<MAG_FLAG);
-      EEPROM.write(CAL_FLAGS,calibrationFlags);
+      calibrationFlags &= ~(1 << MAG_FLAG);
+      EEPROM.write(CAL_FLAGS, calibrationFlags);
     }
     break;//--------------------------------------------
   case 1://acc calibration data
-    for(uint16_t i = ACC_CALIB_START; i <= ACC_CALIB_END; i++){
-      EEPROM.write(i,itemBuffer[itemIndex++]);
+    for (uint16_t i = ACC_CALIB_START; i <= ACC_CALIB_END; i++) {
+      EEPROM.write(i, itemBuffer[itemIndex++]);
     }
 
     calibrationFlags = EEPROM.read(CAL_FLAGS);
-    calibrationFlags &= ~(1<<ACC_FLAG);
-    EEPROM.write(CAL_FLAGS,calibrationFlags);
+    calibrationFlags &= ~(1 << ACC_FLAG);
+    EEPROM.write(CAL_FLAGS, calibrationFlags);
 
 
     break;//--------------------------------------------
 
 
   case 2://RC calibration data
-    for(uint16_t i = RC_DATA_START; i <= RC_DATA_END; i++){
-      EEPROM.write(i,itemBuffer[itemIndex++]);
+    for (uint16_t i = RC_DATA_START; i <= RC_DATA_END; i++) {
+      EEPROM.write(i, itemBuffer[itemIndex++]);
     }
     calibrationFlags = EEPROM.read(CAL_FLAGS);
-    calibrationFlags &= ~(1<<RC_FLAG);
-    EEPROM.write(CAL_FLAGS,calibrationFlags);
+    calibrationFlags &= ~(1 << RC_FLAG);
+    EEPROM.write(CAL_FLAGS, calibrationFlags);
     break;//--------------------------------------------
   case 3://command to end calibration and reset controller
     //save the packet numbers
-    if (USBFlag == true){
-      EEPROM.write(HS_FLAG,0xBB);//set handshake compelte flag in EEPROM
+    if (USBFlag == true) {
+      EEPROM.write(HS_FLAG, 0xBB); //set handshake compelte flag in EEPROM
     }
-    else{
-      EEPROM.write(HS_FLAG,0xAA);//set handshake compelte flag in EEPROM
+    else {
+      EEPROM.write(HS_FLAG, 0xAA); //set handshake compelte flag in EEPROM
     }
     SendOrdAck();
     //save the packet numbers
     temp = localPacketNumberOrdered & 0x00FF;
-    EEPROM.write(PKT_LOCAL_ORD_L,temp);
+    EEPROM.write(PKT_LOCAL_ORD_L, temp);
     temp = localPacketNumberOrdered >> 8;
-    EEPROM.write(PKT_LOCAL_ORD_M,temp);
+    EEPROM.write(PKT_LOCAL_ORD_M, temp);
 
     temp = localPacketNumberUn & 0x00FF;
-    EEPROM.write(PKT_LOCAL_UN_L,temp);
+    EEPROM.write(PKT_LOCAL_UN_L, temp);
     temp = localPacketNumberUn >> 8;
-    EEPROM.write(PKT_LOCAL_UN_M,temp);
+    EEPROM.write(PKT_LOCAL_UN_M, temp);
 
     delay(500);
-    asm volatile ("  jmp 0"); 
+    asm volatile ("  jmp 0");
 
-    break;
+    break;//--------------------------------------
+  case 4://tx failsafe
+    txLossRTB = itemBuffer[0];
+    if (txLossRTB < 0 ||txLossRTB > 1){
+      txLossRTB = 0;
+    }
+
+    EEPROM.write(TX_FS_FLAG, 0xAA);
+    EEPROM.write(TX_FS, txLossRTB);
+    txLossRTB = EEPROM.read(TX_FS);
+    break;//--------------------------------------------
+  case 5://pwms
+    EEPROM.write(HOVER_THRO, itemBuffer[itemIndex++]);
+    EEPROM.write(HOVER_THRO_FLAG, 0xAA);
+    EEPROM.write(PROP_IDLE, itemBuffer[itemIndex++]);
+    EEPROM.write(PROP_IDLE_FLAG, 0xAA);
+    EEPROM.write(PWM_LIM_HIGH_START, itemBuffer[itemIndex++]);
+    EEPROM.write(PWM_LIM_HIGH_END, itemBuffer[itemIndex++]);
+    EEPROM.write(PWM_LIM_LOW_START, itemBuffer[itemIndex++]);
+    EEPROM.write(PWM_LIM_LOW_END, itemBuffer[itemIndex++]);
+    EEPROM.write(PWM_FLAG, 0xAA);
+
+    break;//--------------------------------------------
   }
 
 
@@ -647,11 +647,11 @@ void WriteCalibrationDataToRom(){
 }
 
 
-void OrderedSet(){
-  switch(typeNum){
+void OrderedSet() {
+  switch (typeNum) {
   case 0:
-    if (cmdNum >= KP_PITCH_RATE_ && cmdNum <= MAG_DEC_){
-      for (uint8_t i = 0; i < 4; i++){
+    if (cmdNum >= KP_PITCH_RATE_ && cmdNum <= MAG_DEC_) {
+      for (uint8_t i = 0; i < 4; i++) {
         (*floatPointerArray[cmdNum]).buffer[i] =  itemBuffer[i];
       }
       saveGainsFlag = true;
@@ -661,13 +661,13 @@ void OrderedSet(){
     break;
   case 1:
     /*
-    for (uint8_t i = 0; i < 2; i++){
+      for (uint8_t i = 0; i < 2; i++){
      (*int16PointerArray[cmdNum]).buffer[i] =  itemBuffer[i];
      }*/
     break;
   case 2:
     /*
-    for (uint8_t i = 0; i < 4; i++){
+      for (uint8_t i = 0; i < 4; i++){
      (*int32PointerArray[cmdNum]).buffer[i] =  itemBuffer[i];
      }
      */
@@ -676,7 +676,8 @@ void OrderedSet(){
 
 }
 
-void SendOrdAck(){
+void SendOrdAck() {
+ 
   txSum = 0;
   txDoubleSum = 0;
   radioPrint->write(0xAA);
@@ -698,7 +699,7 @@ void SendOrdAck(){
 
 }
 
-void SendOrdMis(){
+void SendOrdMis() {
   txSum = 0;
   txDoubleSum = 0;
   radioPrint->write(0xAA);
@@ -718,16 +719,16 @@ void SendOrdMis(){
   radioPrint->write(txDoubleSum);
 }
 
-void OrderedQuery(){
+void OrderedQuery() {
 
-  switch(typeNum){
+  switch (typeNum) {
   case 0:
-    for (uint8_t i = 0; i < 4; i++){
+    for (uint8_t i = 0; i < 4; i++) {
       itemBuffer[i] = (*floatPointerArray[cmdNum]).buffer[i];
     }
     break;
   case 1:
-    for (uint8_t i = 0; i < 2; i++){
+    for (uint8_t i = 0; i < 2; i++) {
       itemBuffer[i] = (*int16PointerArray[cmdNum]).buffer[i];
     }
     break;
@@ -743,12 +744,12 @@ void OrderedQuery(){
 
 }
 
-void SendUnAck(){
+void SendUnAck() {
   txSum = 0;
   txDoubleSum = 0;
   radioPrint->write(0XAA);
 
-  switch(typeNum){
+  switch (typeNum) {
   case 0:
     radioPrint->write(9);
     radioPrint->write(0xF9);
@@ -878,7 +879,7 @@ void SendUnAck(){
 
 
 
-  if (typeNum == 1){
+  if (typeNum == 1) {
     radioPrint->write(7);
     radioPrint->write(0xF9);
     txSum += 0xF9;
@@ -906,7 +907,7 @@ void SendUnAck(){
     radioPrint->write(txSum);
     radioPrint->write(txDoubleSum);
   }
-  else{
+  else {
     radioPrint->write(9);
     radioPrint->write(0xF9);
     txSum = 0xF9;
@@ -943,7 +944,7 @@ void SendUnAck(){
   }
 }
 
-void SendUnMis(){
+void SendUnMis() {
 
   txSum = 0;
   txDoubleSum = 0;
@@ -965,11 +966,11 @@ void SendUnMis(){
 
 }
 
-void UnReliableTransmit(){
+void UnReliableTransmit() {
   txSum = 0;
   txDoubleSum = 0;
   radioPrint->write(0xAA);
-  switch(typeNum){
+  switch (typeNum) {
   case 0://float
     radioPrint->write(4);
     radioPrint->write(typeNum);
@@ -978,7 +979,7 @@ void UnReliableTransmit(){
     radioPrint->write(cmdNum);
     txSum += typeNum;
     txDoubleSum += txSum;
-    for(uint8_t i = 0; i < 4; i++){
+    for (uint8_t i = 0; i < 4; i++) {
       radioPrint->write((*floatPointerArray[cmdNum]).buffer[i]);
       txSum += (*floatPointerArray[cmdNum]).buffer[i];
       txDoubleSum += txSum;
@@ -992,7 +993,7 @@ void UnReliableTransmit(){
     radioPrint->write(cmdNum);
     txSum += typeNum;
     txDoubleSum += txSum;
-    for(uint8_t i = 0; i < 2; i++){
+    for (uint8_t i = 0; i < 2; i++) {
       radioPrint->write((*int16PointerArray[cmdNum]).buffer[i]);
       txSum += (*int16PointerArray[cmdNum]).buffer[i];
       txDoubleSum += txSum;
@@ -1019,18 +1020,18 @@ void UnReliableTransmit(){
 
 
 
-void HandShake(){
+void HandShake() {
   handShakeState = 0;
 
 
   radioTimer = millis();
 
-  if (EEPROM.read(HS_FLAG) == 0xAA || EEPROM.read(HS_FLAG) == 0xBB){//Check for handshake from calibration
-    if (EEPROM.read(HS_FLAG) == 0xBB){
+  if (EEPROM.read(HS_FLAG) == 0xAA || EEPROM.read(HS_FLAG) == 0xBB) { //Check for handshake from calibration
+    if (EEPROM.read(HS_FLAG) == 0xBB) {
       radioStream = &Port0;
       radioPrint = &Port0;
     }
-    EEPROM.write(HS_FLAG,0xFF);
+    EEPROM.write(HS_FLAG, 0xFF);
     packetTemp[0] = EEPROM.read(PKT_LOCAL_ORD_L);//lsb for packetNumberLocalOrdered
     packetTemp[1] = EEPROM.read(PKT_LOCAL_ORD_M);//msb for packetNumberLocalOrdered
     localPacketNumberOrdered = (packetTemp[1] << 8) | packetTemp[0];
@@ -1039,82 +1040,82 @@ void HandShake(){
     localPacketNumberUn = (packetTemp[1] << 8) | packetTemp[0];
     handShake = true;
     return;
-  }  
+  }
   localPacketNumberOrdered = 0;
   localPacketNumberUn = 0;
-  while(radioStream->available() > 0){
+  while (radioStream->available() > 0) {
     radioStream->read();//clear any data in the buffer
   }
   radioTimer = millis();
-  while(millis() - radioTimer < 2000 && handShake == false){
+  while (millis() - radioTimer < 2000 && handShake == false) {
     //look for data on the radio port
-    if(radioStream->available() > 0){
+    if (radioStream->available() > 0) {
       handShake = true;
     }
   }
-  if(handShake == false){
+  if (handShake == false) {
     return;
   }
   handShake = false;
 
-  while(millis() - radioTimer < 2000 && handShake == false){//***
+  while (millis() - radioTimer < 2000 && handShake == false) { //***
 
-    if (radioStream->available() > 0){//---
+    if (radioStream->available() > 0) { //---
 
-      while (radioStream->available() > 0){//+++
+      while (radioStream->available() > 0) { //+++
 
         radioByte = radioStream->read();
 
-        switch (handShakeState){//^^^
+        switch (handShakeState) { //^^^
 
         case 0://check for 0xAA
           rxSum = 0;
           rxDoubleSum = 0;
           calibrationMode = false;
-          if (radioByte == 0xAA){
+          if (radioByte == 0xAA) {
             handShakeState = 1;
           }
           break;
 
         case 1://get and verify the length
-          if (radioByte == 0x02){//len will always be 2 for the HS
+          if (radioByte == 0x02) { //len will always be 2 for the HS
             handShakeState = 2;
           }
-          else{
+          else {
             handShakeState = 0;
           }
           break;
 
         case 2://check for correct command byte
-          if (radioByte == 0xFF){
+          if (radioByte == 0xFF) {
             rxSum += radioByte;
             rxDoubleSum += rxSum;
             handShakeState = 3;
           }
-          else{
+          else {
             handShakeState = 0;
           }
           break;
 
         case 3://check handshake type
-          if (radioByte == 0x01){
+          if (radioByte == 0x01) {
             rxSum += radioByte;
             rxDoubleSum += rxSum;
             handShakeState = 4;
             calibrationMode = true;
             break;
           }
-          if (radioByte == 0x00){
+          if (radioByte == 0x00) {
             rxDoubleSum += rxSum;
             handShakeState = 4;
             break;
           }
           handShakeState = 0;
 
-          break; 
+          break;
 
         case 4://verify sum
-          if (radioByte == rxSum){
+          if (radioByte == rxSum) {
             handShakeState = 5;
             break;
           }
@@ -1122,7 +1123,7 @@ void HandShake(){
           break;
 
         case 5://verify double sum
-          if (radioByte == rxDoubleSum){
+          if (radioByte == rxDoubleSum) {
             SendHandShakeResponse();
             handShake = true;
           }
@@ -1137,18 +1138,18 @@ void HandShake(){
 
   }//***
 
-  if (handShake == false){
+  if (handShake == false) {
     calibrationMode = false;
   }
 
 }
 
-void SendHandShakeResponse(){
+void SendHandShakeResponse() {
   txSum = 0;
   txDoubleSum = 0;
   radioPrint->write(0xAA);
   radioPrint->write(0x04);//packet length
-  if (calibrationMode == true){
+  if (calibrationMode == true) {
 
     radioPrint->write(0xF7);//cmd byte
     txSum += 0xF7;
@@ -1164,7 +1165,7 @@ void SendHandShakeResponse(){
     txDoubleSum += txSum;
     radioPrint->write(txSum);
     radioPrint->write(txDoubleSum);
-    for (uint8_t i=0; i < 15; i++){
+    for (uint8_t i = 0; i < 15; i++) {
       radioPrint->write(0xAA);
       radioPrint->write(0x04);//packet length
       radioPrint->write(0xF7);//cmd byte
@@ -1176,7 +1177,7 @@ void SendHandShakeResponse(){
     }
 
   }
-  else{
+  else {
     radioPrint->write(0xFE);//cmd byte
     txSum += 0xFE;
     txDoubleSum += txSum;
@@ -1191,7 +1192,7 @@ void SendHandShakeResponse(){
     txDoubleSum += txSum;
     radioPrint->write(txSum);
     radioPrint->write(txDoubleSum);
-    for (uint8_t i=0; i < 15; i++){
+    for (uint8_t i = 0; i < 15; i++) {
       radioPrint->write(0xAA);
       radioPrint->write(0x04);//packet length
       radioPrint->write(0xFE);//cmd byte
@@ -1204,6 +1205,11 @@ void SendHandShakeResponse(){
 
   }
 }
+
+
+
+
+
 
 
 

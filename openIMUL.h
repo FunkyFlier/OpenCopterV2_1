@@ -88,7 +88,7 @@ public:
   uint8_t lagAmount;
   //uint8_t magFlag;
   float_u biasedX,biasedY,biasedZ;
-  boolean magDetected;
+  uint8_t magDetected;
 private:
 
   

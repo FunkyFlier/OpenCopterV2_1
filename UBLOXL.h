@@ -66,8 +66,8 @@ public:
   void DistBearing(int32_t*, int32_t*, int32_t*, int32_t*,float*,float*,float*,float*);
   void Monitor(void);
   GPS_Union_t data;
-  volatile boolean newData;
-  boolean LLHFlag,VELFlag;
+  volatile bool newData;
+  bool LLHFlag,VELFlag;
 private:
   uint8_t GPSState;
   int i;

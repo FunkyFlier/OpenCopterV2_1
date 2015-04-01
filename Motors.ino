@@ -34,9 +34,9 @@ void CheckESCFlag(){
   newRC = false;
 
   if (EEPROM.read(ESC_CAL_FLAG) == 0xAA){
-    Serial<<RCValue[THRO]<<","<<RCValue[AILE]<<","<<RCValue[ELEV]<<","<<RCValue[RUDD]<<"\r\n";
+    //Serial<<RCValue[THRO]<<","<<RCValue[AILE]<<","<<RCValue[ELEV]<<","<<RCValue[RUDD]<<"\r\n";
     while(RCValue[THRO] > 1100 || RCValue[AILE] > 1100 || RCValue[ELEV] > 1100 || RCValue[RUDD] > 1100){
-      Serial<<"1\r\n";
+      //Serial<<"1\r\n";
       if (newRC == true){
         newRC = false;
         ProcessChannels();
@@ -255,7 +255,7 @@ void MotorHandler(){
     motorCommand3.val = propIdleCommand;
     motorCommand4.val = propIdleCommand;
     throttleCheckFlag = false;
-    pressureInitial = pressure.val;
+    initialPressure = pressure.val;
     imu.ZEst.val = 0;
     imu.ZEstUp.val = 0;
     imu.velZ.val = 0;
@@ -315,7 +315,11 @@ void MotorHandler(){
         throttleCommand.val = 1900;
       }
       if (throttleCommand.val < 1050){
-        motorState = HOLD;
+        //motorState = HOLD;
+        throttleCommand.val = propIdleCommand;
+        if (RCValue[RUDD] > 1800){
+          motorState = HOLD;
+        }
       }
     }
     if (flightMode >= L0){
