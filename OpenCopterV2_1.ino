@@ -9,11 +9,11 @@
 #include "AUXMATH.h"
 #include "UBLOXL.h"
 
-//#define ROT_45
+#define ROT_45
 
 
-#define V1
-//#define V2
+//#define V1
+#define V2
 
 #ifdef V2
 #ifdef V1
