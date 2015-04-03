@@ -9,7 +9,7 @@
 #include "AUXMATH.h"
 #include "UBLOXL.h"
 
-#define ROT_45
+//#define ROT_45
 
 
 //#define V1
@@ -22,9 +22,9 @@
 #endif
 
 
-#define SACC_MAX 0.5
-#define HACC_MAX 2
-#define MIN_SATS 10
+#define SACC_MAX 1
+#define HACC_MAX 4
+#define MIN_SATS 8
 
 #define CAL_FLAGS 0
 #define HS_FLAG 1
