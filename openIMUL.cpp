@@ -137,9 +137,14 @@ void openIMU::InitialQuat(){
   R22 = cos(radRoll.val);
   R23 = cos(radPitch.val)*sin(radRoll.val);
 
-  bx = *mx * R11 + *mz * R13;
-  by = *mx * R21 + *my * R22 + *mz * R23;
-  radYaw.val = atan2(-1.0 * by, bx) - ToRad(declination.val);
+  if (magDetected == true){
+    bx = *mx * R11 + *mz * R13;
+    by = *mx * R21 + *my * R22 + *mz * R23;
+    radYaw.val = atan2(-1.0 * by, bx) - ToRad(declination.val);
+  }
+  else{
+    radYaw.val = 0;
+  }
 
   q0.val = cos(radYaw.val/2.0)*cos(radPitch.val/2.0)*cos(radRoll.val/2.0) + sin(radYaw.val/2.0)*sin(radPitch.val/2.0)*sin(radRoll.val/2.0); 
   q1.val = cos(radYaw.val/2.0)*cos(radPitch.val/2.0)*sin(radRoll.val/2.0) - sin(radYaw.val/2.0)*sin(radPitch.val/2.0)*cos(radRoll.val/2.0); 
@@ -460,6 +465,7 @@ void openIMU::GetYaw(void){
     yaw.val +=360;
   }
 }
+
 
 
 
