@@ -230,13 +230,6 @@ void Radio() {
         }
         SendOrdAck();
       }
-      /*else{
-       if (remotePacketNumberOrdered != localPacketNumberOrdered){
-       SendOrdMis();
-       radioState = 0;
-       break;
-       }
-       }*/
       radioState = 0;
       break;
     case 19:
@@ -619,6 +612,8 @@ void WriteCalibrationDataToRom() {
     Motor4WriteMicros(0);
     Motor5WriteMicros(0);
     Motor6WriteMicros(0);
+    Motor7WriteMicros(0);
+    Motor8WriteMicros(0);
     delay(500);
     asm volatile ("  jmp 0");
 

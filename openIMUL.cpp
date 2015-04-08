@@ -4,14 +4,12 @@
 //This code is provided under the GNU General Public Licence
 //12/19/2012
 #include "openIMUL.h"
-//#include <Streaming.h>
 
 
 
 openIMU::openIMU(float *gyroX, float *gyroY, float *gyroZ, float *accX, float *accY, 
 float *accZ, float *scAccX, float *scAccY, float *scAccZ, float *magX, float *magY, float *magZ, float *xGPS , float *yGPS, float *zBaro,float *xGPSVel ,float *yGPSVel,float *zBaroVel,float *G_Dt){
 
-  //constructor for the 10DOF system
   gx = gyroX;
   gy = gyroY;
   gz = gyroZ;
@@ -230,19 +228,8 @@ void openIMU::Predict(void){
   XVelHist[currentEstIndex] = velX.val;
   YVelHist[currentEstIndex] = velY.val;
 
-  //lagEstForDebug.val = XVelHist[lagIndex];
-
-  //lagEstForDebugVel.val = XVelHist[lagIndex];
-  //lagEstForDebugPos.val = XEstHist[lagIndex];
-
-
   ZEstHist[currentEstIndex_z] = ZEst.val;
   ZVelHist[currentEstIndex_z] = velZ.val;
-
-
-  //lagEstForDebugVel.val = -1.0 * ZVelHist[lagIndex_z];
-  //lagEstForDebugPos.val = -1.0 * ZEstHist[lagIndex_z];
-
 
   ZEstUp.val = -1.0 * ZEst.val;
   velZUp.val = -1.0 * velZ.val;
@@ -262,9 +249,6 @@ void openIMU::CorrectGPS(void){
   velX.val = velX.val - kVelGPS * xVelError.val;
   velY.val = velY.val - kVelGPS * yVelError.val;
 
-
-
-
   accelBiasXEF = R11 * accelBiasX.val + R21 * accelBiasY.val + R31 * accelBiasZ.val;
   accelBiasYEF = R12 * accelBiasX.val + R22 * accelBiasY.val + R32 * accelBiasZ.val;
   accelBiasZEF = R13 * accelBiasX.val + R23 * accelBiasY.val + R33 * accelBiasZ.val;
@@ -276,7 +260,6 @@ void openIMU::CorrectGPS(void){
   accelBiasX.val = R11*accelBiasXEF + R12*accelBiasYEF + R13*accelBiasZEF;
   accelBiasY.val = R21*accelBiasXEF + R22*accelBiasYEF + R23*accelBiasZEF;
   accelBiasZ.val = R31*accelBiasXEF + R32*accelBiasYEF + R33*accelBiasZEF;
-
 
 }
 
@@ -306,9 +289,7 @@ void openIMU::CorrectAlt(void){
 
 
 void openIMU::AHRSupdate() {
-  //uint32_t addX,addY,addZ;
   //normalize the sensor readings
-
   magnitude.val =  sqrt(*ax * *ax + *ay * *ay + *az * *az);
   magnitudeDifference.val = fabs(initialAccMagnitude.val +  magnitude.val);
   if (magnitudeDifference.val < FEEDBACK_LIMIT ){

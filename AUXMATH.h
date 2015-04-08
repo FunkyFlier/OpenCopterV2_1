@@ -2,7 +2,6 @@
 #define AUXMATH_h
 
 #include <Arduino.h>
-//#include <Streaming.h>
 
 #define ToRad(x) ((x)*0.01745329252)  // *pi/180
 #define ToDeg(x) ((x)*57.2957795131)  // *180/pi
@@ -49,7 +48,6 @@ static float FastAtan2( float y, float x)
     if ( y == 0.0f ) return 0.0f;
     return -PIBY2_FLOAT;
   }
-  //atan;
   z = y / x;
   if ( fabs( z ) < 1.0f )
   {

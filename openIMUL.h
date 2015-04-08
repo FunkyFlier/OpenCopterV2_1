@@ -11,28 +11,13 @@
 
 #include <Arduino.h>
 
-//#define DECLINATION 3.66f
 #define ToRad(x) ((x)*0.01745329252)  // *pi/180
 #define ToDeg(x) ((x)*57.2957795131)  // *180/pi
 
-//#define FEEDBACK_LIMIT 0.98
-/*#define kpAcc 1.00
- #define kiAcc 0.0
- #define kpMag 1.00
- #define kiMag 0.0*/
-/*
-#define kpAcc 400.0
- #define kiAcc 40.0
- #define kpMag 400.0
- #define kiMag 40.0*/
+
 #define LAG_SIZE 56
 #define LAG_SIZE_BARO 27
-//#define DECLINATION ToRad(3.3)
-//#define COS_DEC cos(DECLINATION)
-//#define SIN_DEC sin(DECLINATION) 
-
-//#define COS_DEC 1
-//#define SIN_DEC 0
+/
 
 class openIMU{
 public:
@@ -61,9 +46,7 @@ public:
   float_u accelBiasX,accelBiasY,accelBiasZ;
   float accelBiasXEF,accelBiasYEF,accelBiasZEF;
   float_u inertialX,inertialY,inertialZ,inertialZGrav;
-  //float_u inertialXOffSet,inertialYOffSet,inertialZOffSet;
   float_u inertialXBiased,inertialYBiased,inertialZBiased;
-  //uint8_t feedBack;
   float_u xPosError,yPosError,zPosError;
   float_u xVelError,yVelError,zVelError;
   float XEstHist[LAG_SIZE],YEstHist[LAG_SIZE],ZEstHist[LAG_SIZE_BARO];
@@ -78,15 +61,11 @@ public:
   float kpMag;
   float kiMag;
   float FEEDBACK_LIMIT;
-  //boolean skipFeedBack;
-  //float FEEDBACK_LIMIT;
   float COS_DEC,SIN_DEC;
   float kPosGPS,kVelGPS,kAccGPS,kPosBaro,kVelBaro,kAccBaro;
   float R11,R12,R13,R21,R22,R23,R31,R32,R33;
   float inertialSumX,inertialSumY,inertialSumZ,inertialAvgX,inertialAvgY,inertialAvgZ;
-  //float_u lagEstForDebugVel,lagEstForDebugPos;
   uint8_t lagAmount;
-  //uint8_t magFlag;
   float_u biasedX,biasedY,biasedZ;
   uint8_t magDetected;
 private:
@@ -117,9 +96,6 @@ private:
   
   float hx,hy,hz,exm,eym,ezm,exa,eya,eza;
   float_u radPitch,radRoll,radYaw;
-  //float xOrtho[3],yOrtho[3],zOrtho[3];
-  //float xNorm[3],yNorm[3],zNorm[3];
-  //float normScale,rotError,rotError2;
 };
 
 

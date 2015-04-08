@@ -20,14 +20,14 @@ ISR(TIMER5_COMPA_vect, ISR_NOBLOCK){
     digitalWrite(RED,LOW);
     digitalWrite(YELLOW,LOW);
     digitalWrite(GREEN,LOW);
-    Motor1WriteMicros(1000);//set the output compare value
-    Motor2WriteMicros(1000);
-    Motor3WriteMicros(1000);
-    Motor4WriteMicros(1000);
-    Motor5WriteMicros(1000);
-    Motor6WriteMicros(1000);
-    //Motor7WriteMicros(1000);
-    //Motor8WriteMicros(1000);
+    Motor1WriteMicros(0);//set the output compare value
+    Motor2WriteMicros(0);
+    Motor3WriteMicros(0);
+    Motor4WriteMicros(0);
+    Motor5WriteMicros(0);
+    Motor6WriteMicros(0);
+    Motor7WriteMicros(0);
+    Motor8WriteMicros(0);
     while(1){
       digitalWrite(13,LOW);
       digitalWrite(RED,LOW);

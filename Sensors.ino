@@ -140,7 +140,6 @@ void SendCalData() {
 
       radioPrint->write(txSum);
       radioPrint->write(txDoubleSum);
-      //Serial<<"mag cal sendingr\n";
       break;
     case 1:
       radioPrint->write(7);
@@ -176,7 +175,6 @@ void SendCalData() {
 
       radioPrint->write(txSum);
       radioPrint->write(txDoubleSum);
-      //Serial<<"acc cal sending\r\n";
       break;
     case 2:
       radioPrint->write(17);
@@ -251,7 +249,6 @@ void SendCalData() {
 
       radioPrint->write(txSum);
       radioPrint->write(txDoubleSum);
-      //Serial<<"rc cal sending\r\n";
       break;
   }
 }
@@ -269,7 +266,6 @@ void GPSStart() {
       GPSDetected = true;
     }
   }
-  //Serial<<"gps det: "<<GPSDetected<<"\r\n";
   //to do add feed back with leds
   if (GPSDetected == true) {
     gpsFailSafe = false;

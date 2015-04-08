@@ -423,7 +423,6 @@ void ROMFlagsCheck() {
   calibrationFlags = EEPROM.read(CAL_FLAGS);
   VerifyMag();
   if ( ((calibrationFlags & (1 << RC_FLAG)) >> RC_FLAG) == 0x01 || ((calibrationFlags & (1 << ACC_FLAG)) >> ACC_FLAG) == 0x01 || ( ((calibrationFlags & (1 << MAG_FLAG)) >> MAG_FLAG) == 0x01 && imu.magDetected ) ) {
-    //if ( ((calibrationFlags & (1<<RC_FLAG)) >> RC_FLAG) == 0x01 || ((calibrationFlags & (1<<ACC_FLAG)) >> ACC_FLAG) == 0x01 ||  ((calibrationFlags & (1<<MAG_FLAG)) >> MAG_FLAG) == 0x01  ){
     Port2.begin(115200);
     radioStream = &Port2;
     radioPrint = &Port2;
@@ -600,7 +599,6 @@ void LoadPWMLimits() {
       hoverCommand = 1000 * (1 + ((float)hoverPercent / 100.0));
     }
   }
-  //Serial << pwmLow.val << "," << pwmHigh.val << "," << propIdleCommand << "," << hoverCommand << "\r\n";
 }
 void LoadRC() {
   uint16_t j = 0; //index for input buffers
@@ -645,7 +643,6 @@ void LoadRC() {
     }
   }
   txLossRTB = EEPROM.read(TX_FS);
-  //Serial << txLossRTB << " " << EEPROM.read(TX_FS) << "\r\n";
   if (txLossRTB > 1) {
     txLossRTB = 0;
   }

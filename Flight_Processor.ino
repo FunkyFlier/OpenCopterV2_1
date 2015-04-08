@@ -47,7 +47,6 @@ void LoiterSM(){
     if (loitThro < 1050 && motorState == FLIGHT){
       ZLoiterState = LAND;
       motorState = LANDING;
-      //zTarget.val = -100.0;
       velSetPointZ.val = LAND_VEL;
     }
     break;
@@ -80,7 +79,6 @@ void LoiterSM(){
     if (loitThro < 1050 && motorState == FLIGHT){
       ZLoiterState = LAND;
       motorState = LANDING;
-      //zTarget.val  = -100.0;
       velSetPointZ.val = LAND_VEL;
       break;
     }
@@ -104,10 +102,6 @@ void LoiterSM(){
 
 
   case LAND:
-    /*AltHoldPosition.calculate();
-     if (velSetPointZ.val < LAND_VEL){
-     velSetPointZ.val = LAND_VEL;
-     }*/
     AltHoldVelocity.calculate();
 
     if (loitThro > 1200 && motorState == LANDING){
@@ -125,15 +119,11 @@ void LoiterSM(){
     }
     break;
   }
-
-
-  //if (gpsFailSafe == false && drFlag == false){
   if (gpsFailSafe == false && GPSDetected == true){
     switch(XYLoiterState){
     case LOITERING:
       LoiterCalculations();
       RotatePitchRoll(&imu.yaw.val,&zero,&tiltAngleX.val,&tiltAngleY.val,&pitchSetPoint.val,&rollSetPoint.val);
-      //to do switch from fabs to look for zero
       if (fabs(rollSetPointTX.val) > 0.5 || fabs(pitchSetPointTX.val) > 0.5){
         XYLoiterState = RCINPUT;
       }
