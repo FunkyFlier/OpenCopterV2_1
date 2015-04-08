@@ -1000,14 +1000,7 @@ void GyroInit() {
   SPI.transfer(L3G_CTRL_REG1 | WRITE | SINGLE);
   SPI.transfer(0x8F);
   GyroSSHigh();
-  //this section takes an average of 500 samples to calculate the offset
-  //if this step is skipped the IMU will still work, but this simple step gives better results
-  /*gyroOffsetX = 0;
-   gyroOffsetY = 0;
-   gyroOffsetZ = 0;
-   gyroSumX = 0;
-   gyroSumY = 0;
-   gyroSumZ = 0;*/
+
   for (uint16_t j = 0; j < 500; j ++) {
     GyroSSLow();
     SPI.transfer(L3G_OUT_X_L  | READ | MULTI);
@@ -1022,35 +1015,22 @@ void GyroInit() {
     delay(3);
   }
   UpdateOffset();
-  /* for (uint16_t j = 0; j < 500; j ++){
-   GyroSSLow();
-   SPI.transfer(L3G_OUT_X_L  | READ | MULTI);
-   gyroX.buffer[0] = SPI.transfer(0x00);
-   gyroX.buffer[1] = SPI.transfer(0x00);
-   gyroY.buffer[0] = SPI.transfer(0x00);
-   gyroY.buffer[1] = SPI.transfer(0x00);
-   gyroZ.buffer[0] = SPI.transfer(0x00);
-   gyroZ.buffer[1] = SPI.transfer(0x00);
-
-   GyroSSHigh();
-   gyroSumX += gyroX.val;
-   gyroSumY += (gyroY.val);
-   gyroSumZ += (gyroZ.val);
-
-   if (
-
-   delay(3);
-   }
-   gyroOffsetX = gyroSumX / 500.0;
-   gyroOffsetY = gyroSumY / 500.0;
-   gyroOffsetZ = gyroSumZ / 500.0;*/
 
   GetGyro();
 
 }
 
 void GetMag() {
-  I2c.read(MAG_ADDRESS, HMC5983_OUT_X_H, 6);
+  i2cTimeOutStatus = I2c.read(MAG_ADDRESS, HMC5983_OUT_X_H, 6);
+  if (i2cTimeOutCount == 10){
+    imu.magDetected = false;
+    return;
+  }
+  if (i2cTimeOutStatus != 0){
+    i2cTimeOutCount++;
+    return;
+  }
+  i2cTimeOutCount = 0;
   magX.buffer[1] = I2c.receive();//X
   magX.buffer[0] = I2c.receive();
   magZ.buffer[1] = I2c.receive();//Z

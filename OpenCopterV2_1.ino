@@ -951,6 +951,9 @@ float_u hAcc, sAcc, pDop;
 
 uint8_t numSats;
 uint8_t txLossRTB;
+
+uint8_t i2cTimeOutStatus;
+uint8_t i2cTimeOutCount;
 //constructors //fix the dts
 openIMU imu(&radianGyroX, &radianGyroY, &radianGyroZ, &accToFilterX, &accToFilterY, &accToFilterZ, &filtAccX.val, &filtAccY.val, &filtAccZ.val,
             &magToFiltX, &magToFiltY, &magToFiltZ, &gpsX.val, &gpsY.val, &baroZ.val, &velN.val, &velE.val, &baroVel.val, &imuDT);
@@ -1046,6 +1049,7 @@ void setup() {
 
   I2c.begin();
   I2c.setSpeed(1);
+  I2c.timeOut(1);
   SPI.begin();
   SPI.setBitOrder(MSBFIRST);
   SPI.setClockDivider(SPI_CLOCK_DIV2);
@@ -1068,9 +1072,15 @@ void setup() {
       HandShake();
     }
   }
-  //Serial<<localPacketNumberOrdered<<","<<localPacketNumberUn<<"\r\n";
+  
+
 
   Port0.begin(115200);
+  Port2.begin(115200);
+  radioStream = &Port2;
+  radioPrint = &Port2;
+  
+  
   if (calibrationMode == true) {
     //Port0<<"cal mode\r\n";
     BaroInit();
@@ -1084,7 +1094,7 @@ void setup() {
 
   ModeSelect();
   Arm();//move the rudder to the right to begin calibration
-  GPSStart();
+  //GPSStart();
   BaroInit();
   GyroInit();
   AccInit();
@@ -1119,9 +1129,8 @@ void loop() {//0
       GetMag();
     }//2
     _400HzTask();
-
     imu.AHRSupdate();
-    _400HzTask();
+     _400HzTask();
     imu.GenerateRotationMatrix();
     _400HzTask();
     imu.GetEuler();
@@ -1158,7 +1167,6 @@ void loop() {//0
         gpsFailSafe = true;
       }//5
       GPSFailSafeCounter = 0;
-
       imu.CorrectGPS();
 
     }//4
@@ -1177,6 +1185,7 @@ void loop() {//0
       if (baroDT >= 0.1 || baroDT < 0) {//8
         baroDT = 0.1;
       }//8
+      
       alphaBaro = baroDT / (baroDT + RC_CONST_BARO);
       betaBaro = 1 - alphaBaro;
       baroZ.val = baroZ.val * betaBaro + baroAlt.val * alphaBaro;
@@ -1263,7 +1272,7 @@ void loop() {//0
     tuningTrasnmitOK = true;
     _400HzTask();
   }//1-
-
+  
   _400HzTask();
   if (handShake == true) {//22
     Radio();
