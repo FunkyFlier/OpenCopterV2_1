@@ -9,7 +9,7 @@
 #include "AUXMATH.h"
 #include "UBLOXL.h"
 
-//#define ROT_45
+#define ROT_45
 
 
 //#define V1
@@ -21,14 +21,14 @@
 #endif
 #endif
 
-//#define QUAD
+#define QUAD
 //#define HEX_FRAME
-#define X_8
+//#define X_8
 
 
-#define SACC_MAX 100
-#define HACC_MAX 400
-#define MIN_SATS 6
+#define SACC_MAX 0.5
+#define HACC_MAX 4
+#define MIN_SATS 10
 
 #define CAL_FLAGS 0
 #define HS_FLAG 1
@@ -1060,7 +1060,6 @@ void setup() {
 
   ROMFlagsCheck();
   CheckESCFlag();
-
   CalibrateESC();
   MotorInit();
   delay(3500);//this allows the telemetry radios to connect before trying the handshake
@@ -1076,7 +1075,6 @@ void setup() {
       HandShake();
     }
   }
-
   if (calibrationMode == true) {
     BaroInit();
     AccInit();
@@ -1084,7 +1082,6 @@ void setup() {
     CalibrateSensors();
     ROMFlagsCheck();
   }
-
 
 
   ModeSelect();

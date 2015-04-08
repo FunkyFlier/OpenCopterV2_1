@@ -34,6 +34,10 @@ void CheckESCFlag(){
   newRC = false;
 
   if (EEPROM.read(ESC_CAL_FLAG) == 0xAA){
+    digitalWrite(13,HIGH);
+    digitalWrite(RED,HIGH);
+    digitalWrite(YELLOW,HIGH);
+    digitalWrite(GREEN,HIGH);
     while(RCValue[THRO] > 1100 || RCValue[AILE] > 1100 || RCValue[ELEV] > 1100 || RCValue[RUDD] > 1100){
       if (newRC == true){
         newRC = false;
@@ -474,19 +478,19 @@ void MotorHandler(){
     motorCommand5.val = constrain((throttleCommand.val + landingThroAdjustment.val + 0.5 * adjustmentX.val - adjustmentY.val - adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand6.val = constrain((throttleCommand.val + landingThroAdjustment.val +       adjustmentX.val                   + adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand7.val = 1000;
-    motorCommand8.val = 1000
+    motorCommand8.val = 1000;
 #endif
-    break;
+      break;
   }
   /*MapVar(&motorCommand1.val,&motorPWM1,1000,2000,pwmLow.val,pwmHigh.val);
-  MapVar(&motorCommand2.val,&motorPWM2,1000,2000,pwmLow.val,pwmHigh.val);
-  MapVar(&motorCommand3.val,&motorPWM3,1000,2000,pwmLow.val,pwmHigh.val);
-  MapVar(&motorCommand4.val,&motorPWM4,1000,2000,pwmLow.val,pwmHigh.val);
-
-  MapVar(&motorCommand5.val,&motorPWM5,1000,2000,pwmLow.val,pwmHigh.val);
-  MapVar(&motorCommand6.val,&motorPWM6,1000,2000,pwmLow.val,pwmHigh.val);
-  MapVar(&motorCommand7.val,&motorPWM7,1000,2000,pwmLow.val,pwmHigh.val);
-  MapVar(&motorCommand8.val,&motorPWM8,1000,2000,pwmLow.val,pwmHigh.val);*/
+   MapVar(&motorCommand2.val,&motorPWM2,1000,2000,pwmLow.val,pwmHigh.val);
+   MapVar(&motorCommand3.val,&motorPWM3,1000,2000,pwmLow.val,pwmHigh.val);
+   MapVar(&motorCommand4.val,&motorPWM4,1000,2000,pwmLow.val,pwmHigh.val);
+   
+   MapVar(&motorCommand5.val,&motorPWM5,1000,2000,pwmLow.val,pwmHigh.val);
+   MapVar(&motorCommand6.val,&motorPWM6,1000,2000,pwmLow.val,pwmHigh.val);
+   MapVar(&motorCommand7.val,&motorPWM7,1000,2000,pwmLow.val,pwmHigh.val);
+   MapVar(&motorCommand8.val,&motorPWM8,1000,2000,pwmLow.val,pwmHigh.val);*/
   Motor1WriteMicros(motorCommand1.val);
   Motor2WriteMicros(motorCommand2.val);
   Motor3WriteMicros(motorCommand3.val);
@@ -498,6 +502,7 @@ void MotorHandler(){
   Motor8WriteMicros(motorCommand8.val);
 
 }
+
 
 
 
