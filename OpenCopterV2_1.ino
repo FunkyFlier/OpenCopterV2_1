@@ -21,14 +21,14 @@
 #endif
 #endif
 
-#define QUAD
-//#define HEX
-//#define X_8
+//#define QUAD
+//#define HEX_FRAME
+#define X_8
 
 
-#define SACC_MAX 1
-#define HACC_MAX 4
-#define MIN_SATS 8
+#define SACC_MAX 100
+#define HACC_MAX 400
+#define MIN_SATS 6
 
 #define CAL_FLAGS 0
 #define HS_FLAG 1
@@ -1077,16 +1077,7 @@ void setup() {
     }
   }
 
-
-
-  Port0.begin(115200);
-  Port2.begin(115200);
-  radioStream = &Port2;
-  radioPrint = &Port2;
-
-
   if (calibrationMode == true) {
-    //Port0<<"cal mode\r\n";
     BaroInit();
     AccInit();
     MagInit();
@@ -1553,6 +1544,9 @@ void LoiterCalculations() {
   tiltAngleX.val *= -1.0;
   LoiterYVelocity.calculate();
 }
+
+
+
 
 
 

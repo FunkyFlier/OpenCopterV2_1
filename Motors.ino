@@ -365,6 +365,10 @@ void MotorHandler(){
     motorCommand2.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val + adjustmentY.val + adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand3.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val - adjustmentY.val - adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand4.val = constrain((throttleCommand.val + throttleAdjustment.val + adjustmentX.val - adjustmentY.val + adjustmentZ.val),pwmLow.val,pwmHigh.val);
+    motorCommand5.val = 1000;
+    motorCommand6.val = 1000;
+    motorCommand7.val = 1000;
+    motorCommand8.val = 1000;
 #endif
 #ifdef X_8
     motorCommand1.val = constrain((throttleCommand.val + throttleAdjustment.val + adjustmentX.val + adjustmentY.val - adjustmentZ.val),pwmLow.val,pwmHigh.val);
@@ -377,14 +381,15 @@ void MotorHandler(){
     motorCommand7.val = constrain((throttleCommand.val + throttleAdjustment.val - adjustmentX.val - adjustmentY.val + adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand8.val = constrain((throttleCommand.val + throttleAdjustment.val + adjustmentX.val - adjustmentY.val - adjustmentZ.val),pwmLow.val,pwmHigh.val);
 #endif
-#ifdef HEX
+#ifdef HEX_FRAME
     motorCommand1.val = constrain((throttleCommand.val + throttleAdjustment.val + 0.5 * adjustmentX.val + adjustmentY.val - adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand2.val = constrain((throttleCommand.val + throttleAdjustment.val - 0.5 * adjustmentX.val + adjustmentY.val + adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand3.val = constrain((throttleCommand.val + throttleAdjustment.val -       adjustmentX.val                   - adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand4.val = constrain((throttleCommand.val + throttleAdjustment.val - 0.5 * adjustmentX.val - adjustmentY.val + adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand5.val = constrain((throttleCommand.val + throttleAdjustment.val + 0.5 * adjustmentX.val - adjustmentY.val - adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand6.val = constrain((throttleCommand.val + throttleAdjustment.val +       adjustmentX.val                   + adjustmentZ.val),pwmLow.val,pwmHigh.val);
-
+    motorCommand7.val = 1000;
+    motorCommand8.val = 1000;
 #endif
 
     break;
@@ -446,6 +451,10 @@ void MotorHandler(){
     motorCommand2.val = constrain((throttleCommand.val + landingThroAdjustment.val - adjustmentX.val + adjustmentY.val + adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand3.val = constrain((throttleCommand.val + landingThroAdjustment.val - adjustmentX.val - adjustmentY.val - adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand4.val = constrain((throttleCommand.val + landingThroAdjustment.val + adjustmentX.val - adjustmentY.val + adjustmentZ.val),pwmLow.val,pwmHigh.val);
+    motorCommand5.val = 1000;
+    motorCommand6.val = 1000;
+    motorCommand7.val = 1000;
+    motorCommand8.val = 1000;
 #endif 
 #ifdef X_8
     motorCommand1.val = constrain((throttleCommand.val + landingThroAdjustment.val + adjustmentX.val + adjustmentY.val - adjustmentZ.val),pwmLow.val,pwmHigh.val);
@@ -457,18 +466,19 @@ void MotorHandler(){
     motorCommand7.val = constrain((throttleCommand.val + landingThroAdjustment.val - adjustmentX.val - adjustmentY.val + adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand8.val = constrain((throttleCommand.val + landingThroAdjustment.val + adjustmentX.val - adjustmentY.val - adjustmentZ.val),pwmLow.val,pwmHigh.val);
 #endif
-#ifdef HEX
+#ifdef HEX_FRAME
     motorCommand1.val = constrain((throttleCommand.val + landingThroAdjustment.val + 0.5 * adjustmentX.val + adjustmentY.val - adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand2.val = constrain((throttleCommand.val + landingThroAdjustment.val - 0.5 * adjustmentX.val + adjustmentY.val + adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand3.val = constrain((throttleCommand.val + landingThroAdjustment.val -       adjustmentX.val                   - adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand4.val = constrain((throttleCommand.val + landingThroAdjustment.val - 0.5 * adjustmentX.val - adjustmentY.val + adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand5.val = constrain((throttleCommand.val + landingThroAdjustment.val + 0.5 * adjustmentX.val - adjustmentY.val - adjustmentZ.val),pwmLow.val,pwmHigh.val);
     motorCommand6.val = constrain((throttleCommand.val + landingThroAdjustment.val +       adjustmentX.val                   + adjustmentZ.val),pwmLow.val,pwmHigh.val);
-
+    motorCommand7.val = 1000;
+    motorCommand8.val = 1000
 #endif
     break;
   }
-  MapVar(&motorCommand1.val,&motorPWM1,1000,2000,pwmLow.val,pwmHigh.val);
+  /*MapVar(&motorCommand1.val,&motorPWM1,1000,2000,pwmLow.val,pwmHigh.val);
   MapVar(&motorCommand2.val,&motorPWM2,1000,2000,pwmLow.val,pwmHigh.val);
   MapVar(&motorCommand3.val,&motorPWM3,1000,2000,pwmLow.val,pwmHigh.val);
   MapVar(&motorCommand4.val,&motorPWM4,1000,2000,pwmLow.val,pwmHigh.val);
@@ -476,16 +486,16 @@ void MotorHandler(){
   MapVar(&motorCommand5.val,&motorPWM5,1000,2000,pwmLow.val,pwmHigh.val);
   MapVar(&motorCommand6.val,&motorPWM6,1000,2000,pwmLow.val,pwmHigh.val);
   MapVar(&motorCommand7.val,&motorPWM7,1000,2000,pwmLow.val,pwmHigh.val);
-  MapVar(&motorCommand8.val,&motorPWM8,1000,2000,pwmLow.val,pwmHigh.val);
-  Motor1WriteMicros(motorPWM1);
-  Motor2WriteMicros(motorPWM2);
-  Motor3WriteMicros(motorPWM3);
-  Motor4WriteMicros(motorPWM4);
+  MapVar(&motorCommand8.val,&motorPWM8,1000,2000,pwmLow.val,pwmHigh.val);*/
+  Motor1WriteMicros(motorCommand1.val);
+  Motor2WriteMicros(motorCommand2.val);
+  Motor3WriteMicros(motorCommand3.val);
+  Motor4WriteMicros(motorCommand4.val);
 
-  Motor5WriteMicros(motorPWM5);
-  Motor6WriteMicros(motorPWM6);
-  Motor7WriteMicros(motorPWM7);
-  Motor8WriteMicros(motorPWM8);
+  Motor5WriteMicros(motorCommand5.val);
+  Motor6WriteMicros(motorCommand6.val);
+  Motor7WriteMicros(motorCommand7.val);
+  Motor8WriteMicros(motorCommand8.val);
 
 }
 
