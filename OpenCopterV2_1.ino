@@ -21,6 +21,10 @@
 #endif
 #endif
 
+#define QUAD
+//#define HEX
+//#define X_8
+
 
 #define SACC_MAX 1
 #define HACC_MAX 4
@@ -830,8 +834,8 @@ float_u distToWayPoint, targetVelWayPoint;
 float speed2D_MPS;
 float_u tiltAngleX, tiltAngleY;
 uint8_t HHState = 1;
-float_u motorCommand1, motorCommand2, motorCommand3, motorCommand4;
-float motorPWM1, motorPWM2, motorPWM3, motorPWM4;
+float_u motorCommand1, motorCommand2, motorCommand3, motorCommand4,motorCommand5, motorCommand6, motorCommand7, motorCommand8;
+float motorPWM1, motorPWM2, motorPWM3, motorPWM4,motorPWM5, motorPWM6, motorPWM7, motorPWM8;
 boolean integrate = false;
 boolean enterState = true;
 
@@ -890,8 +894,8 @@ uint16_t localPacketNumberOrdered, localPacketNumberUn, remotePacketNumberOrdere
 uint32_t radioTimer;
 boolean handShake;
 uint8_t handShakeState, rxSum, rxDoubleSum, txSum, txDoubleSum, radioByte,
-        packetLength, numRXBytes, radioState, numRXbytes, typeNum, cmdNum,
-        itemBuffer[255], itemIndex, temp, hsNumItems, lsNumItems, hsList[40], lsList[40], liveDataBuffer[200], hsRequestNumber, lsRequestNumber, hsListIndex, lsListIndex;
+packetLength, numRXBytes, radioState, numRXbytes, typeNum, cmdNum,
+itemBuffer[255], itemIndex, temp, hsNumItems, lsNumItems, hsList[40], lsList[40], liveDataBuffer[200], hsRequestNumber, lsRequestNumber, hsListIndex, lsListIndex;
 uint32_t hsMillis, lsMillis, hsTXTimer, lsTXTimer;
 boolean offsetFlag, sendCalibrationData, hsTX, lsTX, tuningTrasnmitOK;
 
@@ -956,7 +960,7 @@ uint8_t i2cTimeOutStatus;
 uint8_t i2cTimeOutCount;
 //constructors //fix the dts
 openIMU imu(&radianGyroX, &radianGyroY, &radianGyroZ, &accToFilterX, &accToFilterY, &accToFilterZ, &filtAccX.val, &filtAccY.val, &filtAccZ.val,
-            &magToFiltX, &magToFiltY, &magToFiltZ, &gpsX.val, &gpsY.val, &baroZ.val, &velN.val, &velE.val, &baroVel.val, &imuDT);
+&magToFiltX, &magToFiltY, &magToFiltZ, &gpsX.val, &gpsY.val, &baroZ.val, &velN.val, &velE.val, &baroVel.val, &imuDT);
 //openIMU imu(&radianGyroX,&radianGyroY,&radianGyroZ,&accToFilterX,&accToFilterY,&accToFilterZ,&filtAccX.val,&filtAccY.val,&filtAccZ.val,&magToFiltX,&magToFiltY,&magToFiltZ,&gpsX.val,&gpsY.val,&baroZ.val,&zero,&zero,&imuDT);
 
 PID PitchRate(&rateSetPointY.val, &degreeGyroY.val, &adjustmentY.val, &integrate, &kp_pitch_rate.val, &ki_pitch_rate.val, &kd_pitch_rate.val, &fc_pitch_rate.val, &imuDT, 400, 400);
@@ -991,7 +995,7 @@ PID WayPointRate(&targetVelWayPoint.val, &speed2D_MPS, &pitchSetPoint.val, &inte
  }*/
 
 /*char hex[17]="0123456789ABCDEF";
-
+ 
  void ShowHex(byte convertByte){
  Port0 << hex[(convertByte >>4) & 0x0F];
  Port0 << hex[convertByte & 0x0F]<<"\r\n";
@@ -1072,15 +1076,15 @@ void setup() {
       HandShake();
     }
   }
-  
+
 
 
   Port0.begin(115200);
   Port2.begin(115200);
   radioStream = &Port2;
   radioPrint = &Port2;
-  
-  
+
+
   if (calibrationMode == true) {
     //Port0<<"cal mode\r\n";
     BaroInit();
@@ -1094,7 +1098,7 @@ void setup() {
 
   ModeSelect();
   Arm();//move the rudder to the right to begin calibration
-  //GPSStart();
+  GPSStart();
   BaroInit();
   GyroInit();
   AccInit();
@@ -1130,7 +1134,7 @@ void loop() {//0
     }//2
     _400HzTask();
     imu.AHRSupdate();
-     _400HzTask();
+    _400HzTask();
     imu.GenerateRotationMatrix();
     _400HzTask();
     imu.GetEuler();
@@ -1185,7 +1189,7 @@ void loop() {//0
       if (baroDT >= 0.1 || baroDT < 0) {//8
         baroDT = 0.1;
       }//8
-      
+
       alphaBaro = baroDT / (baroDT + RC_CONST_BARO);
       betaBaro = 1 - alphaBaro;
       baroZ.val = baroZ.val * betaBaro + baroAlt.val * alphaBaro;
@@ -1218,14 +1222,14 @@ void loop() {//0
         digitalWrite(RED, LOW);
         digitalWrite(YELLOW, LOW);
         digitalWrite(GREEN, LOW);
-        Motor1WriteMicros(1000);//set the output compare value
-        Motor2WriteMicros(1000);
-        Motor3WriteMicros(1000);
-        Motor4WriteMicros(1000);
-        Motor5WriteMicros(1000);
-        Motor6WriteMicros(1000);
-        //Motor7WriteMicros(1000);
-        //Motor8WriteMicros(1000);
+        Motor1WriteMicros(0);//set the output compare value
+        Motor2WriteMicros(0);
+        Motor3WriteMicros(0);
+        Motor4WriteMicros(0);
+        Motor5WriteMicros(0);
+        Motor6WriteMicros(0);
+        Motor7WriteMicros(0);
+        Motor8WriteMicros(0);
         if (failSafe == true) {//14
           digitalWrite(RED, HIGH);
         }//14
@@ -1272,7 +1276,7 @@ void loop() {//0
     tuningTrasnmitOK = true;
     _400HzTask();
   }//1-
-  
+
   _400HzTask();
   if (handShake == true) {//22
     Radio();
@@ -1301,122 +1305,122 @@ void _400HzTask() {
 void FlightSM() {
 
   switch (flightMode) {
-    case RATE:
-      if (enterState == true) {
-        enterState = false;
-        if (previousFlightMode != RATE && previousFlightMode != ATT) {
-          throttleCheckFlag = true;
-        }
-        digitalWrite(13, HIGH);
-        digitalWrite(RED, HIGH);
-        digitalWrite(YELLOW, HIGH);
-        digitalWrite(GREEN, HIGH);
+  case RATE:
+    if (enterState == true) {
+      enterState = false;
+      if (previousFlightMode != RATE && previousFlightMode != ATT) {
+        throttleCheckFlag = true;
       }
-      TrimCheck();
+      digitalWrite(13, HIGH);
+      digitalWrite(RED, HIGH);
+      digitalWrite(YELLOW, HIGH);
+      digitalWrite(GREEN, HIGH);
+    }
+    TrimCheck();
 
-      break;
-    case ATT:
-      if (enterState == true) {
-        if (previousFlightMode != RATE && previousFlightMode != ATT) {
-          throttleCheckFlag = true;
-
-        }
-        yawSetPoint = imu.yaw;
-        enterState = false;
-        digitalWrite(13, LOW);
-        digitalWrite(RED, LOW);
-        digitalWrite(YELLOW, LOW);
-        digitalWrite(GREEN, LOW);
-      }
-      HeadingHold();
-      TrimCheck();
-      break;
-    case L0:
-      if (enterState == true) {
-        enterState = false;
-        InitLoiter();
-        yawSetPoint = imu.yaw;
-        digitalWrite(13, HIGH);
-        digitalWrite(RED, HIGH);
-        digitalWrite(YELLOW, LOW);
-        digitalWrite(GREEN, LOW);
-      }
-      HeadingHold();
-      controlBearing.val = imu.yaw.val;
-      LoiterSM();
-      break;
-    case L1:
-      if (enterState == true) {
-        enterState = false;
-        InitLoiter();
-        yawSetPoint = imu.yaw;
-        digitalWrite(13, HIGH);
-        digitalWrite(RED, LOW);
-        digitalWrite(YELLOW, HIGH);
-        digitalWrite(GREEN, LOW);
-        controlBearing.val = initialYaw.val;
+    break;
+  case ATT:
+    if (enterState == true) {
+      if (previousFlightMode != RATE && previousFlightMode != ATT) {
+        throttleCheckFlag = true;
 
       }
-      HeadingHold();
-      LoiterSM();
-      break;
-    case L2:
-      if (enterState == true) {
-        InitLoiter();
-        yawSetPoint = imu.yaw;
-        digitalWrite(13, HIGH);
-        digitalWrite(RED, LOW);
-        digitalWrite(YELLOW, LOW);
-        digitalWrite(GREEN, HIGH);
-
-        enterState = false;
-      }
-      HeadingHold();
-      controlBearing.val = headingToCraft.val;
-      LoiterSM();
-      break;
-    case FOLLOW:
+      yawSetPoint = imu.yaw;
+      enterState = false;
       digitalWrite(13, LOW);
+      digitalWrite(RED, LOW);
+      digitalWrite(YELLOW, LOW);
+      digitalWrite(GREEN, LOW);
+    }
+    HeadingHold();
+    TrimCheck();
+    break;
+  case L0:
+    if (enterState == true) {
+      enterState = false;
+      InitLoiter();
+      yawSetPoint = imu.yaw;
+      digitalWrite(13, HIGH);
       digitalWrite(RED, HIGH);
       digitalWrite(YELLOW, LOW);
       digitalWrite(GREEN, LOW);
-      if (enterState == true) {
-        enterState = false;
-        yawSetPoint = imu.yaw;
-      }
-      break;
-    case WP:
-      digitalWrite(13, LOW);
+    }
+    HeadingHold();
+    controlBearing.val = imu.yaw.val;
+    LoiterSM();
+    break;
+  case L1:
+    if (enterState == true) {
+      enterState = false;
+      InitLoiter();
+      yawSetPoint = imu.yaw;
+      digitalWrite(13, HIGH);
       digitalWrite(RED, LOW);
       digitalWrite(YELLOW, HIGH);
       digitalWrite(GREEN, LOW);
-      if (enterState == true) {
-        enterState = false;
-        yawSetPoint = imu.yaw;
-      }
-      break;
-    case RTB:
-      digitalWrite(13, LOW);
+      controlBearing.val = initialYaw.val;
+
+    }
+    HeadingHold();
+    LoiterSM();
+    break;
+  case L2:
+    if (enterState == true) {
+      InitLoiter();
+      yawSetPoint = imu.yaw;
+      digitalWrite(13, HIGH);
       digitalWrite(RED, LOW);
       digitalWrite(YELLOW, LOW);
       digitalWrite(GREEN, HIGH);
-      if (enterState == true) {
-        enterState = false;
-        xTarget.val = imu.XEst.val;
-        yTarget.val = imu.YEst.val;
-        zTarget.val = imu.ZEstUp.val + 1;
-        if (zTarget.val > CEILING) {
-          zTarget.val = CEILING;
-        }
-        if (zTarget.val < FLOOR) {
-          zTarget.val = FLOOR;
-        }
-        RTBState = CLIMB;
-        yawSetPoint = imu.yaw;
+
+      enterState = false;
+    }
+    HeadingHold();
+    controlBearing.val = headingToCraft.val;
+    LoiterSM();
+    break;
+  case FOLLOW:
+    digitalWrite(13, LOW);
+    digitalWrite(RED, HIGH);
+    digitalWrite(YELLOW, LOW);
+    digitalWrite(GREEN, LOW);
+    if (enterState == true) {
+      enterState = false;
+      yawSetPoint = imu.yaw;
+    }
+    break;
+  case WP:
+    digitalWrite(13, LOW);
+    digitalWrite(RED, LOW);
+    digitalWrite(YELLOW, HIGH);
+    digitalWrite(GREEN, LOW);
+    if (enterState == true) {
+      enterState = false;
+      yawSetPoint = imu.yaw;
+    }
+    break;
+  case RTB:
+    digitalWrite(13, LOW);
+    digitalWrite(RED, LOW);
+    digitalWrite(YELLOW, LOW);
+    digitalWrite(GREEN, HIGH);
+    if (enterState == true) {
+      enterState = false;
+      xTarget.val = imu.XEst.val;
+      yTarget.val = imu.YEst.val;
+      zTarget.val = imu.ZEstUp.val + 1;
+      if (zTarget.val > CEILING) {
+        zTarget.val = CEILING;
       }
-      HeadingHold();
-      RTBStateMachine();
-      break;
+      if (zTarget.val < FLOOR) {
+        zTarget.val = FLOOR;
+      }
+      RTBState = CLIMB;
+      yawSetPoint = imu.yaw;
+    }
+    HeadingHold();
+    RTBStateMachine();
+    break;
 
   }
 
@@ -1474,87 +1478,71 @@ void RTBStateMachine() {
     return;
   }
   switch (RTBState) {
-    case CLIMB:
+  case CLIMB:
+    LoiterCalculations();
+    RotatePitchRoll(&imu.yaw.val, &zero, &tiltAngleX.val, &tiltAngleY.val, &pitchSetPoint.val, &rollSetPoint.val);
+    AltHoldPosition.calculate();
+    AltHoldVelocity.calculate();
+    if (imu.ZEstUp.val >= (zTarget.val - 0.1) ) {
+
+      RTBState = TRAVEL;
+      xTarget.val = homeBaseXOffset;
+      yTarget.val = homeBaseYOffset;
+    }
+    if (gpsFailSafe == true) {
+      velSetPointZ.val = LAND_VEL;
+      RTBState = DESCEND;
+    }
+
+    break;
+  case TRAVEL:
+    LoiterXPosition.calculate();
+    LoiterYPosition.calculate();
+    if (velSetPointX.val > 0.25) {
+      velSetPointX.val = 0.25;
+    }
+    if (velSetPointX.val < -0.25) {
+      velSetPointX.val = -0.25;
+    }
+    if (velSetPointY.val > 0.25) {
+      velSetPointY.val = 0.25;
+    }
+    if (velSetPointY.val < -0.25) {
+      velSetPointY.val = -0.25;
+    }
+    LoiterXVelocity.calculate();
+    tiltAngleX.val *= -1.0;
+    LoiterYVelocity.calculate();
+    RotatePitchRoll(&imu.yaw.val, &zero, &tiltAngleX.val, &tiltAngleY.val, &pitchSetPoint.val, &rollSetPoint.val);
+    AltHoldPosition.calculate();
+    AltHoldVelocity.calculate();
+    if (fabs(imu.XEst.val - xTarget.val) < 1.0 && fabs(imu.YEst.val - yTarget.val) < 1.0) {
+      velSetPointZ.val = LAND_VEL;
+      RTBState = DESCEND;
+      motorState = LANDING;
+    }
+    if (gpsFailSafe == true) {
+      velSetPointZ.val = LAND_VEL;
+      RTBState = DESCEND;
+      motorState = LANDING;
+    }
+    break;
+  case DESCEND:
+    if (gpsFailSafe == true) {
+      pitchSetPoint.val = pitchSetPointTX.val;
+      rollSetPoint.val = rollSetPointTX.val;
+
+      if (txFailSafe == true) {
+        pitchSetPoint.val = 0;
+        rollSetPoint.val = 0;
+      }
+    }
+    else {
       LoiterCalculations();
       RotatePitchRoll(&imu.yaw.val, &zero, &tiltAngleX.val, &tiltAngleY.val, &pitchSetPoint.val, &rollSetPoint.val);
-      AltHoldPosition.calculate();
-      AltHoldVelocity.calculate();
-      if (imu.ZEstUp.val >= (zTarget.val - 0.1) ) {
-
-        RTBState = TRAVEL;
-        xTarget.val = homeBaseXOffset;
-        yTarget.val = homeBaseYOffset;
-      }
-      if (gpsFailSafe == true) {
-        velSetPointZ.val = LAND_VEL;
-        RTBState = DESCEND;
-      }
-
-      break;
-    case TRAVEL:
-      //make special PID loops for the loiter positions
-      /*if (fabs(xTarget.val - imu.XEst.val) < 1.5){
-       velSetPointX.val = 0;
-       }
-       else{
-
-       }
-       if (fabs(yTarget.val - imu.YEst.val) < 1.5){
-       velSetPointY.val = 0;
-       }
-       else{
-
-       }*/
-      LoiterXPosition.calculate();
-      LoiterYPosition.calculate();
-      if (velSetPointX.val > 0.25) {
-        velSetPointX.val = 0.25;
-      }
-      if (velSetPointX.val < -0.25) {
-        velSetPointX.val = -0.25;
-      }
-      if (velSetPointY.val > 0.25) {
-        velSetPointY.val = 0.25;
-      }
-      if (velSetPointY.val < -0.25) {
-        velSetPointY.val = -0.25;
-      }
-      LoiterXVelocity.calculate();
-      tiltAngleX.val *= -1.0;
-      LoiterYVelocity.calculate();
-      RotatePitchRoll(&imu.yaw.val, &zero, &tiltAngleX.val, &tiltAngleY.val, &pitchSetPoint.val, &rollSetPoint.val);
-      AltHoldPosition.calculate();
-      AltHoldVelocity.calculate();
-      //if (fabs(imu.XEst.val - homeBaseXOffset) < 1 && fabs(imu.YEst.val - homeBaseYOffset) < 1){
-      if (fabs(imu.XEst.val - xTarget.val) < 1.0 && fabs(imu.YEst.val - yTarget.val) < 1.0) {
-        velSetPointZ.val = LAND_VEL;
-        RTBState = DESCEND;
-        motorState = LANDING;
-      }
-      if (gpsFailSafe == true) {
-        velSetPointZ.val = LAND_VEL;
-        RTBState = DESCEND;
-        motorState = LANDING;
-      }
-      break;
-    case DESCEND:
-      if (gpsFailSafe == true) {
-        pitchSetPoint.val = pitchSetPointTX.val;
-        rollSetPoint.val = rollSetPointTX.val;
-
-        if (txFailSafe == true) {
-          pitchSetPoint.val = 0;
-          rollSetPoint.val = 0;
-        }
-      }
-      else {
-        LoiterCalculations();
-        RotatePitchRoll(&imu.yaw.val, &zero, &tiltAngleX.val, &tiltAngleY.val, &pitchSetPoint.val, &rollSetPoint.val);
-      }
-      //velSetPointZ.val = LAND_VEL;
-      AltHoldVelocity.calculate();
-      //motorState = LANDING;
-      break;
+    }
+    AltHoldVelocity.calculate();
+    break;
   }
 }
 
@@ -1565,6 +1553,7 @@ void LoiterCalculations() {
   tiltAngleX.val *= -1.0;
   LoiterYVelocity.calculate();
 }
+
 
 
 
