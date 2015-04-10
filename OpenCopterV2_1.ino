@@ -11,6 +11,7 @@
 
 #define ROT_45
 
+#define QUAD_CAMP
 
 //#define V1
 #define V2
@@ -25,6 +26,33 @@
 //#define HEX_FRAME
 //#define X_8
 
+#ifdef QUAD_CAMP
+
+#ifndef V1
+#define V1
+#endif//#ifndef V1
+
+#ifndef QUAD
+#define QUAD
+#endif//#ifndef QUAD
+
+#ifdef ROT_45
+#undef ROT_45
+#endif//#ifdef ROT_45
+
+#ifdef V2
+#undef V2
+#endif//#ifdef V2
+
+#ifdef HEX_FRAME
+#undef HEX_FRAME
+#endif//#ifdef HEX_FRAME
+
+#ifdef X_8
+#undef X_8
+#endif//#ifdef X_8
+
+#endif//#ifdef QUAD_CAMP
 
 #define SACC_MAX 0.5
 #define HACC_MAX 4
@@ -1053,7 +1081,7 @@ void setup() {
 
   I2c.begin();
   I2c.setSpeed(1);
-  I2c.timeOut(1);
+  I2c.timeOut(2);
   SPI.begin();
   SPI.setBitOrder(MSBFIRST);
   SPI.setClockDivider(SPI_CLOCK_DIV2);
@@ -1541,6 +1569,7 @@ void LoiterCalculations() {
   tiltAngleX.val *= -1.0;
   LoiterYVelocity.calculate();
 }
+
 
 
 
