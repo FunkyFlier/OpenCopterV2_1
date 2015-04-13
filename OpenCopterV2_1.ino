@@ -9,9 +9,15 @@
 #include "AUXMATH.h"
 #include "UBLOXL.h"
 
-#define ROT_45
+//#define ROT_45
 
 #define QUAD_CAMP
+
+#define EXT_MAG
+
+#define QUAD
+//#define HEX_FRAME
+//#define X_8
 
 //#define V1
 #define V2
@@ -22,9 +28,7 @@
 #endif
 #endif
 
-#define QUAD
-//#define HEX_FRAME
-//#define X_8
+
 
 #ifdef QUAD_CAMP
 
@@ -53,6 +57,13 @@
 #endif//#ifdef X_8
 
 #endif//#ifdef QUAD_CAMP
+
+
+#ifdef EXT_MAG
+#ifdef V2
+#undef EXT_MAG
+#endif//#ifdef V2
+#endif
 
 #define SACC_MAX 0.5
 #define HACC_MAX 4

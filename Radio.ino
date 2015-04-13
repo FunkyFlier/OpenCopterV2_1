@@ -677,7 +677,7 @@ void OrderedSet() {
 }
 
 void SendOrdAck() {
- 
+
   txSum = 0;
   txDoubleSum = 0;
   radioPrint->write(0xAA);
@@ -1031,6 +1031,10 @@ void HandShake() {
       radioStream = &Port0;
       radioPrint = &Port0;
     }
+    else{
+      radioStream = &Port2;
+      radioPrint = &Port2;
+    }
     EEPROM.write(HS_FLAG, 0xFF);
     packetTemp[0] = EEPROM.read(PKT_LOCAL_ORD_L);//lsb for packetNumberLocalOrdered
     packetTemp[1] = EEPROM.read(PKT_LOCAL_ORD_M);//msb for packetNumberLocalOrdered
@@ -1205,6 +1209,7 @@ void SendHandShakeResponse() {
 
   }
 }
+
 
 
 

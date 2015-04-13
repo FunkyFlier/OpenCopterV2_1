@@ -67,6 +67,7 @@ void CalibrateSensors() {
 
       accY.val *= -1;
       accZ.val *= -1;
+
 #endif
 #ifdef ROT_45
       tempX = accX.val *  0.7071067 + accY.val * 0.7071067;
@@ -83,8 +84,10 @@ void CalibrateSensors() {
       magY.buffer[1] = I2c.receive();//Y
       magY.buffer[0] = I2c.receive();
 #ifdef V1
+#ifndef EXT_MAG
       magY.val *= -1;
       magZ.val *= -1;
+#endif
 #endif
 
       PollPressure();
@@ -861,8 +864,10 @@ void MagInit() {
   magY.buffer[1] = I2c.receive();//Y
   magY.buffer[0] = I2c.receive();
 #ifdef V1
-  magY.val *= -1;
-  magZ.val *= -1;
+#ifndef EXT_MAG
+      magY.val *= -1;
+      magZ.val *= -1;
+#endif
 #endif
   shiftedMagX  = magX.val - magOffSetX;
   shiftedMagY  = magY.val - magOffSetY;
@@ -1034,8 +1039,10 @@ void GetMag() {
   magY.buffer[1] = I2c.receive();//Y
   magY.buffer[0] = I2c.receive();
 #ifdef V1
-  magY.val *= -1;
-  magZ.val *= -1;
+#ifndef EXT_MAG
+      magY.val *= -1;
+      magZ.val *= -1;
+#endif
 #endif
 
   shiftedMagX  = magX.val - magOffSetX;
