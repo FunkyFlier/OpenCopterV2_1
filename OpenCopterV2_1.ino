@@ -409,7 +409,9 @@ enum loiterStates {
 
 enum FlightStates {
   RATE,
+  RATE_TRIM,
   ATT,
+  ATT_TRIM,
   L0,
   L1,
   L2,
@@ -417,6 +419,8 @@ enum FlightStates {
   WP,
   RTB
 };
+
+
 
 enum Int16s {
   GYRO_X,
@@ -997,6 +1001,8 @@ uint8_t txLossRTB;
 
 uint8_t i2cTimeOutStatus;
 uint8_t i2cTimeOutCount;
+
+uint8_t modeArray[9] = {L0,L1,L2,ATT,ATT,ATT_TRIM,RATE,RATE,RATE_TRIM};
 //constructors //fix the dts
 openIMU imu(&radianGyroX, &radianGyroY, &radianGyroZ, &accToFilterX, &accToFilterY, &accToFilterZ, &filtAccX.val, &filtAccY.val, &filtAccZ.val,
 &magToFiltX, &magToFiltY, &magToFiltZ, &gpsX.val, &gpsY.val, &baroZ.val, &velN.val, &velE.val, &baroVel.val, &imuDT);
