@@ -9,11 +9,11 @@
 #include "AUXMATH.h"
 #include "UBLOXL.h"
 
-//#define ROT_45
+#define ROT_45
 
-#define QUAD_CAMP
+//#define QUAD_CAMP
 
-#define EXT_MAG
+//#define EXT_MAG
 
 #define QUAD
 //#define HEX_FRAME
