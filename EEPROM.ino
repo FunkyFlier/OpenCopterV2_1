@@ -191,9 +191,9 @@ void AssignPointerArray() {
   floatPointerArray[HB_LAT] = &homeLat;
   floatPointerArray[HB_LON] = &homeLon;
 
-  floatPointerArray[H_ACC] = &hAcc;
-  floatPointerArray[S_ACC] = &sAcc;
-  floatPointerArray[P_DOP] = &pDop;
+  floatPointerArray[H_ACC] = &homeLon;
+  floatPointerArray[S_ACC] = &homeLon;
+  floatPointerArray[P_DOP] = &homeLon;
 
 
 
@@ -223,7 +223,7 @@ void AssignPointerArray() {
   bytePointerArray[GPS_FS] = &gpsFailSafe;
   bytePointerArray[SWITCH_POS] = &switchPositions;
 
-  bytePointerArray[NUM_SATS] = &gps.data.vars.numSV;
+  bytePointerArray[NUM_SATS] = &propIdlePercent;
   bytePointerArray[IDLE_PERCENT] = &propIdlePercent;
   bytePointerArray[HOVER_PERCENT] = &hoverPercent;
   bytePointerArray[TX_LOSS_RTB] = &txLossRTB;

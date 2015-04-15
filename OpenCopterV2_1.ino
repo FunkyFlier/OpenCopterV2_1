@@ -1,4 +1,4 @@
-//
+//previous ublox parser
 //#include <MemoryFree.h>
 #include <EEPROM.h>
 #include <SPI.h>
@@ -1192,9 +1192,9 @@ void loop() {//0
       gps.DistBearing(&homeBase.lat.val, &homeBase.lon.val, &gps.data.vars.lat, &gps.data.vars.lon, &gpsX.val, &gpsY.val, &distToCraft.val, &headingToCraft.val);
       hAcc.val = gps.data.vars.hAcc * 0.001;///raw pitch
       sAcc.val = gps.data.vars.sAcc * 0.001;//raw roll
-      pDop.val = gps.data.vars.pDop * 0.01;//pitch offset
-      numSats = gps.data.vars.numSV;
-      if (gps.data.vars.gpsFix != 3 || numSats < MIN_SATS || hAcc.val > HACC_MAX || sAcc.val > SACC_MAX) {//5
+      //pDop.val = gps.data.vars.pDop * 0.01;//pitch offset
+      //numSats = gps.data.vars.numSV;
+      if (gps.data.vars.gpsFix != 3 || hAcc.val > HACC_MAX || sAcc.val > SACC_MAX){//|| numSats < MIN_SATS || hAcc.val > HACC_MAX || sAcc.val > SACC_MAX) {//5
         gpsFailSafe = true;
       }//5
       GPSFailSafeCounter = 0;

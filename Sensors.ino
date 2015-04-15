@@ -309,7 +309,7 @@ void GPSStart() {
           break;
       }
     }
-    while (gps.data.vars.numSV < (MIN_SATS + 2) ) {
+    /*while (gps.data.vars.numSV < (MIN_SATS + 2) ) {
       gps.Monitor();
       if (millis() - generalPurposeTimer > 500) {
         generalPurposeTimer = millis();
@@ -344,7 +344,7 @@ void GPSStart() {
           digitalWrite(GREEN, HIGH);
           break;
       }
-    }
+    }*/
     while (gps.data.vars.hAcc * 0.001 > (HACC_MAX - 0.5) ) {
       gps.Monitor();
       if (millis() - generalPurposeTimer > 500) {
