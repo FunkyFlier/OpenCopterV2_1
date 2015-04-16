@@ -768,6 +768,7 @@ RC_t;
 RC_t rcData[8];
 int16_t RCValue[8];
 int16_t GSRCValue[8];
+int16_t cmdElev,cmdAile,cmdRudd;
 
 int16_u throttleCommand;
 
@@ -999,6 +1000,7 @@ uint8_t propIdlePercent, hoverPercent;
 uint16_t propIdleCommand, hoverCommand;
 
 boolean gsCTRL = false;
+boolean rcDetected = false;
 int16_t loitThro;
 float_u landingThroAdjustment;
 float throAdjAlpha;
@@ -1011,7 +1013,8 @@ uint8_t txLossRTB;
 uint8_t i2cTimeOutStatus;
 uint8_t i2cTimeOutCount;
 
-uint8_t modeArray[9] = {RATE,L1,ATT,ATT,ATT,ATT_TRIM,RATE,RATE,L0};
+uint8_t modeArray[9] = {
+  RATE,L1,ATT,ATT,ATT,ATT_TRIM,RATE,RATE,L0};
 //constructors //fix the dts
 openIMU imu(&radianGyroX, &radianGyroY, &radianGyroZ, &accToFilterX, &accToFilterY, &accToFilterZ, &filtAccX.val, &filtAccY.val, &filtAccZ.val,
 &magToFiltX, &magToFiltY, &magToFiltZ, &gpsX.val, &gpsY.val, &baroZ.val, &velN.val, &velE.val, &baroVel.val, &imuDT);
@@ -1127,6 +1130,10 @@ void setup() {
       radioStream = &Port0;
       radioPrint = &Port0;
       HandShake();
+    }
+  }
+  if (rcDetected == false && gsCTRL == false){
+    while(1){
     }
   }
   if (calibrationMode == true) {
@@ -1291,6 +1298,7 @@ void loop() {//0
       }//13
 
     }//12
+    
     if (txFailSafe == true) {//17
       if (motorState >= FLIGHT) {//18
         if (flightMode != RTB) {//19
@@ -1299,6 +1307,33 @@ void loop() {//0
         }//19
       }//18
     }//17
+    
+    if (telemFailSafe == true){
+      if (gsCTRL == true){
+        if (rcDetected == true){
+          gsCTRL = false;
+        }
+        if (txLossRTB == 0){
+          TIMSK5 = (0 << OCIE5A);
+          Motor1WriteMicros(0);//set the output compare value
+          Motor2WriteMicros(0);
+          Motor3WriteMicros(0);
+          Motor4WriteMicros(0);
+          Motor5WriteMicros(0);
+          Motor6WriteMicros(0);
+          Motor7WriteMicros(0);
+          Motor8WriteMicros(0);
+        }
+        else{
+          if (motorState >= FLIGHT) {//18
+            if (flightMode != RTB) {//19
+              enterState = true;
+              flightMode = RTB;
+            }//19
+          }//18
+        }
+      }
+    }
 
 
     _400HzTask();
@@ -1595,6 +1630,8 @@ void LoiterCalculations() {
   tiltAngleX.val *= -1.0;
   LoiterYVelocity.calculate();
 }
+
+
 
 
 

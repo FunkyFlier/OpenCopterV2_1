@@ -348,9 +348,11 @@ void MotorHandler(){
       }
       if (throttleCommand.val < 1050){
         throttleCommand.val = propIdleCommand;
-        if (RCValue[RUDD] > 1800){
+        if (RCValue[RUDD] > 1700){
           motorState = HOLD;
         }
+        motorState = TO;
+        
       }
     }
     if (flightMode >= L0){

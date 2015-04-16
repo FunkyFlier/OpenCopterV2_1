@@ -289,15 +289,23 @@ void ProcessModes() {
   }
 
   flightMode = modeArray[switchPositions];
+  if (gsCTRL == false){
+    cmdElev = RCValue[ELEV];
+    cmdAile = RCValue[AILE];
+    cmdRudd = RCValue[RUDD];
+  }else{
+    cmdElev = GSRCValue[ELEV];
+    cmdAile = GSRCValue[AILE];
+    cmdRudd = GSRCValue[RUDD];
+  }
   switch(flightMode){
   case RATE:
-    gsCTRL = false;
     flightMode = RATE;
     setTrim = false;
     trimComplete = false;
-    MapVar(&RCValue[ELEV], &rateSetPointY.val, 1000, 2000, -400, 400);
-    MapVar(&RCValue[AILE], &rateSetPointX.val, 1000, 2000, -400, 400);
-    MapVar(&RCValue[RUDD], &rateSetPointZ.val, 1000, 2000, -400, 400);
+    MapVar(&cmdElev, &rateSetPointY.val, 1000, 2000, -400, 400);
+    MapVar(&cmdAile, &rateSetPointX.val, 1000, 2000, -400, 400);
+    MapVar(&cmdRudd, &rateSetPointZ.val, 1000, 2000, -400, 400);
     if (rateSetPointY.val < 5 && rateSetPointY.val > -5) {
       rateSetPointY.val = 0;
     }
@@ -309,12 +317,11 @@ void ProcessModes() {
     }
     break;
   case RATE_TRIM:
-    gsCTRL = false;
     setTrim = true;
     flightMode = RATE;
-    MapVar(&RCValue[ELEV], &rateSetPointY.val, 1000, 2000, -400, 400);
-    MapVar(&RCValue[AILE], &rateSetPointX.val, 1000, 2000, -400, 400);
-    MapVar(&RCValue[RUDD], &rateSetPointZ.val, 1000, 2000, -400, 400);
+    MapVar(&cmdElev, &rateSetPointY.val, 1000, 2000, -400, 400);
+    MapVar(&cmdAile, &rateSetPointX.val, 1000, 2000, -400, 400);
+    MapVar(&cmdRudd, &rateSetPointZ.val, 1000, 2000, -400, 400);
     if (rateSetPointY.val < 5 && rateSetPointY.val > -5) {
       rateSetPointY.val = 0;
     }
@@ -326,13 +333,12 @@ void ProcessModes() {
     }
     break;
   case ATT:
-    gsCTRL = false;
     flightMode = ATT;
     setTrim = false;
     trimComplete = false;
-    MapVar(&RCValue[ELEV], &pitchSetPoint.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[AILE], &rollSetPoint.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[RUDD], &yawInput, 1000, 2000, -300, 300);
+    MapVar(&cmdElev, &pitchSetPoint.val, 1000, 2000, -60, 60);
+    MapVar(&cmdAile, &rollSetPoint.val, 1000, 2000, -60, 60);
+    MapVar(&cmdRudd, &yawInput, 1000, 2000, -300, 300);
     if (rollSetPoint.val < 1 && rollSetPoint.val > -1) {
       rollSetPoint.val = 0;
     }
@@ -344,12 +350,11 @@ void ProcessModes() {
     }
     break;
   case ATT_TRIM:
-    gsCTRL = false;
     flightMode = ATT;
     setTrim = true;
-    MapVar(&RCValue[ELEV], &pitchSetPoint.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[AILE], &rollSetPoint.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[RUDD], &yawInput, 1000, 2000, -300, 300);
+    MapVar(&cmdElev, &pitchSetPoint.val, 1000, 2000, -60, 60);
+    MapVar(&cmdAile, &rollSetPoint.val, 1000, 2000, -60, 60);
+    MapVar(&cmdRudd, &yawInput, 1000, 2000, -300, 300);
     if (rollSetPoint.val < 1 && rollSetPoint.val > -1) {
       rollSetPoint.val = 0;
     }
@@ -361,11 +366,10 @@ void ProcessModes() {
     }
     break;
   case L0:
-    gsCTRL = false;
     flightMode = L0;
-    MapVar(&RCValue[AILE], &rollSetPointTX.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[ELEV], &pitchSetPointTX.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[RUDD], &yawInput, 1000, 2000, -300, 300);
+    MapVar(&cmdAile, &rollSetPointTX.val, 1000, 2000, -60, 60);
+    MapVar(&cmdElev, &pitchSetPointTX.val, 1000, 2000, -60, 60);
+    MapVar(&cmdRudd, &yawInput, 1000, 2000, -300, 300);
     if (rollSetPointTX.val < 1 && rollSetPointTX.val > -1) {
       rollSetPointTX.val = 0;
     }
@@ -377,11 +381,10 @@ void ProcessModes() {
     }
     break;
   case L1:
-    gsCTRL = false;
     flightMode = L1;
-    MapVar(&RCValue[AILE], &rollSetPointTX.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[ELEV], &pitchSetPointTX.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[RUDD], &yawInput, 1000, 2000, -300, 300);
+    MapVar(&cmdAile, &rollSetPointTX.val, 1000, 2000, -60, 60);
+    MapVar(&cmdElev, &pitchSetPointTX.val, 1000, 2000, -60, 60);
+    MapVar(&cmdRudd, &yawInput, 1000, 2000, -300, 300);
     if (rollSetPointTX.val < 1 && rollSetPointTX.val > -1) {
       rollSetPointTX.val = 0;
     }
@@ -393,11 +396,10 @@ void ProcessModes() {
     }
     break;
   case L2:
-    gsCTRL = false;
     flightMode = L2;
-    MapVar(&RCValue[AILE], &rollSetPointTX.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[ELEV], &pitchSetPointTX.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[RUDD], &yawInput, 1000, 2000, -300, 300);
+    MapVar(&cmdAile, &rollSetPointTX.val, 1000, 2000, -60, 60);
+    MapVar(&cmdElev, &pitchSetPointTX.val, 1000, 2000, -60, 60);
+    MapVar(&cmdRudd, &yawInput, 1000, 2000, -300, 300);
     if (rollSetPointTX.val < 1 && rollSetPointTX.val > -1) {
       rollSetPointTX.val = 0;
     }
@@ -413,13 +415,12 @@ void ProcessModes() {
     }
     break;
   case FOLLOW://TBD impliment FOLLOW and WP modes currently operate as ATT
-    gsCTRL = false;
     flightMode = ATT;
     setTrim = false;
     trimComplete = false;
-    MapVar(&RCValue[ELEV], &pitchSetPoint.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[AILE], &rollSetPoint.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[RUDD], &yawInput, 1000, 2000, -300, 300);
+    MapVar(&cmdElev, &pitchSetPoint.val, 1000, 2000, -60, 60);
+    MapVar(&cmdAile, &rollSetPoint.val, 1000, 2000, -60, 60);
+    MapVar(&cmdRudd, &yawInput, 1000, 2000, -300, 300);
     if (rollSetPoint.val < 1 && rollSetPoint.val > -1) {
       rollSetPoint.val = 0;
     }
@@ -431,13 +432,12 @@ void ProcessModes() {
     }
     break;
   case WP:
-    gsCTRL = false;
     flightMode = ATT;
     setTrim = false;
     trimComplete = false;
-    MapVar(&RCValue[ELEV], &pitchSetPoint.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[AILE], &rollSetPoint.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[RUDD], &yawInput, 1000, 2000, -300, 300);
+    MapVar(&cmdElev, &pitchSetPoint.val, 1000, 2000, -60, 60);
+    MapVar(&cmdAile, &rollSetPoint.val, 1000, 2000, -60, 60);
+    MapVar(&cmdRudd, &yawInput, 1000, 2000, -300, 300);
     if (rollSetPoint.val < 1 && rollSetPoint.val > -1) {
       rollSetPoint.val = 0;
     }
@@ -449,11 +449,10 @@ void ProcessModes() {
     }
     break;
   case RTB:
-    gsCTRL = false;
     flightMode = RTB;
-    MapVar(&RCValue[AILE], &rollSetPointTX.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[ELEV], &pitchSetPointTX.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[RUDD], &yawInput, 1000, 2000, -300, 300);
+    MapVar(&cmdAile, &rollSetPointTX.val, 1000, 2000, -60, 60);
+    MapVar(&cmdElev, &pitchSetPointTX.val, 1000, 2000, -60, 60);
+    MapVar(&cmdRudd, &yawInput, 1000, 2000, -300, 300);
     if (rollSetPointTX.val < 1 && rollSetPointTX.val > -1) {
       rollSetPointTX.val = 0;
     }
@@ -469,13 +468,11 @@ void ProcessModes() {
     break;
 
   }
-  if (flightMode > ATT && imu.magDetected == false) {
-    flightMode = ATT;
-    gsCTRL = false;
-    flightMode = ATT;
-    MapVar(&RCValue[ELEV], &pitchSetPoint.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[AILE], &rollSetPoint.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[RUDD], &yawInput, 1000, 2000, -300, 300);
+  if (flightMode > L0 && imu.magDetected == false) {
+    flightMode = L0;
+    MapVar(&cmdElev, &pitchSetPoint.val, 1000, 2000, -60, 60);
+    MapVar(&cmdAile, &rollSetPoint.val, 1000, 2000, -60, 60);
+    MapVar(&cmdRudd, &yawInput, 1000, 2000, -300, 300);
     if (rollSetPoint.val < 1 && rollSetPoint.val > -1) {
       rollSetPoint.val = 0;
     }
@@ -699,7 +696,9 @@ void FrameCheck() { //checks if serial RC was incorrectly detected
     }
 
     if (millis() - frameCheckTimer > 1000) { //in case it has incorrectly detected serial RC
-      rcType = RC;
+      rcDetected = false;
+      return;
+      /*rcType = RC;
       DDRK = 0;//PORTK as input
       PORTK |= 0xFF;//turn on pull ups
       PCMSK2 |= 0xFF;//set interrupt mask for all of PORTK
@@ -711,7 +710,7 @@ void FrameCheck() { //checks if serial RC was incorrectly detected
         PCMSK2 |= 0x80;
       }
 
-      generalPurposeTimer = millis();
+      generalPurposeTimer = millis();*/
     }
   }
   newRC = false;

@@ -1109,14 +1109,31 @@ void HandShake() {
           break;
 
         case 3://check handshake type
-          if (radioByte == 0x01) {
+          if (radioByte == 0x03) {//gs ctrl calibration 
+            gsCTRL = true;
             rxSum += radioByte;
             rxDoubleSum += rxSum;
             handShakeState = 4;
             calibrationMode = true;
             break;
           }
-          if (radioByte == 0x00) {
+          if (radioByte == 0x02) {//gs ctrl
+            gsCTRL = true;
+            rxSum += radioByte;
+            rxDoubleSum += rxSum;
+            handShakeState = 4;
+            break;
+          }
+          if (radioByte == 0x01) {//calibration 
+            gsCTRL = false;
+            rxSum += radioByte;
+            rxDoubleSum += rxSum;
+            handShakeState = 4;
+            calibrationMode = true;
+            break;
+          }
+          if (radioByte == 0x00) {//normal
+            gsCTRL = false;
             rxDoubleSum += rxSum;
             handShakeState = 4;
             break;
@@ -1151,6 +1168,7 @@ void HandShake() {
 
   if (handShake == false) {
     calibrationMode = false;
+    gsCTRL = false;
   }
 
 }
@@ -1216,6 +1234,8 @@ void SendHandShakeResponse() {
 
   }
 }
+
+
 
 
 
