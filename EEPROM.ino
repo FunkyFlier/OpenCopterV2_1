@@ -777,6 +777,10 @@ void LoadDEC() {
   imu.COS_DEC = cos(imu.declination.val);
   imu.SIN_DEC = sin(imu.declination.val);
 }
+
+void LoadModes(){
+  
+}
 void LoadROM() {
 
   LoadRC();
@@ -791,7 +795,7 @@ void LoadROM() {
 
   LoadPWMLimits();
 
-
+  LoadModes();
 
 }
 
