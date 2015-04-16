@@ -140,16 +140,25 @@
 
 #define PWM_LIM_HIGH_START 430
 #define PWM_LIM_HIGH_END 431
+
 #define PWM_LIM_LOW_START 432
 #define PWM_LIM_LOW_END 433
+
 #define PWM_FLAG 434
+
 #define PROP_IDLE 435
 #define PROP_IDLE_FLAG 436
+
 #define HOVER_THRO 437
 #define HOVER_THRO_FLAG 438
 
 #define TX_FS_FLAG 439
 #define TX_FS 440
+
+#define MODE_FLAG 443
+#define MODE_START 444
+#define MODE_END 452
+
 
 #define FC 5
 #define RC_CONST 1/(2.0 * 3.14 * FC)
@@ -1002,7 +1011,7 @@ uint8_t txLossRTB;
 uint8_t i2cTimeOutStatus;
 uint8_t i2cTimeOutCount;
 
-uint8_t modeArray[9] = {L0,L1,L2,ATT,ATT,ATT_TRIM,RATE,RATE,RATE_TRIM};
+uint8_t modeArray[9] = {RATE,L1,ATT,ATT,ATT,ATT_TRIM,RATE,RATE,L0};
 //constructors //fix the dts
 openIMU imu(&radianGyroX, &radianGyroY, &radianGyroZ, &accToFilterX, &accToFilterY, &accToFilterZ, &filtAccX.val, &filtAccY.val, &filtAccZ.val,
 &magToFiltX, &magToFiltY, &magToFiltZ, &gpsX.val, &gpsY.val, &baroZ.val, &velN.val, &velE.val, &baroVel.val, &imuDT);
@@ -1129,7 +1138,7 @@ void setup() {
   }
 
 
-  ModeSelect();
+  //ModeSelect();
   Arm();//move the rudder to the right to begin calibration
   GPSStart();
   BaroInit();

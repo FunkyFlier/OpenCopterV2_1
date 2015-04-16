@@ -640,6 +640,13 @@ void WriteCalibrationDataToRom() {
     EEPROM.write(PWM_FLAG, 0xAA);
 
     break;//--------------------------------------------
+  case 6://MODES
+    EEPROM.write(MODE_FLAG,0xAA);
+    for(uint8_t i = MODE_START; i <= MODE_END; i++){
+      EEPROM.write(i,itemBuffer[itemIndex++]);
+    }
+
+    break;//--------------------------------------------
   }
 
 
@@ -1209,6 +1216,7 @@ void SendHandShakeResponse() {
 
   }
 }
+
 
 
 

@@ -419,7 +419,20 @@ void ROMFlagsCheck() {
     EEPROM.write(HOVER_THRO, 55);
 
   }
-
+  
+  if (EEPROM.read(MODE_FLAG) != 0xAA){
+    EEPROM.write(MODE_FLAG,0xAA);
+    j = MODE_START;
+    EEPROM.write(j++,L0);
+    EEPROM.write(j++,L1);
+    EEPROM.write(j++,L2);
+    EEPROM.write(j++,ATT);
+    EEPROM.write(j++,ATT);
+    EEPROM.write(j++,ATT_TRIM);
+    EEPROM.write(j++,RATE);
+    EEPROM.write(j++,RATE);
+    EEPROM.write(j++,RATE_TRIM);
+  }
   calibrationFlags = EEPROM.read(CAL_FLAGS);
   VerifyMag();
   if ( ((calibrationFlags & (1 << RC_FLAG)) >> RC_FLAG) == 0x01 || ((calibrationFlags & (1 << ACC_FLAG)) >> ACC_FLAG) == 0x01 || ( ((calibrationFlags & (1 << MAG_FLAG)) >> MAG_FLAG) == 0x01 && imu.magDetected ) ) {
@@ -779,7 +792,10 @@ void LoadDEC() {
 }
 
 void LoadModes(){
-  
+  uint8_t j = 0;
+  for(uint8_t i = MODE_START; i <= MODE_END; i++){
+    modeArray[j] = EEPROM.read(i);
+  }
 }
 void LoadROM() {
 
