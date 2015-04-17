@@ -179,6 +179,10 @@ void AssignPointerArray() {
   floatPointerArray[MOTOR_CMD_2] = &motorCommand2;
   floatPointerArray[MOTOR_CMD_3] = &motorCommand3;
   floatPointerArray[MOTOR_CMD_4] = &motorCommand4;
+  floatPointerArray[MOTOR_CMD_5] = &motorCommand5;
+  floatPointerArray[MOTOR_CMD_6] = &motorCommand6;
+  floatPointerArray[MOTOR_CMD_7] = &motorCommand7;
+  floatPointerArray[MOTOR_CMD_8] = &motorCommand8;
 
   floatPointerArray[PRESSURE_] = &pressure;
   floatPointerArray[CTRL_BEARING] = &controlBearing;
@@ -193,7 +197,6 @@ void AssignPointerArray() {
 
   floatPointerArray[H_ACC] = &hAcc;
   floatPointerArray[S_ACC] = &sAcc;
-  floatPointerArray[P_DOP] = &sAcc;
 
 
 
@@ -206,6 +209,7 @@ void AssignPointerArray() {
   int16PointerArray[MAG_X] = &magX;
   int16PointerArray[MAG_Y] = &magY;
   int16PointerArray[MAG_Z] = &magZ;
+
   int16PointerArray[THRO_CMD] = &throttleCommand;
 
   int16PointerArray[PWM_HIGH] = &pwmHigh;
@@ -223,7 +227,7 @@ void AssignPointerArray() {
   bytePointerArray[GPS_FS] = &gpsFailSafe;
   bytePointerArray[SWITCH_POS] = &switchPositions;
 
-  bytePointerArray[NUM_SATS] = &propIdlePercent;
+
   bytePointerArray[IDLE_PERCENT] = &propIdlePercent;
   bytePointerArray[HOVER_PERCENT] = &hoverPercent;
   bytePointerArray[TX_LOSS_RTB] = &txLossRTB;
@@ -319,60 +323,60 @@ void DEBUG_DUMP(){
  Port0<< rcData[0].chan <<"\r\n";
  Port0<< _FLOAT(rcData[0].scale,7) <<"\r\n";
  Port0<< rcData[0].reverse <<"\r\n";
-
+ 
  Port0<< rcData[1].min <<"\r\n";
  Port0<< rcData[1].max <<"\r\n";
  Port0<< rcData[1].mid <<"\r\n";
  Port0<< rcData[1].chan <<"\r\n";
  Port0<< _FLOAT(rcData[1].scale,7) <<"\r\n";
  Port0<< rcData[1].reverse <<"\r\n";
-
+ 
  Port0<< rcData[2].min <<"\r\n";
  Port0<< rcData[2].max <<"\r\n";
  Port0<< rcData[2].mid <<"\r\n";
  Port0<< rcData[2].chan <<"\r\n";
  Port0<< _FLOAT(rcData[2].scale,7) <<"\r\n";
  Port0<< rcData[2].reverse <<"\r\n";
-
+ 
  Port0<< rcData[3].min <<"\r\n";
  Port0<< rcData[3].max <<"\r\n";
  Port0<< rcData[3].mid <<"\r\n";
  Port0<< rcData[3].chan <<"\r\n";
  Port0<< _FLOAT(rcData[3].scale,7) <<"\r\n";
  Port0<< rcData[3].reverse <<"\r\n";
-
+ 
  Port0<< rcData[4].min <<"\r\n";
  Port0<< rcData[4].max <<"\r\n";
  Port0<< rcData[4].mid <<"\r\n";
  Port0<< rcData[4].chan <<"\r\n";
  Port0<< _FLOAT(rcData[4].scale,7) <<"\r\n";
  Port0<< rcData[4].reverse <<"\r\n";
-
+ 
  Port0<< rcData[5].min <<"\r\n";
  Port0<< rcData[5].max <<"\r\n";
  Port0<< rcData[5].mid <<"\r\n";
  Port0<< rcData[5].chan <<"\r\n";
  Port0<< _FLOAT(rcData[5].scale,7) <<"\r\n";
  Port0<< rcData[5].reverse <<"\r\n";
-
+ 
  Port0<< rcData[6].min <<"\r\n";
  Port0<< rcData[6].max <<"\r\n";
  Port0<< rcData[6].mid <<"\r\n";
  Port0<< rcData[6].chan <<"\r\n";
  Port0<< _FLOAT(rcData[6].scale,7) <<"\r\n";
  Port0<< rcData[6].reverse <<"\r\n";
-
-
-
+ 
+ 
+ 
  Port0<< rcData[7].min <<"\r\n";
  Port0<< rcData[7].max <<"\r\n";
  Port0<< rcData[7].mid <<"\r\n";
  Port0<< rcData[7].chan <<"\r\n";
  Port0<< _FLOAT(rcData[7].scale,7) <<"\r\n";
  Port0<< rcData[7].reverse <<"\r\n";
-
-
-
+ 
+ 
+ 
  }
  */
 void ROMFlagsCheck() {
@@ -419,7 +423,7 @@ void ROMFlagsCheck() {
     EEPROM.write(HOVER_THRO, 55);
 
   }
-  
+
   if (EEPROM.read(MODE_FLAG) != 0xAA){
     EEPROM.write(MODE_FLAG,0xAA);
     j = MODE_START;
@@ -629,30 +633,30 @@ void LoadRC() {
     }
 
     switch (switchControl) {
-      case MAX_INDEX://max
-        rcData[l].max = outInt16.val;
-        j = 0;
-        break;
-      case MIN_INDEX://min
-        rcData[l].min = outInt16.val;
-        j = 0;
-        break;
-      case MID_INDEX://mid
-        rcData[l].mid = outInt16.val;
-        j = 0;
-        break;
-      case CHAN_INDEX://chan
-        rcData[l].chan = EEPROM.read(i);
-        break;
-      case SCALE_INDEX://scale
-        rcData[l].scale = outFloat.val;
-        j = 0;
-        break;
-      case REV_INDEX://reverse
-        rcData[l].reverse = EEPROM.read(i);
-        k += 12;
-        l += 1;
-        break;
+    case MAX_INDEX://max
+      rcData[l].max = outInt16.val;
+      j = 0;
+      break;
+    case MIN_INDEX://min
+      rcData[l].min = outInt16.val;
+      j = 0;
+      break;
+    case MID_INDEX://mid
+      rcData[l].mid = outInt16.val;
+      j = 0;
+      break;
+    case CHAN_INDEX://chan
+      rcData[l].chan = EEPROM.read(i);
+      break;
+    case SCALE_INDEX://scale
+      rcData[l].scale = outFloat.val;
+      j = 0;
+      break;
+    case REV_INDEX://reverse
+      rcData[l].reverse = EEPROM.read(i);
+      k += 12;
+      l += 1;
+      break;
     }
   }
   txLossRTB = EEPROM.read(TX_FS);
@@ -667,32 +671,32 @@ void LoadACC() {
     outFloat.buffer[outFloatIndex] = EEPROM.read(i);
     outFloatIndex++;
     switch (i) {
-      case ACC_S_X_INDEX:
-        accXScale = outFloat.val;
-        outFloatIndex = 0;
-        break;
-      case ACC_S_Y_INDEX:
-        accYScale = outFloat.val;
-        outFloatIndex = 0;
-        break;
-      case ACC_S_Z_INDEX:
-        accZScale = outFloat.val;
-        outFloatIndex = 0;
-        break;
-      case ACC_O_X_INDEX:
-        accXOffset = outFloat.val;
-        outFloatIndex = 0;
-        break;
-      case ACC_O_Y_INDEX:
-        accYOffset = outFloat.val;
-        outFloatIndex = 0;
-        break;
-      case ACC_O_Z_INDEX:
-        accZOffset = outFloat.val;
-        outFloatIndex = 0;
-        break;
-      default:
-        break;
+    case ACC_S_X_INDEX:
+      accXScale = outFloat.val;
+      outFloatIndex = 0;
+      break;
+    case ACC_S_Y_INDEX:
+      accYScale = outFloat.val;
+      outFloatIndex = 0;
+      break;
+    case ACC_S_Z_INDEX:
+      accZScale = outFloat.val;
+      outFloatIndex = 0;
+      break;
+    case ACC_O_X_INDEX:
+      accXOffset = outFloat.val;
+      outFloatIndex = 0;
+      break;
+    case ACC_O_Y_INDEX:
+      accYOffset = outFloat.val;
+      outFloatIndex = 0;
+      break;
+    case ACC_O_Z_INDEX:
+      accZOffset = outFloat.val;
+      outFloatIndex = 0;
+      break;
+    default:
+      break;
     }
   }
 }
@@ -706,56 +710,56 @@ void LoadMAG() {
     outFloat.buffer[outFloatIndex] = EEPROM.read(i);
     outFloatIndex++;
     switch (i) {
-      case MAG_OFF_X_INDEX:
-        magOffSetX = outFloat.val;
-        outFloatIndex = 0;
-        break;
-      case MAG_OFF_Y_INDEX:
-        magOffSetY = outFloat.val;
-        outFloatIndex = 0;
-        break;
-      case MAG_OFF_Z_INDEX:
-        magOffSetZ = outFloat.val;
-        outFloatIndex = 0;
-        break;
-      case W_00_INDEX:
-        magWInv00 = outFloat.val;
-        outFloatIndex = 0;
-        break;
-      case W_01_INDEX:
-        magWInv01 = outFloat.val;
-        outFloatIndex = 0;
-        break;
-      case W_02_INDEX:
-        magWInv02 = outFloat.val;
-        outFloatIndex = 0;
-        break;
-      case W_10_INDEX:
-        magWInv10 = outFloat.val;
-        outFloatIndex = 0;
-        break;
-      case W_11_INDEX:
-        magWInv11 = outFloat.val;
-        outFloatIndex = 0;
-        break;
-      case W_12_INDEX:
-        magWInv12 = outFloat.val;
-        outFloatIndex = 0;
-        break;
-      case W_20_INDEX:
-        magWInv20 = outFloat.val;
-        outFloatIndex = 0;
-        break;
-      case W_21_INDEX:
-        magWInv21 = outFloat.val;
-        outFloatIndex = 0;
-        break;
-      case W_22_INDEX:
-        magWInv22 = outFloat.val;
-        outFloatIndex = 0;
-        break;
-      default:
-        break;
+    case MAG_OFF_X_INDEX:
+      magOffSetX = outFloat.val;
+      outFloatIndex = 0;
+      break;
+    case MAG_OFF_Y_INDEX:
+      magOffSetY = outFloat.val;
+      outFloatIndex = 0;
+      break;
+    case MAG_OFF_Z_INDEX:
+      magOffSetZ = outFloat.val;
+      outFloatIndex = 0;
+      break;
+    case W_00_INDEX:
+      magWInv00 = outFloat.val;
+      outFloatIndex = 0;
+      break;
+    case W_01_INDEX:
+      magWInv01 = outFloat.val;
+      outFloatIndex = 0;
+      break;
+    case W_02_INDEX:
+      magWInv02 = outFloat.val;
+      outFloatIndex = 0;
+      break;
+    case W_10_INDEX:
+      magWInv10 = outFloat.val;
+      outFloatIndex = 0;
+      break;
+    case W_11_INDEX:
+      magWInv11 = outFloat.val;
+      outFloatIndex = 0;
+      break;
+    case W_12_INDEX:
+      magWInv12 = outFloat.val;
+      outFloatIndex = 0;
+      break;
+    case W_20_INDEX:
+      magWInv20 = outFloat.val;
+      outFloatIndex = 0;
+      break;
+    case W_21_INDEX:
+      magWInv21 = outFloat.val;
+      outFloatIndex = 0;
+      break;
+    case W_22_INDEX:
+      magWInv22 = outFloat.val;
+      outFloatIndex = 0;
+      break;
+    default:
+      break;
     }
   }
 }
@@ -806,6 +810,7 @@ void LoadROM() {
   LoadPWMLimits();
   LoadModes();
 }
+
 
 
 

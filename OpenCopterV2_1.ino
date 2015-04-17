@@ -457,12 +457,12 @@ enum BYTES {
   TELEM_FS,
   GPS_FS,
   SWITCH_POS,
-  NUM_SATS,
   IDLE_PERCENT,
   HOVER_PERCENT,
   TX_LOSS_RTB,
   MAG_DET,
   TX_FS_STATUS
+
 };
 
 
@@ -512,8 +512,8 @@ enum Floats {
   INERTIAL_Z_BIASED,
   RAW_PITCH,
   RAW_ROLL,
-  PITCH_OFF,
-  ROLL_OFF,
+  PITCH_OFFSET,
+  ROLL_OFFSET,
   KP_PITCH_RATE_,
   KI_PITCH_RATE_,
   KD_PITCH_RATE_,
@@ -601,6 +601,10 @@ enum Floats {
   MOTOR_CMD_2,
   MOTOR_CMD_3,
   MOTOR_CMD_4,
+  MOTOR_CMD_5,
+  MOTOR_CMD_6,
+  MOTOR_CMD_7,
+  MOTOR_CMD_8,
   PRESSURE_,
   CTRL_BEARING,
   YAW_INITIAL,
@@ -610,8 +614,7 @@ enum Floats {
   HB_LAT,
   HB_LON,
   H_ACC,
-  S_ACC,
-  P_DOP
+  S_ACC
 
 };
 
@@ -625,11 +628,11 @@ enum Floats {
 #define Port2 Serial2
 #define gpsPort Serial3
 
-float_u *floatPointerArray[145];
+float_u *floatPointerArray[148];
 
 int16_u *int16PointerArray[12];
 
-uint8_t *bytePointerArray[16];
+uint8_t *bytePointerArray[14];
 
 int16_u gyroX, gyroY, gyroZ, accX, accY, accZ, magX, magY, magZ;
 
@@ -1296,7 +1299,7 @@ void loop() {//0
       }//13
 
     }//12
-    
+
     if (txFailSafe == true) {//17
       if (motorState >= FLIGHT) {//18
         if (flightMode != RTB) {//19
@@ -1305,7 +1308,7 @@ void loop() {//0
         }//19
       }//18
     }//17
-    
+
     if (telemFailSafe == true){
       if (gsCTRL == true){
         if (rcDetected == true){
@@ -1628,6 +1631,7 @@ void LoiterCalculations() {
   tiltAngleX.val *= -1.0;
   LoiterYVelocity.calculate();
 }
+
 
 
 
