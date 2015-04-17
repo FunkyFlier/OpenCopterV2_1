@@ -65,9 +65,9 @@
 #endif//#ifdef V2
 #endif
 
-#define SACC_MAX 0.5
-#define HACC_MAX 4
-#define MIN_SATS 10
+#define SACC_MAX 5
+#define HACC_MAX 40
+//#define MIN_SATS 10
 
 #define CAL_FLAGS 0
 #define HS_FLAG 1
