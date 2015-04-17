@@ -193,7 +193,7 @@ void AssignPointerArray() {
 
   floatPointerArray[H_ACC] = &hAcc;
   floatPointerArray[S_ACC] = &sAcc;
-  floatPointerArray[P_DOP] = &pDop;
+  floatPointerArray[P_DOP] = &sAcc;
 
 
 
@@ -223,7 +223,7 @@ void AssignPointerArray() {
   bytePointerArray[GPS_FS] = &gpsFailSafe;
   bytePointerArray[SWITCH_POS] = &switchPositions;
 
-  bytePointerArray[NUM_SATS] = &gps.data.vars.numSV;
+  bytePointerArray[NUM_SATS] = &propIdlePercent;
   bytePointerArray[IDLE_PERCENT] = &propIdlePercent;
   bytePointerArray[HOVER_PERCENT] = &hoverPercent;
   bytePointerArray[TX_LOSS_RTB] = &txLossRTB;
@@ -793,26 +793,18 @@ void LoadDEC() {
 
 void LoadModes(){
   uint8_t j = 0;
-  for(uint8_t i = MODE_START; i <= MODE_END; i++){
-    modeArray[j] = EEPROM.read(i);
+  for(uint16_t i = MODE_START; i <= MODE_END; i++){
+    modeArray[j++] = EEPROM.read(i);
   }
 }
 void LoadROM() {
-
   LoadRC();
-
   LoadACC();
-
   LoadMAG();
-
   LoadGains();
-
   LoadPROff();
-
   LoadPWMLimits();
-
   LoadModes();
-
 }
 
 

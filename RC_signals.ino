@@ -687,6 +687,7 @@ void FrameCheck() { //checks if serial RC was incorrectly detected
   uint32_t frameCheckTimer;
   frameCheckTimer =  millis();
   delay(100);
+  rcDetected = true;
   while (newRC == false) {
     if (rcType == RC) {
       delay(100);

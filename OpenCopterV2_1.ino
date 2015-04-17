@@ -9,7 +9,7 @@
 #include "AUXMATH.h"
 #include "UBLOXL.h"
 
-#define ROT_45
+//#define ROT_45
 
 //#define QUAD_CAMP
 
@@ -1104,7 +1104,6 @@ void setup() {
   imuDT = 0.01;
   lpfDT = 0.0025;
   baroDT = 0.05;
-
   DetectRC();
   _200HzISRConfig();
 
@@ -1114,12 +1113,11 @@ void setup() {
   SPI.begin();
   SPI.setBitOrder(MSBFIRST);
   SPI.setClockDivider(SPI_CLOCK_DIV2);
-
   ROMFlagsCheck();
   CheckESCFlag();
   CalibrateESC();
   MotorInit();
-  delay(3500);//this allows the telemetry radios to connect before trying the handshake
+  //delay(3500);//this allows the telemetry radios to connect before trying the handshake
   if (handShake == false) {
     radioStream = &Port2;
     radioPrint = &Port2;
@@ -1214,9 +1212,9 @@ void loop() {//0
       gps.DistBearing(&homeBase.lat.val, &homeBase.lon.val, &gps.data.vars.lat, &gps.data.vars.lon, &gpsX.val, &gpsY.val, &distToCraft.val, &headingToCraft.val);
       hAcc.val = gps.data.vars.hAcc * 0.001;///raw pitch
       sAcc.val = gps.data.vars.sAcc * 0.001;//raw roll
-      pDop.val = gps.data.vars.pDop * 0.01;//pitch offset
-      numSats = gps.data.vars.numSV;
-      if (gps.data.vars.gpsFix != 3 || numSats < MIN_SATS || hAcc.val > HACC_MAX || sAcc.val > SACC_MAX) {//5
+      //pDop.val = gps.data.vars.pDop * 0.01;//pitch offset
+      //numSats = gps.data.vars.numSV;
+      if (gps.data.vars.gpsFix != 3 || hAcc.val > HACC_MAX || sAcc.val > SACC_MAX) {//5
         gpsFailSafe = true;
       }//5
       GPSFailSafeCounter = 0;
