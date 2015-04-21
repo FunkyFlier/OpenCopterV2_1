@@ -779,9 +779,9 @@ int16_u throttleCommand;
 uint32_t imuTimer, GPSTimer;
 uint32_t generalPurposeTimer;
 uint16_t groundFSCount;
-float imuDT;
+float imuDT = 0.01;
 float GPSDT;
-float lpfDT, beta, alphaBaro, betaBaro;
+float lpfDT = 0.0025, beta, alphaBaro, betaBaro;
 float_u alpha;
 
 float_u kp_pitch_rate;//52
@@ -990,7 +990,7 @@ uint32_t _400Time;
 float_u gpsX, gpsY;
 
 uint32_t baroTimer;
-float baroDT, prevBaro;
+float baroDT = 0.05, prevBaro;
 float_u baroRate;
 float_u baroVel, baroAlt;
 int16_t tempX, tempY;
@@ -1060,30 +1060,12 @@ PID WayPointRate(&targetVelWayPoint.val, &speed2D_MPS, &pitchSetPoint.val, &inte
  Port0 << hex[(convertByte >>4) & 0x0F];
  Port0 << hex[convertByte & 0x0F]<<"\r\n";
  }*/
-
-void setup() {
+void SetPinModes(){
   pinMode(RED, OUTPUT);
   pinMode(YELLOW, OUTPUT);
   pinMode(GREEN, OUTPUT);
-  //digitalWrite(RED,HIGH);
-  pinMode(13, OUTPUT);
+  pinMode(BLUE, OUTPUT);
   RC_SS_Output();
-  Port0.begin(115200);
-  Port2.begin(115200);
-  Port2.write(0x0D);
-  delay(500);
-  Port2.print("B");
-  AssignPointerArray();
-
-
-  //----------------------------
-  //Port0<<"1\r\n";
-  //ROMFlagsCheck();
-  //DEBUG_DUMP();
-  //while(1){}
-
-  //----------------------------
-
   GyroSSOutput();
   AccSSOutput();
   BaroSSOutput();
@@ -1094,9 +1076,7 @@ void setup() {
   BaroSSHigh();
   MagSSHigh();
   FlashSSHigh();
-
   D22Output();
-  //pinMode(22,INPUT);
   D23Output();
   D24Output();
   D25Output();
@@ -1104,23 +1084,22 @@ void setup() {
   D27Output();
   D28Output();
   D29Output();
-  imuDT = 0.01;
-  lpfDT = 0.0025;
-  baroDT = 0.05;
-  DetectRC();
-  _200HzISRConfig();
+}
 
+void StartSerialIO(){
+  Port0.begin(115200);
+  Port2.begin(115200);
+  Port2.write(0x0D);
+  delay(500);
+  Port2.print("B");
   I2c.begin();
   I2c.setSpeed(1);
   I2c.timeOut(2);
   SPI.begin();
   SPI.setBitOrder(MSBFIRST);
   SPI.setClockDivider(SPI_CLOCK_DIV2);
-  ROMFlagsCheck();
-  CheckESCFlag();
-  CalibrateESC();
-  MotorInit();
-  //delay(3500);//this allows the telemetry radios to connect before trying the handshake
+}
+void ProcessHandShake(){
   if (handShake == false) {
     radioStream = &Port2;
     radioPrint = &Port2;
@@ -1137,37 +1116,52 @@ void setup() {
     while(1){
     }
   }
-  if (calibrationMode == true) {
-    BaroInit();
-    AccInit();
-    MagInit();
-    CalibrateSensors();
-    ROMFlagsCheck();
-  }
+}
 
-
-  //ModeSelect();
-  Arm();//move the rudder to the right to begin calibration
-  GPSStart();
-  BaroInit();
-  GyroInit();
-  AccInit();
-  MagInit();
-  GetInitialQuat();
-  CheckTXPositions();
-
+void StartTimers(){
 
   imuTimer = micros();
   _400HzTimer = micros();
   generalPurposeTimer = millis();
 
   currentTime = micros();
-
   watchDogStartCount = true;
-  digitalWrite(RED, 1);
-  digitalWrite(YELLOW, 1);
-  digitalWrite(GREEN, 1);
-  digitalWrite(13, 1);
+}
+void setup() {
+  SetPinModes();
+  AssignPointerArray();
+  StartSerialIO();
+  //----------------------------
+  //ROMFlagsCheck();
+  //DEBUG_DUMP();
+  //while(1){}
+  //----------------------------
+
+  DetectRC();
+  _200HzISRConfig();
+
+
+  ROMFlagsCheck();
+  CheckESCFlag();
+  CalibrateESC();
+  MotorInit();
+
+  ProcessHandShake();
+  BaroInit();
+  AccInit();
+  MagInit();
+  if (calibrationMode == true) {
+    CalibrateSensors();
+  }
+
+
+  Arm();//move the rudder to the right to begin calibration
+  GPSStart();
+  GyroInit();
+  GetInitialQuat();
+  CheckTXPositions();
+  StartTimers();
+
 }
 
 void loop() {//0
@@ -1631,4 +1625,6 @@ void LoiterCalculations() {
   tiltAngleX.val *= -1.0;
   LoiterYVelocity.calculate();
 }
+
+
 
