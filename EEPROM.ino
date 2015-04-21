@@ -61,8 +61,8 @@ void AssignPointerArray() {
 
   floatPointerArray[RAW_PITCH] = &imu.rawPitch;
   floatPointerArray[RAW_ROLL] = &imu.rawRoll;
-  floatPointerArray[PITCH_OFF] = &imu.pitchOffset;
-  floatPointerArray[ROLL_OFF] = &imu.rollOffset;
+  floatPointerArray[PITCH_OFFSET] = &imu.pitchOffset;
+  floatPointerArray[ROLL_OFFSET] = &imu.rollOffset;
 
 
   floatPointerArray[KP_PITCH_RATE_] = &kp_pitch_rate;
@@ -776,7 +776,7 @@ void LoadGains() {
 
 void LoadPROff() {
   uint16_t j = PITCH_OFFSET_START;
-  for (uint16_t i = PITCH_OFF; i <= ROLL_OFF; i++) { //pitch and roll offsets
+  for (uint16_t i = PITCH_OFFSET; i <= ROLL_OFFSET; i++) { //pitch and roll offsets
     (*floatPointerArray[i]).buffer[0] = EEPROM.read(j++);
     (*floatPointerArray[i]).buffer[1] = EEPROM.read(j++);
     (*floatPointerArray[i]).buffer[2] = EEPROM.read(j++);
