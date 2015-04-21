@@ -175,7 +175,7 @@
 #define TAKE_OFF_ALT 3
 
 #define LAND_VEL -0.28
-
+#define RTB_VEL 0.25
 //ROM defines
 enum CalibrationFlags {
   RC_FLAG,
@@ -1071,7 +1071,7 @@ void setup() {
   Port0.begin(115200);
   Port2.begin(115200);
   Port2.write(0x0D);
-  delay(250);
+  delay(500);
   Port2.print("B");
   AssignPointerArray();
 
@@ -1576,17 +1576,17 @@ void RTBStateMachine() {
   case TRAVEL:
     LoiterXPosition.calculate();
     LoiterYPosition.calculate();
-    if (velSetPointX.val > 0.25) {
-      velSetPointX.val = 0.25;
+    if (velSetPointX.val > RTB_VEL) {
+      velSetPointX.val = RTB_VEL;
     }
-    if (velSetPointX.val < -0.25) {
-      velSetPointX.val = -0.25;
+    if (velSetPointX.val < -RTB_VEL) {
+      velSetPointX.val = -RTB_VEL;
     }
-    if (velSetPointY.val > 0.25) {
-      velSetPointY.val = 0.25;
+    if (velSetPointY.val > RTB_VEL) {
+      velSetPointY.val = RTB_VEL;
     }
-    if (velSetPointY.val < -0.25) {
-      velSetPointY.val = -0.25;
+    if (velSetPointY.val < -RTB_VEL) {
+      velSetPointY.val = -RTB_VEL;
     }
     LoiterXVelocity.calculate();
     tiltAngleX.val *= -1.0;
@@ -1631,113 +1631,4 @@ void LoiterCalculations() {
   tiltAngleX.val *= -1.0;
   LoiterYVelocity.calculate();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
