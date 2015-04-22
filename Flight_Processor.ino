@@ -41,7 +41,7 @@ void LoiterSM(){
   case LOITERING:
     AltHoldPosition.calculate();
     AltHoldVelocity.calculate();
-    if (abs(loitThro - 1550) > 200 && throttleCheckFlag == false){
+    if (abs(loitThro - hoverCommand) > 200 && throttleCheckFlag == false){
       ZLoiterState = RCINPUT;
     }
     if (loitThro < 1050 && motorState == FLIGHT){
@@ -55,7 +55,7 @@ void LoiterSM(){
       ZLoiterState = LOITERING;
       break;
     }
-    rcDifference = loitThro - 1550;
+    rcDifference = loitThro - hoverCommand;
     if (abs(rcDifference) < 200){
       ZLoiterState = LOITERING;
       zTarget = imu.ZEstUp;
@@ -136,6 +136,8 @@ void LoiterSM(){
       }
       break;
     case WAIT:
+      pitchSetPoint.val = 0;
+      rollSetPoint.val = 0;
       if (fabs(rollSetPointTX.val) > 0.5 || fabs(pitchSetPointTX.val) > 0.5){
         XYLoiterState = RCINPUT;
         break;

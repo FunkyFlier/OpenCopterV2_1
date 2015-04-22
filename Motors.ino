@@ -209,8 +209,7 @@ void MotorHandler(){
     }
     initialYaw.val = imu.yaw.val;
     integrate = false;
-    HHState = 0;
-    throttleAdjustment.val = 0;
+    HHState = HH_OFF;
     ZLoiterState = LOITERING;
     XYLoiterState = LOITERING;
     if (RCValue[THRO] > 1100){
@@ -239,8 +238,6 @@ void MotorHandler(){
 
     if (RCValue[RUDD] < 1300){
       motorState = TO;
-
-
       PitchAngle.reset();
       RollAngle.reset();
       YawAngle.reset();
@@ -484,15 +481,7 @@ void MotorHandler(){
 #endif
     break;
   }
-  /*MapVar(&motorCommand1.val,&motorPWM1,1000,2000,pwmLow.val,pwmHigh.val);
-   MapVar(&motorCommand2.val,&motorPWM2,1000,2000,pwmLow.val,pwmHigh.val);
-   MapVar(&motorCommand3.val,&motorPWM3,1000,2000,pwmLow.val,pwmHigh.val);
-   MapVar(&motorCommand4.val,&motorPWM4,1000,2000,pwmLow.val,pwmHigh.val);
-   
-   MapVar(&motorCommand5.val,&motorPWM5,1000,2000,pwmLow.val,pwmHigh.val);
-   MapVar(&motorCommand6.val,&motorPWM6,1000,2000,pwmLow.val,pwmHigh.val);
-   MapVar(&motorCommand7.val,&motorPWM7,1000,2000,pwmLow.val,pwmHigh.val);
-   MapVar(&motorCommand8.val,&motorPWM8,1000,2000,pwmLow.val,pwmHigh.val);*/
+
   Motor1WriteMicros(motorCommand1.val);
   Motor2WriteMicros(motorCommand2.val);
   Motor3WriteMicros(motorCommand3.val);
