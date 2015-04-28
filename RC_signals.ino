@@ -92,30 +92,32 @@ void ModeSelect() {
 
 void CheckTXPositions() {
   bool positionOK = false;
-  while (positionOK == false) {
-    digitalWrite(RED, LOW);
-    digitalWrite(YELLOW, LOW);
-    digitalWrite(GREEN, HIGH);
-    digitalWrite(13, HIGH);
-    if (newRC == true) {
-      newRC = false;
-      ProcessChannels();
-    }
-    positionOK = true;
-    if (RCValue[THRO] > 1050) {
-      positionOK = false;
-    }
-    if (RCValue[GEAR] > 1050) {
-      positionOK = false;
-    }
-    if (RCValue[AUX1] > 1050) {
-      positionOK = false;
-    }
-    if (RCValue[AUX2] > 1050) {
-      positionOK = false;
-    }
-    if (RCValue[AUX3] > 1050) {
-      positionOK = false;
+  if (gsCTRL == false){
+    while (positionOK == false) {
+      digitalWrite(RED, LOW);
+      digitalWrite(YELLOW, LOW);
+      digitalWrite(GREEN, HIGH);
+      digitalWrite(13, HIGH);
+      if (newRC == true) {
+        newRC = false;
+        ProcessChannels();
+      }
+      positionOK = true;
+      if (RCValue[THRO] > 1050) {
+        positionOK = false;
+      }
+      if (RCValue[GEAR] > 1050) {
+        positionOK = false;
+      }
+      if (RCValue[AUX1] > 1050) {
+        positionOK = false;
+      }
+      if (RCValue[AUX2] > 1050) {
+        positionOK = false;
+      }
+      if (RCValue[AUX3] > 1050) {
+        positionOK = false;
+      }
     }
   }
 }
@@ -240,14 +242,20 @@ void ProcessChannels() {
 }
 
 void ProcessModes() {
+
+
   if (RCValue[AUX2] > 1750) {
     gsCTRL = false;
     flightMode = ATT;
     setTrim = true;
     trimComplete = true;
-    MapVar(&RCValue[ELEV], &pitchSetPoint.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[AILE], &rollSetPoint.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[RUDD], &yawInput, 1000, 2000, -300, 300);
+    cmdElev = RCValue[ELEV];
+    cmdAile = RCValue[AILE];
+    cmdRudd = RCValue[RUDD];
+    throCommand = RCValue[THRO];
+    MapVar(&cmdAile, &rollSetPointTX.val, 1000, 2000, -60, 60);
+    MapVar(&cmdElev, &pitchSetPointTX.val, 1000, 2000, -60, 60);
+    MapVar(&cmdRudd, &yawInput, 1000, 2000, -300, 300);
     if (rollSetPoint.val < 1 && rollSetPoint.val > -1) {
       rollSetPoint.val = 0;
     }
@@ -269,9 +277,13 @@ void ProcessModes() {
   if (RCValue[AUX3] > 1750) {
     gsCTRL = false;
     flightMode = RTB;
-    MapVar(&RCValue[AILE], &rollSetPointTX.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[ELEV], &pitchSetPointTX.val, 1000, 2000, -60, 60);
-    MapVar(&RCValue[RUDD], &yawInput, 1000, 2000, -300, 300);
+    cmdElev = RCValue[ELEV];
+    cmdAile = RCValue[AILE];
+    cmdRudd = RCValue[RUDD];
+    throCommand = RCValue[THRO];
+    MapVar(&cmdAile, &rollSetPointTX.val, 1000, 2000, -60, 60);
+    MapVar(&cmdElev, &pitchSetPointTX.val, 1000, 2000, -60, 60);
+    MapVar(&cmdRudd, &yawInput, 1000, 2000, -300, 300);
     if (rollSetPointTX.val < 1 && rollSetPointTX.val > -1) {
       rollSetPointTX.val = 0;
     }
@@ -288,16 +300,27 @@ void ProcessModes() {
 
   }
 
-  flightMode = modeArray[switchPositions];
   if (gsCTRL == false){
     cmdElev = RCValue[ELEV];
     cmdAile = RCValue[AILE];
     cmdRudd = RCValue[RUDD];
-  }else{
+    throCommand = RCValue[THRO];
+    flightMode = modeArray[switchPositions];
+  }
+  else{
     cmdElev = GSRCValue[ELEV];
     cmdAile = GSRCValue[AILE];
     cmdRudd = GSRCValue[RUDD];
-  }
+    throCommand = GSRCValue[THRO];
+    flightMode = GSRCValue[GEAR];
+    if (flightMode < 2){
+      flightMode = 2;
+    }
+    if (flightMode > 9){
+      flightMode = 2;
+    }
+  }  
+
   switch(flightMode){
   case RATE:
     flightMode = RATE;
@@ -700,18 +723,18 @@ void FrameCheck() { //checks if serial RC was incorrectly detected
       rcDetected = false;
       return;
       /*rcType = RC;
-      DDRK = 0;//PORTK as input
-      PORTK |= 0xFF;//turn on pull ups
-      PCMSK2 |= 0xFF;//set interrupt mask for all of PORTK
-      PCICR = 1 << 2;
-      delay(100);//wait for a few frames
-      if (rcData[0].rcvd == 0 && rcData[1].rcvd == 0 && rcData[2].rcvd == 0 && rcData[3].rcvd == 0 && rcData[4].rcvd == 0 && rcData[5].rcvd == 0 && rcData[6].rcvd == 0) {
-        ISRState = PPM;
-        PORTK |= 0x80;
-        PCMSK2 |= 0x80;
-      }
-
-      generalPurposeTimer = millis();*/
+       DDRK = 0;//PORTK as input
+       PORTK |= 0xFF;//turn on pull ups
+       PCMSK2 |= 0xFF;//set interrupt mask for all of PORTK
+       PCICR = 1 << 2;
+       delay(100);//wait for a few frames
+       if (rcData[0].rcvd == 0 && rcData[1].rcvd == 0 && rcData[2].rcvd == 0 && rcData[3].rcvd == 0 && rcData[4].rcvd == 0 && rcData[5].rcvd == 0 && rcData[6].rcvd == 0) {
+       ISRState = PPM;
+       PORTK |= 0x80;
+       PCMSK2 |= 0x80;
+       }
+       
+       generalPurposeTimer = millis();*/
     }
   }
   newRC = false;
@@ -773,6 +796,8 @@ void Spektrum() {
   rcType = DSMX;
   detected = true;
 }
+
+
 
 
 

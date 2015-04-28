@@ -213,7 +213,7 @@ void MotorHandler(){
     throttleAdjustment.val = 0;
     ZLoiterState = LOITERING;
     XYLoiterState = LOITERING;
-    if (RCValue[THRO] > 1100){
+    if (throCommand > 1100){
       motorCommand1.val = pwmLow.val;
       motorCommand2.val = pwmLow.val;
       motorCommand3.val = pwmLow.val;
@@ -237,35 +237,43 @@ void MotorHandler(){
       break;
     }
 
-    if (RCValue[RUDD] < 1300){
-      motorState = TO;
+    if (cmdRudd < 1300){
+      rudderFlag = true;
+
+    }
+    if (rudderFlag == true){
+
+      if (abs(cmdRudd - 1500) < 50){
+        rudderFlag = false;
+        motorState = TO;
 
 
-      PitchAngle.reset();
-      RollAngle.reset();
-      YawAngle.reset();
+        PitchAngle.reset();
+        RollAngle.reset();
+        YawAngle.reset();
 
-      PitchRate.reset();
-      RollRate.reset();
-      YawRate.reset();
+        PitchRate.reset();
+        RollRate.reset();
+        YawRate.reset();
 
-      AltHoldPosition.reset();
-      AltHoldVelocity.reset();
+        AltHoldPosition.reset();
+        AltHoldVelocity.reset();
 
-      WayPointPosition.reset();
-      WayPointRate.reset();
+        WayPointPosition.reset();
+        WayPointRate.reset();
 
-      LoiterXPosition.reset();
-      LoiterXVelocity.reset();
+        LoiterXPosition.reset();
+        LoiterXVelocity.reset();
 
-      LoiterYPosition.reset();
-      LoiterYVelocity.reset();
-      homeBaseXOffset = imu.XEst.val;
-      homeBaseYOffset = imu.YEst.val;
-      if (imu.magDetected == true){
-        VerifyMag();
+        LoiterYPosition.reset();
+        LoiterYVelocity.reset();
+        homeBaseXOffset = imu.XEst.val;
+        homeBaseYOffset = imu.YEst.val;
+        if (imu.magDetected == true){
+          VerifyMag();
+        }
+        UpdateOffset();
       }
-      UpdateOffset();
     }
     throttleAdjustment.val = 0;
     motorCommand1.val = pwmLow.val;
@@ -297,7 +305,7 @@ void MotorHandler(){
     baroZ.val = 0;
     initialYaw.val = imu.yaw.val;
 
-    if (RCValue[RUDD] > 1700){
+    if (cmdRudd > 1700){
       motorState = HOLD;
     }
     if (flightMode == RTB){
@@ -305,13 +313,13 @@ void MotorHandler(){
     }
 
     if (flightMode == RATE || flightMode == ATT){
-      if (RCValue[THRO] > 1150 && RCValue[THRO] < 1350){
+      if (throCommand > 1150 && throCommand < 1350){
         motorState = FLIGHT;
         integrate = true;
       }
     }
     if (flightMode <= L2 && flightMode >= L0){
-      if (RCValue[THRO] <= 1600 && RCValue[THRO] >= 1500){
+      if (throCommand <= 1600 && throCommand >= 1500){
         motorState = FLIGHT;
         zTarget.val = TAKE_OFF_ALT;
         enterState = true;
@@ -328,7 +336,7 @@ void MotorHandler(){
       }
     }
     if (flightMode == WP || flightMode == FOLLOW){
-      if (RCValue[THRO] <= 1600 && RCValue[THRO] >= 1500){
+      if (throCommand <= 1600 && throCommand >= 1500){
         autoMaticReady = true;
       }
     }
@@ -337,18 +345,14 @@ void MotorHandler(){
   case FLIGHT:
     if (flightMode == RATE || flightMode == ATT){
       throttleAdjustment.val = 0;
-      if (gsCTRL == false){
-        throttleCommand.val = RCValue[THRO];
-      }
-      else{
-        throttleCommand.val = GSRCValue[THRO];
-      }
+      throttleCommand.val = throCommand;
+
       if (throttleCommand.val > 1900){
         throttleCommand.val = 1900;
       }
       if (throttleCommand.val < 1050){
         throttleCommand.val = propIdleCommand;
-        if (RCValue[RUDD] > 1700){
+        if (cmdRudd > 1700){
           motorState = HOLD;
         }
         motorState = TO;
@@ -359,7 +363,7 @@ void MotorHandler(){
       throttleCommand.val = hoverCommand;
     }
     if (throttleCheckFlag == true){
-      if (RCValue[THRO] <= 1600 && RCValue[THRO] >= 1500){
+      if (throCommand <= 1600 && throCommand >= 1500){
         throttleCheckFlag = false;
         throttleCommand.val = hoverCommand;
       }
@@ -404,7 +408,7 @@ void MotorHandler(){
       motorState = FLIGHT;
     }
     if (throttleCheckFlag == true){
-      if (RCValue[THRO] <= 1600 && RCValue[THRO] >= 1500){
+      if (throCommand <= 1600 && throCommand >= 1500){
         throttleCheckFlag = false;
       }
     }
@@ -422,7 +426,7 @@ void MotorHandler(){
       motorState = HOLD;
       break;
     }
-    if (RCValue[RUDD] > 1950){
+    if (cmdRudd > 1950){
       motorCommand1.val = pwmLow.val;
       motorCommand2.val = pwmLow.val;
       motorCommand3.val = pwmLow.val;
@@ -504,6 +508,7 @@ void MotorHandler(){
   Motor8WriteMicros(motorCommand8.val);
 
 }
+
 
 
 

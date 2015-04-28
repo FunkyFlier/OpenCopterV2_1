@@ -7,20 +7,38 @@ void Arm(){
   digitalWrite(GREEN,LOW);
   digitalWrite(13,LOW);
   newRC = false;
+  newGSRC = false;
   generalPurposeTimer = millis();
-  while (newRC == false){
+  if(gsCTRL == false){
+    while (newRC == false){
+    }
+  }
+  else{
+    while (newGSRC == false){
+      Radio();
+    }
   }
   newRC = false;
   digitalWrite(RED,LOW);
   digitalWrite(YELLOW,LOW);
   digitalWrite(GREEN,LOW);
   digitalWrite(13,HIGH);
-  while (RCValue[RUDD] < 1750){
-    if (newRC == true){
-      ProcessChannels();
-      newRC = false;
-    }
-  } 
+  if (gsCTRL == true){
+    while (GSRCValue[RUDD] < 1750){
+      Radio();
+    } 
+  }
+  else{
+
+    while (RCValue[RUDD] < 1750){
+
+
+      if (newRC == true){
+        ProcessChannels();
+        newRC = false;
+      }
+    } 
+  }
   digitalWrite(RED,HIGH);
   digitalWrite(YELLOW,LOW);
   digitalWrite(GREEN,HIGH);
@@ -31,20 +49,15 @@ void Arm(){
 void LoiterSM(){
 
 
-  if (gsCTRL == false){
-    loitThro = RCValue[THRO];
-  }
-  else{
-    loitThro = GSRCValue[THRO];
-  }
+  
   switch(ZLoiterState){
   case LOITERING:
     AltHoldPosition.calculate();
     AltHoldVelocity.calculate();
-    if (abs(loitThro - 1550) > 200 && throttleCheckFlag == false){
+    if (abs(throCommand - 1550) > 200 && throttleCheckFlag == false){
       ZLoiterState = RCINPUT;
     }
-    if (loitThro < 1050 && motorState == FLIGHT){
+    if (throCommand < 1050 && motorState == FLIGHT){
       ZLoiterState = LAND;
       motorState = LANDING;
       velSetPointZ.val = LAND_VEL;
@@ -55,7 +68,7 @@ void LoiterSM(){
       ZLoiterState = LOITERING;
       break;
     }
-    rcDifference = loitThro - 1550;
+    rcDifference = throCommand - 1550;
     if (abs(rcDifference) < 200){
       ZLoiterState = LOITERING;
       zTarget = imu.ZEstUp;
@@ -76,7 +89,7 @@ void LoiterSM(){
     if (velSetPointZ.val < MIN_Z_RATE){
       velSetPointZ.val = MIN_Z_RATE;
     }
-    if (loitThro < 1050 && motorState == FLIGHT){
+    if (throCommand < 1050 && motorState == FLIGHT){
       ZLoiterState = LAND;
       motorState = LANDING;
       velSetPointZ.val = LAND_VEL;
@@ -104,7 +117,7 @@ void LoiterSM(){
   case LAND:
     AltHoldVelocity.calculate();
 
-    if (loitThro > 1200 && motorState == LANDING){
+    if (throCommand > 1200 && motorState == LANDING){
       ZLoiterState = LOITERING;
       motorState = FLIGHT;
       zTarget = imu.ZEstUp;
@@ -204,6 +217,8 @@ void HeadingHold(){
     calcYaw = false;
   }
 }
+
+
 
 
 

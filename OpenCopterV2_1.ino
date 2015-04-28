@@ -771,14 +771,14 @@ RC_t;
 RC_t rcData[8];
 int16_t RCValue[8];
 int16_t GSRCValue[8];
-int16_t cmdElev,cmdAile,cmdRudd;
+int16_t cmdElev,cmdAile,cmdRudd,throCommand;
 
 int16_u throttleCommand;
 
 //timers and DTs
 uint32_t imuTimer, GPSTimer;
 uint32_t generalPurposeTimer;
-uint16_t groundFSCount;
+volatile uint16_t groundFSCount;
 float imuDT;
 float GPSDT;
 float lpfDT, beta, alphaBaro, betaBaro;
@@ -1016,6 +1016,8 @@ uint8_t txLossRTB;
 uint8_t i2cTimeOutStatus;
 uint8_t i2cTimeOutCount;
 
+boolean rudderFlag = false;
+
 uint8_t modeArray[9] = {
   RATE,L1,ATT,ATT,ATT,ATT_TRIM,RATE,RATE,L0};
 //constructors //fix the dts
@@ -1108,6 +1110,7 @@ void setup() {
   lpfDT = 0.0025;
   baroDT = 0.05;
   DetectRC();
+  //rcDetected = false;
   _200HzISRConfig();
 
   I2c.begin();
@@ -1117,8 +1120,10 @@ void setup() {
   SPI.setBitOrder(MSBFIRST);
   SPI.setClockDivider(SPI_CLOCK_DIV2);
   ROMFlagsCheck();
-  CheckESCFlag();
-  CalibrateESC();
+  if (rcDetected == true){
+    CheckESCFlag();
+    CalibrateESC();
+  }
   MotorInit();
   //delay(3500);//this allows the telemetry radios to connect before trying the handshake
   if (handShake == false) {
@@ -1133,16 +1138,36 @@ void setup() {
       HandShake();
     }
   }
-  if (rcDetected == false && gsCTRL == false){
-    while(1){
-    }
-  }
   if (calibrationMode == true) {
     BaroInit();
     AccInit();
     MagInit();
     CalibrateSensors();
     ROMFlagsCheck();
+  }
+  if (rcDetected == false && gsCTRL == false){
+    while(1){
+      digitalWrite(13,HIGH);
+      digitalWrite(RED,HIGH);
+      digitalWrite(YELLOW,HIGH);
+      digitalWrite(GREEN,HIGH);
+      delay(250);
+      digitalWrite(13,LOW);
+      digitalWrite(RED,HIGH);
+      digitalWrite(YELLOW,HIGH);
+      digitalWrite(GREEN,LOW);
+      delay(250);
+      digitalWrite(13,HIGH);
+      digitalWrite(RED,LOW);
+      digitalWrite(YELLOW,LOW);
+      digitalWrite(GREEN,HIGH);
+      delay(250);
+      digitalWrite(13,LOW);
+      digitalWrite(RED,LOW);
+      digitalWrite(YELLOW,LOW);
+      digitalWrite(GREEN,LOW);
+      delay(250);
+    }
   }
 
 
@@ -1171,7 +1196,6 @@ void setup() {
 }
 
 void loop() {//0
-
   _400HzTask();
   loopTime = micros();
   if (loopTime - imuTimer >= 10000) {//1-
@@ -1259,7 +1283,12 @@ void loop() {//0
       groundFSCount = 0;
       newGSRC = false;
       telemFailSafe = false;
+      if (gsCTRL == true){
+        ProcessModes();
+      }
+      Serial<<GSRCValue[THRO]<<","<<GSRCValue[AILE]<<","<<GSRCValue[ELEV]<<","<<GSRCValue[RUDD]<<","<<GSRCValue[GEAR]<<","<<GSRCValue[AUX1]<<","<<GSRCValue[AUX2]<<","<<GSRCValue[AUX3]<<"\r\n";
     }//10
+    Serial<<groundFSCount<<","<<telemFailSafe<<"\r\n";
     if (groundFSCount >= 200) {//11
       telemFailSafe = true;
     }//11
@@ -1324,6 +1353,21 @@ void loop() {//0
           Motor6WriteMicros(0);
           Motor7WriteMicros(0);
           Motor8WriteMicros(0);
+          digitalWrite(BLUE, HIGH);
+
+          while (1) {
+
+            digitalWrite(YELLOW, HIGH);
+            if (groundFSCount >= 200 ) {//15
+              digitalWrite(GREEN, LOW);
+            }//15
+            delay(500);
+            digitalWrite(YELLOW, LOW);
+            if (groundFSCount >= 200 ) {//16
+              digitalWrite(GREEN, HIGH);
+            }//16
+            delay(500);
+          }
         }
         else{
           if (motorState >= FLIGHT) {//18
@@ -1631,4 +1675,7 @@ void LoiterCalculations() {
   tiltAngleX.val *= -1.0;
   LoiterYVelocity.calculate();
 }
+
+
+
 
