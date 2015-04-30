@@ -195,7 +195,6 @@ void SaveGains(){
   EEPROM.write(CAL_FLAGS,calibrationFlags);
 }
 void MotorHandler(){
-
   switch(motorState){
   case HOLD:
 
@@ -225,7 +224,6 @@ void MotorHandler(){
       break;
     }
     if (flightMode == RTB){
-      motorState = HOLD;
       motorCommand1.val = pwmLow.val;
       motorCommand2.val = pwmLow.val;
       motorCommand3.val = pwmLow.val;
@@ -246,7 +244,6 @@ void MotorHandler(){
       if (abs(cmdRudd - 1500) < 50){
         rudderFlag = false;
         motorState = TO;
-
 
         PitchAngle.reset();
         RollAngle.reset();
@@ -306,7 +303,7 @@ void MotorHandler(){
     initialYaw.val = imu.yaw.val;
 
     if (cmdRudd > 1700){
-      motorState = HOLD;
+		motorState = HOLD;
     }
     if (flightMode == RTB){
       motorState = HOLD;
@@ -319,7 +316,7 @@ void MotorHandler(){
       }
     }
     if (flightMode <= L2 && flightMode >= L0){
-      if (throCommand <= 1600 && throCommand >= 1500){
+      if (throCommand <= 1600 && throCommand >= 1450){
         motorState = FLIGHT;
         zTarget.val = TAKE_OFF_ALT;
         enterState = true;
@@ -336,7 +333,7 @@ void MotorHandler(){
       }
     }
     if (flightMode == WP || flightMode == FOLLOW){
-      if (throCommand <= 1600 && throCommand >= 1500){
+      if (throCommand <= 1600 && throCommand >= 1450){
         autoMaticReady = true;
       }
     }
@@ -363,7 +360,7 @@ void MotorHandler(){
       throttleCommand.val = hoverCommand;
     }
     if (throttleCheckFlag == true){
-      if (throCommand <= 1600 && throCommand >= 1500){
+      if (throCommand <= 1600 && throCommand >= 1450){
         throttleCheckFlag = false;
         throttleCommand.val = hoverCommand;
       }
@@ -408,7 +405,7 @@ void MotorHandler(){
       motorState = FLIGHT;
     }
     if (throttleCheckFlag == true){
-      if (throCommand <= 1600 && throCommand >= 1500){
+      if (throCommand <= 1600 && throCommand >= 1450){
         throttleCheckFlag = false;
       }
     }
@@ -426,7 +423,7 @@ void MotorHandler(){
       motorState = HOLD;
       break;
     }
-    if (cmdRudd > 1950){
+    if (cmdRudd > 1850){
       motorCommand1.val = pwmLow.val;
       motorCommand2.val = pwmLow.val;
       motorCommand3.val = pwmLow.val;
@@ -488,15 +485,7 @@ void MotorHandler(){
 #endif
     break;
   }
-  /*MapVar(&motorCommand1.val,&motorPWM1,1000,2000,pwmLow.val,pwmHigh.val);
-   MapVar(&motorCommand2.val,&motorPWM2,1000,2000,pwmLow.val,pwmHigh.val);
-   MapVar(&motorCommand3.val,&motorPWM3,1000,2000,pwmLow.val,pwmHigh.val);
-   MapVar(&motorCommand4.val,&motorPWM4,1000,2000,pwmLow.val,pwmHigh.val);
-   
-   MapVar(&motorCommand5.val,&motorPWM5,1000,2000,pwmLow.val,pwmHigh.val);
-   MapVar(&motorCommand6.val,&motorPWM6,1000,2000,pwmLow.val,pwmHigh.val);
-   MapVar(&motorCommand7.val,&motorPWM7,1000,2000,pwmLow.val,pwmHigh.val);
-   MapVar(&motorCommand8.val,&motorPWM8,1000,2000,pwmLow.val,pwmHigh.val);*/
+
   Motor1WriteMicros(motorCommand1.val);
   Motor2WriteMicros(motorCommand2.val);
   Motor3WriteMicros(motorCommand3.val);
@@ -508,6 +497,8 @@ void MotorHandler(){
   Motor8WriteMicros(motorCommand8.val);
 
 }
+
+
 
 
 

@@ -1237,10 +1237,8 @@ void loop() {//0
       velE.val = gps.data.vars.velE * 0.01;
       velD.val = gps.data.vars.velD * 0.01;
       gps.DistBearing(&homeBase.lat.val, &homeBase.lon.val, &gps.data.vars.lat, &gps.data.vars.lon, &gpsX.val, &gpsY.val, &distToCraft.val, &headingToCraft.val);
-      hAcc.val = gps.data.vars.hAcc * 0.001;///raw pitch
-      sAcc.val = gps.data.vars.sAcc * 0.001;//raw roll
-      //pDop.val = gps.data.vars.pDop * 0.01;//pitch offset
-      //numSats = gps.data.vars.numSV;
+      hAcc.val = gps.data.vars.hAcc * 0.001;
+      sAcc.val = gps.data.vars.sAcc * 0.001;
       if (gps.data.vars.gpsFix != 3 || hAcc.val > HACC_MAX || sAcc.val > SACC_MAX) {//5
         gpsFailSafe = true;
       }//5
@@ -1280,15 +1278,14 @@ void loop() {//0
       RCFailSafeCounter = 0;
     }//9
     if (newGSRC == true) {//10
+      
       groundFSCount = 0;
       newGSRC = false;
       telemFailSafe = false;
       if (gsCTRL == true){
         ProcessModes();
       }
-      Serial<<GSRCValue[THRO]<<","<<GSRCValue[AILE]<<","<<GSRCValue[ELEV]<<","<<GSRCValue[RUDD]<<","<<GSRCValue[GEAR]<<","<<GSRCValue[AUX1]<<","<<GSRCValue[AUX2]<<","<<GSRCValue[AUX3]<<"\r\n";
     }//10
-    Serial<<groundFSCount<<","<<telemFailSafe<<"\r\n";
     if (groundFSCount >= 200) {//11
       telemFailSafe = true;
     }//11
@@ -1339,44 +1336,51 @@ void loop() {//0
     }//17
 
     if (telemFailSafe == true){
+
       if (gsCTRL == true){
+
         if (rcDetected == true){
           gsCTRL = false;
         }
-        if (txLossRTB == 0){
-          TIMSK5 = (0 << OCIE5A);
-          Motor1WriteMicros(0);//set the output compare value
-          Motor2WriteMicros(0);
-          Motor3WriteMicros(0);
-          Motor4WriteMicros(0);
-          Motor5WriteMicros(0);
-          Motor6WriteMicros(0);
-          Motor7WriteMicros(0);
-          Motor8WriteMicros(0);
-          digitalWrite(BLUE, HIGH);
-
-          while (1) {
-
-            digitalWrite(YELLOW, HIGH);
-            if (groundFSCount >= 200 ) {//15
-              digitalWrite(GREEN, LOW);
-            }//15
-            delay(500);
-            digitalWrite(YELLOW, LOW);
-            if (groundFSCount >= 200 ) {//16
-              digitalWrite(GREEN, HIGH);
-            }//16
-            delay(500);
-          }
-        }
         else{
-          if (motorState >= FLIGHT) {//18
-            if (flightMode != RTB) {//19
-              enterState = true;
-              flightMode = RTB;
-            }//19
-          }//18
+
+          if (txLossRTB == 0){
+            TIMSK5 = (0 << OCIE5A);
+            Motor1WriteMicros(0);//set the output compare value
+            Motor2WriteMicros(0);
+            Motor3WriteMicros(0);
+            Motor4WriteMicros(0);
+            Motor5WriteMicros(0);
+            Motor6WriteMicros(0);
+            Motor7WriteMicros(0);
+            Motor8WriteMicros(0);
+            digitalWrite(BLUE, HIGH);
+
+            while (1) {
+
+              digitalWrite(YELLOW, HIGH);
+              if (groundFSCount >= 200 ) {//15
+                digitalWrite(GREEN, LOW);
+              }//15
+              delay(500);
+              digitalWrite(YELLOW, LOW);
+              if (groundFSCount >= 200 ) {//16
+                digitalWrite(GREEN, HIGH);
+              }//16
+              delay(500);
+            }
+          }
+          else{
+            if (motorState >= FLIGHT) {//18
+              if (flightMode != RTB) {//19
+                enterState = true;
+                flightMode = RTB;
+              }//19
+            }
+          }
+
         }
+
       }
     }
 
@@ -1572,19 +1576,22 @@ void InitLoiter() {
 
   if (previousFlightMode != L1 && previousFlightMode != L2 && previousFlightMode != L0) {
     if (motorState == LANDING) {
-      motorState = FLIGHT;
+      velSetPointZ.val = LAND_VEL;
+    }
+    else{
+      zTarget.val = imu.ZEstUp.val;
+      if (zTarget.val < FLOOR) {
+        zTarget.val = FLOOR;
+      }
+      if (zTarget.val > CEILING) {
+        zTarget.val = FLOOR;
+      }
     }
     throttleCheckFlag = true;
     throttleAdjustment.val = 0;
     xTarget.val = imu.XEst.val;
     yTarget.val = imu.YEst.val;
-    zTarget.val = imu.ZEstUp.val;
-    if (zTarget.val < FLOOR) {
-      zTarget.val = FLOOR;
-    }
-    if (zTarget.val > CEILING) {
-      zTarget.val = FLOOR;
-    }
+
     LoiterXPosition.reset();
     LoiterXVelocity.reset();
     LoiterYPosition.reset();
@@ -1675,6 +1682,10 @@ void LoiterCalculations() {
   tiltAngleX.val *= -1.0;
   LoiterYVelocity.calculate();
 }
+
+
+
+
 
 
 

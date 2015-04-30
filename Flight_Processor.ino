@@ -54,7 +54,7 @@ void LoiterSM(){
   case LOITERING:
     AltHoldPosition.calculate();
     AltHoldVelocity.calculate();
-    if (abs(throCommand - 1550) > 200 && throttleCheckFlag == false){
+    if (abs(throCommand - 1500) > 200 && throttleCheckFlag == false){
       ZLoiterState = RCINPUT;
     }
     if (throCommand < 1050 && motorState == FLIGHT){
@@ -68,7 +68,7 @@ void LoiterSM(){
       ZLoiterState = LOITERING;
       break;
     }
-    rcDifference = throCommand - 1550;
+    rcDifference = throCommand - 1500;
     if (abs(rcDifference) < 200){
       ZLoiterState = LOITERING;
       zTarget = imu.ZEstUp;

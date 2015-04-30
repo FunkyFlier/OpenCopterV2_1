@@ -99,7 +99,6 @@ void UBLOX::Monitor(){
       if (msgLength > 40){
         GPSState = 0;
       }
-      //Serial<<msgLength<<"*\r\n";
       index = 0;
       GPSState = 6;
       break;

@@ -123,8 +123,6 @@ void CheckTXPositions() {
 }
 void ProcessChannels() {
 
-  previousFlightMode = flightMode;
-
   for (uint8_t i = 0; i < 8; i++)  {
     switch (rcData[i].chan) {
     case THRO:
@@ -243,7 +241,7 @@ void ProcessChannels() {
 
 void ProcessModes() {
 
-
+  previousFlightMode = flightMode;
   if (RCValue[AUX2] > 1750) {
     gsCTRL = false;
     flightMode = ATT;
@@ -299,7 +297,7 @@ void ProcessModes() {
     return;
 
   }
-
+  
   if (gsCTRL == false){
     cmdElev = RCValue[ELEV];
     cmdAile = RCValue[AILE];
