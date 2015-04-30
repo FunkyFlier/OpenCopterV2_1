@@ -251,8 +251,9 @@ void ProcessModes() {
     cmdAile = RCValue[AILE];
     cmdRudd = RCValue[RUDD];
     throCommand = RCValue[THRO];
-    MapVar(&cmdAile, &rollSetPointTX.val, 1000, 2000, -60, 60);
-    MapVar(&cmdElev, &pitchSetPointTX.val, 1000, 2000, -60, 60);
+    
+    MapVar(&cmdElev, &pitchSetPoint.val, 1000, 2000, -60, 60);
+    MapVar(&cmdAile, &rollSetPoint.val, 1000, 2000, -60, 60);
     MapVar(&cmdRudd, &yawInput, 1000, 2000, -300, 300);
     if (rollSetPoint.val < 1 && rollSetPoint.val > -1) {
       rollSetPoint.val = 0;
@@ -263,6 +264,7 @@ void ProcessModes() {
     if (yawInput < 5 && yawInput > -5) {
       yawInput = 0;
     }
+
     if (flightMode != previousFlightMode) {
       enterState = true;
     }
