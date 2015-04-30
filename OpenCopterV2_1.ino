@@ -1278,7 +1278,7 @@ void loop() {//0
       RCFailSafeCounter = 0;
     }//9
     if (newGSRC == true) {//10
-      
+
       groundFSCount = 0;
       newGSRC = false;
       telemFailSafe = false;
@@ -1290,42 +1290,43 @@ void loop() {//0
       telemFailSafe = true;
     }//11
     _400HzTask();
-    if (RCFailSafeCounter >= 200 || failSafe == true) {//12
-      txFailSafe = true;
-      if (txLossRTB == 0) {//13
-        TIMSK5 = (0 << OCIE5A);
-        digitalWrite(13, LOW);
-        digitalWrite(RED, LOW);
-        digitalWrite(YELLOW, LOW);
-        digitalWrite(GREEN, LOW);
-        Motor1WriteMicros(0);//set the output compare value
-        Motor2WriteMicros(0);
-        Motor3WriteMicros(0);
-        Motor4WriteMicros(0);
-        Motor5WriteMicros(0);
-        Motor6WriteMicros(0);
-        Motor7WriteMicros(0);
-        Motor8WriteMicros(0);
-        if (failSafe == true) {//14
-          digitalWrite(RED, HIGH);
-        }//14
-        while (1) {
-
-          digitalWrite(YELLOW, HIGH);
-          if (RCFailSafeCounter >= 200 ) {//15
-            digitalWrite(GREEN, LOW);
-          }//15
-          delay(500);
+    if (gsCTRL == false){
+      if (RCFailSafeCounter >= 200 || failSafe == true) {//12
+        txFailSafe = true;
+        if (txLossRTB == 0) {//13
+          TIMSK5 = (0 << OCIE5A);
+          digitalWrite(13, LOW);
+          digitalWrite(RED, LOW);
           digitalWrite(YELLOW, LOW);
-          if (RCFailSafeCounter >= 200 ) {//16
-            digitalWrite(GREEN, HIGH);
-          }//16
-          delay(500);
-        }
-      }//13
+          digitalWrite(GREEN, LOW);
+          Motor1WriteMicros(0);//set the output compare value
+          Motor2WriteMicros(0);
+          Motor3WriteMicros(0);
+          Motor4WriteMicros(0);
+          Motor5WriteMicros(0);
+          Motor6WriteMicros(0);
+          Motor7WriteMicros(0);
+          Motor8WriteMicros(0);
+          if (failSafe == true) {//14
+            digitalWrite(RED, HIGH);
+          }//14
+          while (1) {
 
-    }//12
+            digitalWrite(YELLOW, HIGH);
+            if (RCFailSafeCounter >= 200 ) {//15
+              digitalWrite(GREEN, LOW);
+            }//15
+            delay(500);
+            digitalWrite(YELLOW, LOW);
+            if (RCFailSafeCounter >= 200 ) {//16
+              digitalWrite(GREEN, HIGH);
+            }//16
+            delay(500);
+          }
+        }//13
 
+      }//12
+    }
     if (txFailSafe == true) {//17
       if (motorState >= FLIGHT) {//18
         if (flightMode != RTB) {//19
@@ -1682,6 +1683,7 @@ void LoiterCalculations() {
   tiltAngleX.val *= -1.0;
   LoiterYVelocity.calculate();
 }
+
 
 
 

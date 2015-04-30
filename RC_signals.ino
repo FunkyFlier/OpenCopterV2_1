@@ -297,7 +297,7 @@ void ProcessModes() {
     return;
 
   }
-  
+
   if (gsCTRL == false){
     cmdElev = RCValue[ELEV];
     cmdAile = RCValue[AILE];
@@ -615,6 +615,9 @@ void DetectRC() {
   if (detected == true) {
     FrameCheck();
     readState = 0;
+    if (failSafe == true){
+      rcDetected = false;
+    }
     return;
   }
   readState = 0;
@@ -794,6 +797,7 @@ void Spektrum() {
   rcType = DSMX;
   detected = true;
 }
+
 
 
 
