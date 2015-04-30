@@ -9,7 +9,7 @@
 #include "AUXMATH.h"
 #include "UBLOXL.h"
 
-//#define ROT_45
+#define ROT_45
 
 //#define QUAD_CAMP
 
