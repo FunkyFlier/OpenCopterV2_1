@@ -244,26 +244,26 @@ void ProcessModes() {
   previousFlightMode = flightMode;
   if (RCValue[AUX2] > 1750) {
     gsCTRL = false;
-    flightMode = ATT;
-    setTrim = true;
-    trimComplete = true;
+    flightMode = RATE;
+    setTrim = false;
+    trimComplete = false;
     cmdElev = RCValue[ELEV];
     cmdAile = RCValue[AILE];
     cmdRudd = RCValue[RUDD];
     throCommand = RCValue[THRO];
+    MapVar(&cmdElev, &rateSetPointY.val, 1000, 2000, -400, 400);
+    MapVar(&cmdAile, &rateSetPointX.val, 1000, 2000, -400, 400);
+    MapVar(&cmdRudd, &rateSetPointZ.val, 1000, 2000, -400, 400);
+    if (rateSetPointY.val < 5 && rateSetPointY.val > -5) {
+      rateSetPointY.val = 0;
+    }
+    if (rateSetPointX.val < 5 && rateSetPointX.val > -5) {
+      rateSetPointX.val = 0;
+    }
+    if (rateSetPointZ.val < 5 && rateSetPointZ.val > -5) {
+      rateSetPointZ.val = 0;
+    }
     
-    MapVar(&cmdElev, &pitchSetPoint.val, 1000, 2000, -60, 60);
-    MapVar(&cmdAile, &rollSetPoint.val, 1000, 2000, -60, 60);
-    MapVar(&cmdRudd, &yawInput, 1000, 2000, -300, 300);
-    if (rollSetPoint.val < 1 && rollSetPoint.val > -1) {
-      rollSetPoint.val = 0;
-    }
-    if (pitchSetPoint.val < 1 && pitchSetPoint.val > -1) {
-      pitchSetPoint.val = 0;
-    }
-    if (yawInput < 5 && yawInput > -5) {
-      yawInput = 0;
-    }
 
     if (flightMode != previousFlightMode) {
       enterState = true;
