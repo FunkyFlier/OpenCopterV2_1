@@ -108,151 +108,151 @@ void SendCalData() {
   txSum = 0;
   txDoubleSum = 0;
   radioPrint->write(0xAA);
-  switch (cmdNum) {
-    case 0:
-      radioPrint->write(7);
+  switch (calibrationNumber) {
+  case 0:
+    radioPrint->write(7);
 
 
-      radioPrint->write((uint8_t)0x00);
-      txSum += 0;
-      txDoubleSum += txSum;
+    radioPrint->write((uint8_t)0x00);
+    txSum += 0;
+    txDoubleSum += txSum;
 
-      radioPrint->write(magX.buffer[0]);
-      txSum += magX.buffer[0];
-      txDoubleSum += txSum;
+    radioPrint->write(magX.buffer[0]);
+    txSum += magX.buffer[0];
+    txDoubleSum += txSum;
 
-      radioPrint->write(magX.buffer[1]);
-      txSum += magX.buffer[1];
-      txDoubleSum += txSum;
+    radioPrint->write(magX.buffer[1]);
+    txSum += magX.buffer[1];
+    txDoubleSum += txSum;
 
-      radioPrint->write(magY.buffer[0]);
-      txSum += magY.buffer[0];
-      txDoubleSum += txSum;
+    radioPrint->write(magY.buffer[0]);
+    txSum += magY.buffer[0];
+    txDoubleSum += txSum;
 
-      radioPrint->write(magY.buffer[1]);
-      txSum += magY.buffer[1];
-      txDoubleSum += txSum;
+    radioPrint->write(magY.buffer[1]);
+    txSum += magY.buffer[1];
+    txDoubleSum += txSum;
 
-      radioPrint->write(magZ.buffer[0]);
-      txSum += magZ.buffer[0];
-      txDoubleSum += txSum;
+    radioPrint->write(magZ.buffer[0]);
+    txSum += magZ.buffer[0];
+    txDoubleSum += txSum;
 
-      radioPrint->write(magZ.buffer[1]);
-      txSum += magZ.buffer[1];
-      txDoubleSum += txSum;
+    radioPrint->write(magZ.buffer[1]);
+    txSum += magZ.buffer[1];
+    txDoubleSum += txSum;
 
-      radioPrint->write(txSum);
-      radioPrint->write(txDoubleSum);
-      break;
-    case 1:
-      radioPrint->write(7);
+    radioPrint->write(txSum);
+    radioPrint->write(txDoubleSum);
+    break;
+  case 1:
+    radioPrint->write(7);
 
 
-      radioPrint->write(1);
-      txSum += 1;
-      txDoubleSum += txSum;
+    radioPrint->write(1);
+    txSum += 1;
+    txDoubleSum += txSum;
 
-      radioPrint->write(accX.buffer[0]);
-      txSum += accX.buffer[0];
-      txDoubleSum += txSum;
+    radioPrint->write(accX.buffer[0]);
+    txSum += accX.buffer[0];
+    txDoubleSum += txSum;
 
-      radioPrint->write(accX.buffer[1]);
-      txSum += accX.buffer[1];
-      txDoubleSum += txSum;
+    radioPrint->write(accX.buffer[1]);
+    txSum += accX.buffer[1];
+    txDoubleSum += txSum;
 
-      radioPrint->write(accY.buffer[0]);
-      txSum += accY.buffer[0];
-      txDoubleSum += txSum;
+    radioPrint->write(accY.buffer[0]);
+    txSum += accY.buffer[0];
+    txDoubleSum += txSum;
 
-      radioPrint->write(accY.buffer[1]);
-      txSum += accY.buffer[1];
-      txDoubleSum += txSum;
+    radioPrint->write(accY.buffer[1]);
+    txSum += accY.buffer[1];
+    txDoubleSum += txSum;
 
-      radioPrint->write(accZ.buffer[0]);
-      txSum += accZ.buffer[0];
-      txDoubleSum += txSum;
+    radioPrint->write(accZ.buffer[0]);
+    txSum += accZ.buffer[0];
+    txDoubleSum += txSum;
 
-      radioPrint->write(accZ.buffer[1]);
-      txSum += accZ.buffer[1];
-      txDoubleSum += txSum;
+    radioPrint->write(accZ.buffer[1]);
+    txSum += accZ.buffer[1];
+    txDoubleSum += txSum;
 
-      radioPrint->write(txSum);
-      radioPrint->write(txDoubleSum);
-      break;
-    case 2:
-      radioPrint->write(17);
+    radioPrint->write(txSum);
+    radioPrint->write(txDoubleSum);
+    break;
+  case 2:
+    radioPrint->write(17);
 
-      radioPrint->write(2);
-      txSum += 2;
-      txDoubleSum += txSum;
+    radioPrint->write(2);
+    txSum += 2;
+    txDoubleSum += txSum;
 
-      temp.val = rcData[0].rcvd;
-      radioPrint->write(temp.buffer[0]);
-      txSum += temp.buffer[0];
-      txDoubleSum += txSum;
-      radioPrint->write(temp.buffer[1]);
-      txSum += temp.buffer[1];
-      txDoubleSum += txSum;
+    temp.val = rcData[0].rcvd;
+    radioPrint->write(temp.buffer[0]);
+    txSum += temp.buffer[0];
+    txDoubleSum += txSum;
+    radioPrint->write(temp.buffer[1]);
+    txSum += temp.buffer[1];
+    txDoubleSum += txSum;
 
-      temp.val = rcData[1].rcvd;
-      radioPrint->write(temp.buffer[0]);
-      txSum += temp.buffer[0];
-      txDoubleSum += txSum;
-      radioPrint->write(temp.buffer[1]);
-      txSum += temp.buffer[1];
-      txDoubleSum += txSum;
+    temp.val = rcData[1].rcvd;
+    radioPrint->write(temp.buffer[0]);
+    txSum += temp.buffer[0];
+    txDoubleSum += txSum;
+    radioPrint->write(temp.buffer[1]);
+    txSum += temp.buffer[1];
+    txDoubleSum += txSum;
 
-      temp.val = rcData[2].rcvd;
-      radioPrint->write(temp.buffer[0]);
-      txSum += temp.buffer[0];
-      txDoubleSum += txSum;
-      radioPrint->write(temp.buffer[1]);
-      txSum += temp.buffer[1];
-      txDoubleSum += txSum;
+    temp.val = rcData[2].rcvd;
+    radioPrint->write(temp.buffer[0]);
+    txSum += temp.buffer[0];
+    txDoubleSum += txSum;
+    radioPrint->write(temp.buffer[1]);
+    txSum += temp.buffer[1];
+    txDoubleSum += txSum;
 
-      temp.val = rcData[3].rcvd;
-      radioPrint->write(temp.buffer[0]);
-      txSum += temp.buffer[0];
-      txDoubleSum += txSum;
-      radioPrint->write(temp.buffer[1]);
-      txSum += temp.buffer[1];
-      txDoubleSum += txSum;
+    temp.val = rcData[3].rcvd;
+    radioPrint->write(temp.buffer[0]);
+    txSum += temp.buffer[0];
+    txDoubleSum += txSum;
+    radioPrint->write(temp.buffer[1]);
+    txSum += temp.buffer[1];
+    txDoubleSum += txSum;
 
-      temp.val = rcData[4].rcvd;
-      radioPrint->write(temp.buffer[0]);
-      txSum += temp.buffer[0];
-      txDoubleSum += txSum;
-      radioPrint->write(temp.buffer[1]);
-      txSum += temp.buffer[1];
-      txDoubleSum += txSum;
+    temp.val = rcData[4].rcvd;
+    radioPrint->write(temp.buffer[0]);
+    txSum += temp.buffer[0];
+    txDoubleSum += txSum;
+    radioPrint->write(temp.buffer[1]);
+    txSum += temp.buffer[1];
+    txDoubleSum += txSum;
 
-      temp.val = rcData[5].rcvd;
-      radioPrint->write(temp.buffer[0]);
-      txSum += temp.buffer[0];
-      txDoubleSum += txSum;
-      radioPrint->write(temp.buffer[1]);
-      txSum += temp.buffer[1];
-      txDoubleSum += txSum;
+    temp.val = rcData[5].rcvd;
+    radioPrint->write(temp.buffer[0]);
+    txSum += temp.buffer[0];
+    txDoubleSum += txSum;
+    radioPrint->write(temp.buffer[1]);
+    txSum += temp.buffer[1];
+    txDoubleSum += txSum;
 
-      temp.val = rcData[6].rcvd;
-      radioPrint->write(temp.buffer[0]);
-      txSum += temp.buffer[0];
-      txDoubleSum += txSum;
-      radioPrint->write(temp.buffer[1]);
-      txSum += temp.buffer[1];
-      txDoubleSum += txSum;
+    temp.val = rcData[6].rcvd;
+    radioPrint->write(temp.buffer[0]);
+    txSum += temp.buffer[0];
+    txDoubleSum += txSum;
+    radioPrint->write(temp.buffer[1]);
+    txSum += temp.buffer[1];
+    txDoubleSum += txSum;
 
-      temp.val = rcData[7].rcvd;
-      radioPrint->write(temp.buffer[0]);
-      txSum += temp.buffer[0];
-      txDoubleSum += txSum;
-      radioPrint->write(temp.buffer[1]);
-      txSum += temp.buffer[1];
-      txDoubleSum += txSum;
+    temp.val = rcData[7].rcvd;
+    radioPrint->write(temp.buffer[0]);
+    txSum += temp.buffer[0];
+    txDoubleSum += txSum;
+    radioPrint->write(temp.buffer[1]);
+    txSum += temp.buffer[1];
+    txDoubleSum += txSum;
 
-      radioPrint->write(txSum);
-      radioPrint->write(txDoubleSum);
-      break;
+    radioPrint->write(txSum);
+    radioPrint->write(txDoubleSum);
+    break;
   }
 }
 
@@ -283,68 +283,68 @@ void GPSStart() {
         }
       }
       switch (LEDState) {
-        case 0:
-          digitalWrite(13, HIGH);
-          digitalWrite(RED, HIGH);
-          digitalWrite(YELLOW, HIGH);
-          digitalWrite(GREEN, HIGH);
-          break;
-        case 1:
-          digitalWrite(13, LOW);
-          digitalWrite(RED, HIGH);
-          digitalWrite(YELLOW, HIGH);
-          digitalWrite(GREEN, LOW);
-          break;
-        case 2:
-          digitalWrite(13, HIGH);
-          digitalWrite(RED, LOW);
-          digitalWrite(YELLOW, LOW);
-          digitalWrite(GREEN, HIGH);
-          break;
-        case 3:
-          digitalWrite(13, LOW);
-          digitalWrite(RED, HIGH);
-          digitalWrite(YELLOW, LOW);
-          digitalWrite(GREEN, LOW);
-          break;
+      case 0:
+        digitalWrite(13, HIGH);
+        digitalWrite(RED, HIGH);
+        digitalWrite(YELLOW, HIGH);
+        digitalWrite(GREEN, HIGH);
+        break;
+      case 1:
+        digitalWrite(13, LOW);
+        digitalWrite(RED, HIGH);
+        digitalWrite(YELLOW, HIGH);
+        digitalWrite(GREEN, LOW);
+        break;
+      case 2:
+        digitalWrite(13, HIGH);
+        digitalWrite(RED, LOW);
+        digitalWrite(YELLOW, LOW);
+        digitalWrite(GREEN, HIGH);
+        break;
+      case 3:
+        digitalWrite(13, LOW);
+        digitalWrite(RED, HIGH);
+        digitalWrite(YELLOW, LOW);
+        digitalWrite(GREEN, LOW);
+        break;
       }
     }
     /*while (gps.data.vars.numSV < (MIN_SATS + 2) ) {
-      gps.Monitor();
-      if (millis() - generalPurposeTimer > 500) {
-        generalPurposeTimer = millis();
-        LEDState++;
-        if (LEDState == 4) {
-          LEDState = 0;
-        }
-      }
-      switch (LEDState) {
-        case 0:
-          digitalWrite(13, HIGH);
-          digitalWrite(RED, LOW);
-          digitalWrite(YELLOW, LOW);
-          digitalWrite(GREEN, LOW);
-          break;
-        case 1:
-          digitalWrite(13, LOW);
-          digitalWrite(RED, HIGH);
-          digitalWrite(YELLOW, LOW);
-          digitalWrite(GREEN, LOW);
-          break;
-        case 2:
-          digitalWrite(13, LOW);
-          digitalWrite(RED, LOW);
-          digitalWrite(YELLOW, HIGH);
-          digitalWrite(GREEN, LOW);
-          break;
-        case 3:
-          digitalWrite(13, LOW);
-          digitalWrite(RED, LOW);
-          digitalWrite(YELLOW, LOW);
-          digitalWrite(GREEN, HIGH);
-          break;
-      }
-    }*/
+     gps.Monitor();
+     if (millis() - generalPurposeTimer > 500) {
+     generalPurposeTimer = millis();
+     LEDState++;
+     if (LEDState == 4) {
+     LEDState = 0;
+     }
+     }
+     switch (LEDState) {
+     case 0:
+     digitalWrite(13, HIGH);
+     digitalWrite(RED, LOW);
+     digitalWrite(YELLOW, LOW);
+     digitalWrite(GREEN, LOW);
+     break;
+     case 1:
+     digitalWrite(13, LOW);
+     digitalWrite(RED, HIGH);
+     digitalWrite(YELLOW, LOW);
+     digitalWrite(GREEN, LOW);
+     break;
+     case 2:
+     digitalWrite(13, LOW);
+     digitalWrite(RED, LOW);
+     digitalWrite(YELLOW, HIGH);
+     digitalWrite(GREEN, LOW);
+     break;
+     case 3:
+     digitalWrite(13, LOW);
+     digitalWrite(RED, LOW);
+     digitalWrite(YELLOW, LOW);
+     digitalWrite(GREEN, HIGH);
+     break;
+     }
+     }*/
     while (gps.data.vars.hAcc * 0.001 > (HACC_MAX - 0.5) ) {
       gps.Monitor();
       if (millis() - generalPurposeTimer > 500) {
@@ -355,30 +355,30 @@ void GPSStart() {
         }
       }
       switch (LEDState) {
-        case 0:
-          digitalWrite(13, HIGH);
-          digitalWrite(RED, HIGH);
-          digitalWrite(YELLOW, LOW);
-          digitalWrite(GREEN, LOW);
-          break;
-        case 1:
-          digitalWrite(13, LOW);
-          digitalWrite(RED, LOW);
-          digitalWrite(YELLOW, HIGH);
-          digitalWrite(GREEN, HIGH);
-          break;
-        case 2:
-          digitalWrite(13, HIGH);
-          digitalWrite(RED, HIGH);
-          digitalWrite(YELLOW, LOW);
-          digitalWrite(GREEN, LOW);
-          break;
-        case 3:
-          digitalWrite(13, LOW);
-          digitalWrite(RED, LOW);
-          digitalWrite(YELLOW, HIGH);
-          digitalWrite(GREEN, HIGH);
-          break;
+      case 0:
+        digitalWrite(13, HIGH);
+        digitalWrite(RED, HIGH);
+        digitalWrite(YELLOW, LOW);
+        digitalWrite(GREEN, LOW);
+        break;
+      case 1:
+        digitalWrite(13, LOW);
+        digitalWrite(RED, LOW);
+        digitalWrite(YELLOW, HIGH);
+        digitalWrite(GREEN, HIGH);
+        break;
+      case 2:
+        digitalWrite(13, HIGH);
+        digitalWrite(RED, HIGH);
+        digitalWrite(YELLOW, LOW);
+        digitalWrite(GREEN, LOW);
+        break;
+      case 3:
+        digitalWrite(13, LOW);
+        digitalWrite(RED, LOW);
+        digitalWrite(YELLOW, HIGH);
+        digitalWrite(GREEN, HIGH);
+        break;
       }
     }
     while (gps.data.vars.sAcc * 0.001 > (SACC_MAX - 0.25) ) {
@@ -391,30 +391,30 @@ void GPSStart() {
         }
       }
       switch (LEDState) {
-        case 0:
-          digitalWrite(13, HIGH);
-          digitalWrite(RED, LOW);
-          digitalWrite(YELLOW, LOW);
-          digitalWrite(GREEN, HIGH);
-          break;
-        case 1:
-          digitalWrite(13, LOW);
-          digitalWrite(RED, HIGH);
-          digitalWrite(YELLOW, HIGH);
-          digitalWrite(GREEN, LOW);
-          break;
-        case 2:
-          digitalWrite(13, HIGH);
-          digitalWrite(RED, LOW);
-          digitalWrite(YELLOW, LOW);
-          digitalWrite(GREEN, HIGH);
-          break;
-        case 3:
-          digitalWrite(13, LOW);
-          digitalWrite(RED, HIGH);
-          digitalWrite(YELLOW, HIGH);
-          digitalWrite(GREEN, LOW);
-          break;
+      case 0:
+        digitalWrite(13, HIGH);
+        digitalWrite(RED, LOW);
+        digitalWrite(YELLOW, LOW);
+        digitalWrite(GREEN, HIGH);
+        break;
+      case 1:
+        digitalWrite(13, LOW);
+        digitalWrite(RED, HIGH);
+        digitalWrite(YELLOW, HIGH);
+        digitalWrite(GREEN, LOW);
+        break;
+      case 2:
+        digitalWrite(13, HIGH);
+        digitalWrite(RED, LOW);
+        digitalWrite(YELLOW, LOW);
+        digitalWrite(GREEN, HIGH);
+        break;
+      case 3:
+        digitalWrite(13, LOW);
+        digitalWrite(RED, HIGH);
+        digitalWrite(YELLOW, HIGH);
+        digitalWrite(GREEN, LOW);
+        break;
       }
     }
 
@@ -461,30 +461,30 @@ void GetAltitude(float *press, float *pressInit, float *alti) {
 void PollPressure(void) {
   if (millis() - baroPollTimer > POLL_RATE) {
     switch (pressureState) {
-      case 0://read ut
+    case 0://read ut
+      baroDelayTimer = millis();
+      StartUT();
+      pressureState = 1;
+      break;
+    case 1://wait for ready signal
+      if (millis() - baroDelayTimer > 5) {
         baroDelayTimer = millis();
-        StartUT();
-        pressureState = 1;
-        break;
-      case 1://wait for ready signal
-        if (millis() - baroDelayTimer > 5) {
-          baroDelayTimer = millis();
-          pressureState = 2;
-          ut = ReadUT();
-          StartUP();
-        }
+        pressureState = 2;
+        ut = ReadUT();
+        StartUP();
+      }
 
-        break;
-      case 2://read up
-        if (millis() - baroDelayTimer > CONV_TIME) {
-          baroPollTimer = millis();
-          up = ReadUP();
-          temperature = Temperature(ut);
-          pressure.val = (float)Pressure(up);
-          pressureState = 0;
-          newBaro = true;
-        }
-        break;
+      break;
+    case 2://read up
+      if (millis() - baroDelayTimer > CONV_TIME) {
+        baroPollTimer = millis();
+        up = ReadUP();
+        temperature = Temperature(ut);
+        pressure.val = (float)Pressure(up);
+        pressureState = 0;
+        newBaro = true;
+      }
+      break;
 
     }
   }
@@ -604,7 +604,7 @@ void BaroInit(void) {
   msb = I2c.receive();
   lsb = I2c.receive();
   md = (msb << 8) | lsb;
-  
+
   I2c.read(BMP085_ADDRESS,0xD0,1);
   if (I2c.receive() != 0x55){
     while(1){
@@ -640,47 +640,47 @@ void PollPressure(void) {
 
   if (millis() - baroPollTimer >= BARO_CONV_TIME) {
     switch (baroState) {
-      case 0://start temp conv
+    case 0://start temp conv
+      BaroSSLow();
+      SPI.transfer(CONVERT_D2_OSR4096);
+      BaroSSHigh();
+      baroState = 1;
+      baroDelayTimer = millis();
+      break;
+    case 1:
+      if (millis() - baroDelayTimer >= 10) {
         BaroSSLow();
-        SPI.transfer(CONVERT_D2_OSR4096);
+        SPI.transfer(ADC_READ);
+        D_rcvd.buffer[2] = SPI.transfer(0x00);
+        D_rcvd.buffer[1] = SPI.transfer(0x00);
+        D_rcvd.buffer[0] = SPI.transfer(0x00);
+        D2 = (float)D_rcvd.val;
         BaroSSHigh();
-        baroState = 1;
-        baroDelayTimer = millis();
-        break;
-      case 1:
-        if (millis() - baroDelayTimer >= 10) {
-          BaroSSLow();
-          SPI.transfer(ADC_READ);
-          D_rcvd.buffer[2] = SPI.transfer(0x00);
-          D_rcvd.buffer[1] = SPI.transfer(0x00);
-          D_rcvd.buffer[0] = SPI.transfer(0x00);
-          D2 = (float)D_rcvd.val;
-          BaroSSHigh();
-          baroState = 2;
-        }
-        break;
-      case 2:
+        baroState = 2;
+      }
+      break;
+    case 2:
+      BaroSSLow();
+      SPI.transfer(CONVERT_D1_OSR4096);
+      BaroSSHigh();
+      baroState = 3;
+      baroDelayTimer = millis();
+      break;
+    case 3:
+      if (millis() - baroDelayTimer >= 10) {
         BaroSSLow();
-        SPI.transfer(CONVERT_D1_OSR4096);
+        SPI.transfer(ADC_READ);
+        D_rcvd.buffer[2] = SPI.transfer(0x00);
+        D_rcvd.buffer[1] = SPI.transfer(0x00);
+        D_rcvd.buffer[0] = SPI.transfer(0x00);
+        D1 = (float)D_rcvd.val;
         BaroSSHigh();
-        baroState = 3;
-        baroDelayTimer = millis();
-        break;
-      case 3:
-        if (millis() - baroDelayTimer >= 10) {
-          BaroSSLow();
-          SPI.transfer(ADC_READ);
-          D_rcvd.buffer[2] = SPI.transfer(0x00);
-          D_rcvd.buffer[1] = SPI.transfer(0x00);
-          D_rcvd.buffer[0] = SPI.transfer(0x00);
-          D1 = (float)D_rcvd.val;
-          BaroSSHigh();
-          baroState = 0;
-          baroPollTimer = millis();
-          GetBaro();
-          newBaro = true;
-        }
-        break;
+        baroState = 0;
+        baroPollTimer = millis();
+        GetBaro();
+        newBaro = true;
+      }
+      break;
     }
   }
 }
@@ -865,8 +865,8 @@ void MagInit() {
   magY.buffer[0] = I2c.receive();
 #ifdef V1
 #ifndef EXT_MAG
-      magY.val *= -1;
-      magZ.val *= -1;
+  magY.val *= -1;
+  magZ.val *= -1;
 #endif
 #endif
   shiftedMagX  = magX.val - magOffSetX;
@@ -1040,8 +1040,8 @@ void GetMag() {
   magY.buffer[0] = I2c.receive();
 #ifdef V1
 #ifndef EXT_MAG
-      magY.val *= -1;
-      magZ.val *= -1;
+  magY.val *= -1;
+  magZ.val *= -1;
 #endif
 #endif
 
@@ -1225,6 +1225,7 @@ void GetAcc() {
   accToFilterZ = -1.0 * filtAccZ.val;
 
 }
+
 
 
 

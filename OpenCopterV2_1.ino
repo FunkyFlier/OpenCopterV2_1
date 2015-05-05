@@ -1015,6 +1015,7 @@ uint8_t txLossRTB;
 
 uint8_t i2cTimeOutStatus;
 uint8_t i2cTimeOutCount;
+uint8_t calibrationNumber;
 
 boolean rudderFlag = false;
 
@@ -1064,6 +1065,7 @@ PID WayPointRate(&targetVelWayPoint.val, &speed2D_MPS, &pitchSetPoint.val, &inte
  }*/
 
 void setup() {
+  
   pinMode(RED, OUTPUT);
   pinMode(YELLOW, OUTPUT);
   pinMode(GREEN, OUTPUT);

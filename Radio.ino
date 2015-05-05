@@ -200,6 +200,7 @@ void Radio() {
         if (calibrationMode == true) {
           if (typeNum == 6) {
             sendCalibrationData = true;
+            calibrationNumber = cmdNum;
           }
           if (typeNum == 7) {
             WriteCalibrationDataToRom();
