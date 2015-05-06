@@ -59,9 +59,9 @@ float *accZ, float *scAccX, float *scAccY, float *scAccZ, float *magX, float *ma
 
 
   FEEDBACK_LIMIT = 0.1;
-  kpAcc = 2.5;
+  kpAcc = 0.9;
   kiAcc = 0.0;
-  kpMag = 2.5;
+  kpMag = 0.1;
   kiMag = 0.0;
 
   currentEstIndex = 0;
@@ -361,10 +361,13 @@ void openIMU::AHRSupdate() {
 
 
   dtby2 = *dt * 0.5;
-  q0.val += -1.0 * dtby2*(*gx * q1.val + *gy * q2.val + *gz * q3.val);
-  q1.val +=      dtby2*(*gx * q0.val - *gy * q3.val + *gz * q2.val);
-  q2.val +=      dtby2*(*gx * q3.val + *gy * q0.val - *gz * q1.val);
-  q3.val +=      dtby2*(*gy * q1.val - *gx * q2.val + *gz * q0.val);
+  qa = q0.val;
+  qb = q1.val;
+  qc = q2.val;
+  q0.val += -1.0 * dtby2*(*gx * qb + *gy * qc + *gz * q3.val);
+  q1.val +=      dtby2*(*gx * qa - *gy * q3.val + *gz * qc);
+  q2.val +=      dtby2*(*gx * q3.val + *gy * qa - *gz * qb);
+  q3.val +=      dtby2*(*gy * qb - *gx * qc + *gz * qa);
 
 
   //normalize the quaternion

@@ -1065,7 +1065,7 @@ PID WayPointRate(&targetVelWayPoint.val, &speed2D_MPS, &pitchSetPoint.val, &inte
  }*/
 
 void setup() {
-  
+
   pinMode(RED, OUTPUT);
   pinMode(YELLOW, OUTPUT);
   pinMode(GREEN, OUTPUT);
@@ -1685,6 +1685,7 @@ void LoiterCalculations() {
   tiltAngleX.val *= -1.0;
   LoiterYVelocity.calculate();
 }
+
 
 
 

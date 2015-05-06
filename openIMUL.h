@@ -90,6 +90,7 @@ private:
   float recipNorm;
   float q0q0,q1q1,q2q2,q3q3,q0q1,q0q2,q0q3,q1q2,q1q3,q2q3;
   float integralFBX,integralFBY,integralFBZ;
+  float qa,qb,qc;
 
   float kiDTAcc,kiDTMag,dtby2;
   float bx,by,bz,wx,wy,wz,vx,vy,vz;
