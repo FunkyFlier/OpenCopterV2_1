@@ -59,9 +59,9 @@ float *accZ, float *scAccX, float *scAccY, float *scAccZ, float *magX, float *ma
 
 
   FEEDBACK_LIMIT = 0.1;
-  kpAcc = 0.9;
+  kpAcc = 1;
   kiAcc = 0.0;
-  kpMag = 0.1;
+  kpMag = 1;
   kiMag = 0.0;
 
   currentEstIndex = 0;
